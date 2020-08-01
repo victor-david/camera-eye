@@ -7,3 +7,5 @@ bin/
 help/
 obj/
 install.cmd
+!src/Camera.App/Ffmpeg/x86/libffmpeghelper.dll
+!src/Camera.App/Ffmpeg/x64/libffmpeghelper.dll
