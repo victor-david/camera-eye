@@ -1,81 +1,64 @@
-﻿using Restless.App.Camera.Core;
-using Restless.App.Database.Core;
+﻿using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Restless.App.Camera
+namespace Restless.App.Camera.Core
 {
     /// <summary>
     /// Interaction logic for CameraWallControl.xaml
     /// </summary>
     public partial class CameraWallControl : Grid
     {
+        #region Private
+        private int rows;
+        private int columns;
+        #endregion
+
+        /************************************************************************/
+
         #region Constructor
         public CameraWallControl()
         {
-            InitializeComponent();
             Background = Brushes.Transparent;
-            CameraListHeader.IsVisibleChanged += CameraListHeaderIsVisibleChanged;
-            InitializeCameraList();
+            //CameraListHeader.IsVisibleChanged += CameraListHeaderIsVisibleChanged;
+            rows = columns = 1;
+            //InitializeCameraList();
             Loaded += CameraWallControlLoaded;
         }
         #endregion
 
         /************************************************************************/
 
-        #region Rows / columns
+        #region Grid layout
         /// <summary>
-        /// Gets or sets the number of rows.
+        /// Gets the total number of camera slots.
         /// </summary>
-        public int Rows
+        private int TotalSlots => rows * columns;
+
+        /// <summary>
+        /// Gets or sets the grid layout
+        /// </summary>
+        public WallGridLayout GridLayout
         {
-            get => (int)GetValue(RowsProperty);
-            set => SetValue(RowsProperty, value);
+            get => (WallGridLayout)GetValue(GridLayoutProperty);
+            set => SetValue(GridLayoutProperty, value);
         }
 
         /// <summary>
-        /// Identifies the <see cref="Rows"/> dependency property.
+        /// Identifies the <see cref="GridLayout"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty RowsProperty = DependencyProperty.Register
+        public static readonly DependencyProperty GridLayoutProperty = DependencyProperty.Register
             (
-                nameof(Rows), typeof(int), typeof(CameraWallControl), new PropertyMetadata(0, OnGridSpecificationChanged, OnCoerceRows)
+                nameof(GridLayout), typeof(WallGridLayout), typeof(CameraWallControl), new PropertyMetadata(WallGridLayout.None, OnGridLayoutChanged)
             );
 
-        private static object OnCoerceRows(DependencyObject d, object baseValue)
-        {
-            int value = (int)baseValue;
-            return Math.Min(Math.Max(value, 1), 3);
-        }
-
-        /// <summary>
-        /// Gets or sets the number of columns.
-        /// </summary>
-        public int Columns
-        {
-            get => (int)GetValue(ColumnsProperty);
-            set => SetValue(ColumnsProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="Columns"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty ColumnsProperty = DependencyProperty.Register
-            (
-                nameof(Columns), typeof(int), typeof(CameraWallControl), new PropertyMetadata(0, OnGridSpecificationChanged, OnCoerceColumns)
-            );
-
-        private static object OnCoerceColumns(DependencyObject d, object baseValue)
-        {
-            int value = (int)baseValue;
-            return Math.Min(Math.Max(value, 1), 3);
-        }
-
-        private static void OnGridSpecificationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnGridLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is CameraWallControl control)
             {
@@ -94,16 +77,16 @@ namespace Restless.App.Camera
         protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
         {
             base.OnGiveFeedback(e);
-            if (CameraList.DragCursor != null)
-            {
-                e.UseDefaultCursors = false;
-                Win32Point w32Mouse = new Win32Point();
-                GetCursorPos(ref w32Mouse);
-                CameraList.DragCursor.Left = w32Mouse.X + 2;
-                CameraList.DragCursor.Top = w32Mouse.Y - (CameraList.DragCursor.ActualHeight / 2);
-                CameraList.DragCursor.Opacity = (e.Effects == DragDropEffects.Move) ? 1.0 : 0.35;
-                e.Handled = true;
-            }
+            //if (CameraList.DragCursor != null)
+            //{
+            //    e.UseDefaultCursors = false;
+            //    Win32Point w32Mouse = new Win32Point();
+            //    GetCursorPos(ref w32Mouse);
+            //    CameraList.DragCursor.Left = w32Mouse.X + 2;
+            //    CameraList.DragCursor.Top = w32Mouse.Y - (CameraList.DragCursor.ActualHeight / 2);
+            //    CameraList.DragCursor.Opacity = (e.Effects == DragDropEffects.Move) ? 1.0 : 0.35;
+            //    e.Handled = true;
+            //}
         }
 
         protected override void OnDrop(DragEventArgs e)
@@ -124,24 +107,27 @@ namespace Restless.App.Camera
             RowDefinitions.Clear();
             ColumnDefinitions.Clear();
 
-            for (int k = 0; k < Rows; k++)
+            rows = GridLayout.ToRow();
+            columns = GridLayout.ToColumn();
+
+            for (int k = 0; k < rows; k++)
             {
                 RowDefinitions.Add(new RowDefinition());
             }
 
-            for (int k = 0; k < Columns; k++)
+            for (int k = 0; k < columns; k++)
             {
                 ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(0, GridUnitType.Auto)
-            });
+            //ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(0, GridUnitType.Auto)
+            //});
 
-            for (int row = 0; row < Rows; row++)
+            for (int row = 0; row < rows; row++)
             {
-                for (int col = 0; col < Columns; col++)
+                for (int col = 0; col < columns; col++)
                 {
                     if (GetCameraHost(row, col) == null)
                     {
@@ -150,25 +136,71 @@ namespace Restless.App.Camera
                 }
             }
 
-            SetRow(CameraListHeader, 0);
-            SetColumn(CameraListHeader, Columns);
-            SetRowSpan(CameraListHeader, Rows);
+            Debug.WriteLine($"Grid has {Children.Count} children");
+            CleanExtraSlots();
+            Debug.WriteLine($"Grid has {Children.Count} children");
+
+            //Debug.WriteLine($"Set List to row 0, col {columns} with row span {rows}");
+            //SetRow(CameraListHeader, 0);
+            //SetColumn(CameraListHeader, columns);
+            //SetRowSpan(CameraListHeader, rows);
         }
 
-        private void InitializeCameraList()
+        private void CleanExtraSlots()
         {
-            // TODO - make list auto update
-            CameraList.ItemsSource = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
+            //if (Children.Count > TotalSlots)
+            {
+                //Children.Remove(CameraListHeader);
+
+                while (Children.Count > TotalSlots)
+                {
+                    int idx = Children.Count - 1;
+                    if (Children[idx] is CameraHostBorder host)
+                    {
+                        if (host.CameraControl != null)
+                        {
+                            host.CameraControl.IsVideoRunning = false;
+                        }
+                    }
+                    Children.RemoveAt(idx);
+                }
+                //int numToRemove = Children.Count - TotalSlots;
+                //Debug.WriteLine($"More children than slots {TotalSlots} Remove {numToRemove}");
+                //List<int> indices = new List<int>();
+                //for (int idx = Children.Count - 1; idx >= 0; idx--)
+                //{
+                //    if (Children[idx] is CameraHostBorder host && indices.Count < numToRemove)
+                //    {
+                //        if (host.CameraControl != null)
+                //        {
+                //            host.CameraControl.IsVideoRunning = false;
+                //        }
+                //        indices.Add(idx);
+                //    }
+                //}
+                //foreach (int idx in indices)
+                //{
+                //    Children.RemoveAt(idx);
+                //}
+                //Children.Add(CameraListHeader);
+            }
         }
+
+        //private void InitializeCameraList()
+        //{
+        //    // TODO - make list auto update
+        //    CameraList.ItemsSource = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
+        //}
 
         private void CameraWallControlLoaded(object sender, RoutedEventArgs e)
         {
+            ShowGridLines = true;
             foreach (CameraRow camera in DatabaseController.Instance.GetTable<CameraTable>().EnumerateFlaggedForWall())
             {
-                if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
-                {
-                    AddCameraToWall(host, camera);
-                }
+                //if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
+                //{
+                //    AddCameraToWall(host, camera);
+                //}
             }
             Loaded -= CameraWallControlLoaded;
         }
@@ -187,8 +219,8 @@ namespace Restless.App.Camera
         #region Private methods (drag / drop support)
         private Tuple<int, int> GetGridCellByPoint(Point point)
         {
-            double rowHeight = ActualHeight / Rows;
-            double colWidth = (ActualWidth - ColumnDefinitions[Columns].ActualWidth) / Columns;
+            double rowHeight = ActualHeight / rows;
+            double colWidth = ActualWidth / columns;
             int row = (int)(point.Y / rowHeight);
             int col = (int)(point.X / colWidth);
             return new Tuple<int, int>(row, col);

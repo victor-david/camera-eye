@@ -5,10 +5,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
-    xmlns:local="clr-namespace:Restless.App.Camera"
     mc:Ignorable="d"
     Icon="{StaticResource ImageCamera}"
     Title="{Binding DisplayName, Mode=OneTime}" Width="300" Height="150">
+    <core:AppWindow.Resources>
+        <core:WallGridLayout x:Key="LayoutOneByOne">OneByOne</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutTwoByOne">TwoByOne</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutTwoByTwo">TwoByTwo</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutThreeByTwo">ThreeByTwo</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutThreeByThree">ThreeByThree</core:WallGridLayout>
+    </core:AppWindow.Resources>
     <core:AppWindow.Menu>
         <Menu>
             <MenuItem Header="File">
@@ -23,6 +29,7 @@
                     IsChecked="{Binding IsCameraListVisible,Mode=OneWay}"
                     Command="{Binding Commands[OpenCameraList]}"/>
                 <Separator/>
+
                 <MenuItem
                     Header="Camera configuration"
                     Command="{Binding Commands[OpenCameraConfig]}"/>
@@ -30,9 +37,58 @@
                     Header="Application settings"
                     Command="{Binding Commands[OpenAppSettings]}"/>
             </MenuItem>
+            <MenuItem Header="Grid">
+                <MenuItem 
+                    Header="1x1" 
+                    IsChecked="{Binding IsGridSizeChecked[0]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutOneByOne}"/>
+                <MenuItem 
+                    Header="2x1" 
+                    IsChecked="{Binding IsGridSizeChecked[1]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutTwoByOne}"/>
+                <MenuItem
+                    Header="2x2"
+                    IsChecked="{Binding IsGridSizeChecked[2]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutTwoByTwo}"/>
+                <MenuItem
+                    Header="3x2"
+                    IsChecked="{Binding IsGridSizeChecked[3]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutThreeByTwo}"/>
+                <MenuItem
+                    Header="3x3"
+                    IsChecked="{Binding IsGridSizeChecked[4]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutThreeByThree}"/>
+            </MenuItem>
         </Menu>
     </core:AppWindow.Menu>
-
-    <local:CameraWallControl Rows="{Binding Rows}" Columns="{Binding Columns}"/>
+    <Grid core:Property.ColumnWidths="*,Auto">
+        <core:CameraWallControl GridLayout="{Binding GridLayout}"/>
+        
+        <HeaderedContentControl
+            Grid.Column="1"
+            x:Name="CameraListHeader" x:FieldModifier="private"
+            Header="Available Cameras"
+            Margin="2"
+            MaxWidth="200"
+            core:Property.IsVisible="{Binding IsCameraListVisible}">
+            <StackPanel>
+                <core:CameraListControl 
+                    x:Name="CameraList"
+                    x:FieldModifier="private"
+                    Style="{StaticResource ListBoxCameraList}" 
+                    ItemsSource="{Binding CameraList}" />
+                    <TextBlock 
+                        Margin="1,10"
+                        Foreground="Gray"
+                        TextWrapping="Wrap"
+                        Text="To add a camera to the display, drag it to the position you want."/>
+            </StackPanel>
+        </HeaderedContentControl>
+    </Grid>
 
 </core:AppWindow>
