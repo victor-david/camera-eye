@@ -1,9 +1,7 @@
 ﻿using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -26,9 +24,7 @@ namespace Restless.App.Camera.Core
         public CameraWallControl()
         {
             Background = Brushes.Transparent;
-            //CameraListHeader.IsVisibleChanged += CameraListHeaderIsVisibleChanged;
             rows = columns = 1;
-            //InitializeCameraList();
             Loaded += CameraWallControlLoaded;
         }
         #endregion
@@ -69,26 +65,41 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
-        #region Protected methods
+        #region IsActivated for drop
         /// <summary>
-        /// Called when the give feedback event is raised.
+        /// Gets or sets a boolean value that indicates if the control is
+        /// activated for drop. This change visual aspects of the control, not functionality.
         /// </summary>
-        /// <param name="e">The event arguments.</param>
-        protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
+        public bool IsActivatedForDrop
         {
-            base.OnGiveFeedback(e);
-            //if (CameraList.DragCursor != null)
-            //{
-            //    e.UseDefaultCursors = false;
-            //    Win32Point w32Mouse = new Win32Point();
-            //    GetCursorPos(ref w32Mouse);
-            //    CameraList.DragCursor.Left = w32Mouse.X + 2;
-            //    CameraList.DragCursor.Top = w32Mouse.Y - (CameraList.DragCursor.ActualHeight / 2);
-            //    CameraList.DragCursor.Opacity = (e.Effects == DragDropEffects.Move) ? 1.0 : 0.35;
-            //    e.Handled = true;
-            //}
+            get => (bool)GetValue(IsActivatedForDropProperty);
+            set => SetValue(IsActivatedForDropProperty, value);
         }
 
+        /// <summary>
+        /// Identifies the <see cref="IsActivatedForDrop"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsActivatedForDropProperty = DependencyProperty.Register
+            (
+                nameof(IsActivatedForDrop), typeof(bool), typeof(CameraWallControl), new PropertyMetadata(false, OnIsActivatedForDropChanged)
+            );
+
+        private static void OnIsActivatedForDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CameraWallControl control)
+            {
+                control.ChangeVisualForDropActivationState((bool)e.NewValue);
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Protected methods
+        /// <summary>
+        /// Called when the drop operation has completed
+        /// </summary>
+        /// <param name="e">The event args.</param>
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
@@ -120,11 +131,6 @@ namespace Restless.App.Camera.Core
                 ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            //ColumnDefinitions.Add(new ColumnDefinition()
-            //{
-            //    Width = new GridLength(0, GridUnitType.Auto)
-            //});
-
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
@@ -136,65 +142,28 @@ namespace Restless.App.Camera.Core
                 }
             }
 
-            Debug.WriteLine($"Grid has {Children.Count} children");
             CleanExtraSlots();
-            Debug.WriteLine($"Grid has {Children.Count} children");
-
-            //Debug.WriteLine($"Set List to row 0, col {columns} with row span {rows}");
-            //SetRow(CameraListHeader, 0);
-            //SetColumn(CameraListHeader, columns);
-            //SetRowSpan(CameraListHeader, rows);
+            ChangeVisualForDropActivationState(IsActivatedForDrop);
         }
 
         private void CleanExtraSlots()
         {
-            //if (Children.Count > TotalSlots)
+            while (Children.Count > TotalSlots)
             {
-                //Children.Remove(CameraListHeader);
-
-                while (Children.Count > TotalSlots)
+                int idx = Children.Count - 1;
+                if (Children[idx] is CameraHostBorder host)
                 {
-                    int idx = Children.Count - 1;
-                    if (Children[idx] is CameraHostBorder host)
+                    if (host.CameraControl != null)
                     {
-                        if (host.CameraControl != null)
-                        {
-                            host.CameraControl.IsVideoRunning = false;
-                        }
+                        host.CameraControl.IsVideoRunning = false;
                     }
-                    Children.RemoveAt(idx);
                 }
-                //int numToRemove = Children.Count - TotalSlots;
-                //Debug.WriteLine($"More children than slots {TotalSlots} Remove {numToRemove}");
-                //List<int> indices = new List<int>();
-                //for (int idx = Children.Count - 1; idx >= 0; idx--)
-                //{
-                //    if (Children[idx] is CameraHostBorder host && indices.Count < numToRemove)
-                //    {
-                //        if (host.CameraControl != null)
-                //        {
-                //            host.CameraControl.IsVideoRunning = false;
-                //        }
-                //        indices.Add(idx);
-                //    }
-                //}
-                //foreach (int idx in indices)
-                //{
-                //    Children.RemoveAt(idx);
-                //}
-                //Children.Add(CameraListHeader);
+                Children.RemoveAt(idx);
             }
         }
 
-        //private void InitializeCameraList()
-        //{
-        //    // TODO - make list auto update
-        //    CameraList.ItemsSource = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
-        //}
-
         private void CameraWallControlLoaded(object sender, RoutedEventArgs e)
         {
-            ShowGridLines = true;
             foreach (CameraRow camera in DatabaseController.Instance.GetTable<CameraTable>().EnumerateFlaggedForWall())
             {
                 //if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
@@ -203,14 +172,6 @@ namespace Restless.App.Camera.Core
                 //}
             }
             Loaded -= CameraWallControlLoaded;
-        }
-
-        private void CameraListHeaderIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            foreach (var child in Children.OfType<CameraHostBorder>())
-            {
-                child.SetActivationState((bool)e.NewValue);
-            }
         }
         #endregion
 
@@ -302,19 +263,13 @@ namespace Restless.App.Camera.Core
             return null;
         }
 
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetCursorPos(ref Win32Point pt);
-
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct Win32Point
+        private void ChangeVisualForDropActivationState(bool activationState)
         {
-            public int X;
-            public int Y;
-        };
-
-
+            foreach (var child in Children.OfType<CameraHostBorder>())
+            {
+                child.SetActivationState(activationState);
+            }
+        }
         #endregion
     }
 }

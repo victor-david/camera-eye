@@ -67,11 +67,10 @@
         </Menu>
     </core:AppWindow.Menu>
     <Grid core:Property.ColumnWidths="*,Auto">
-        <core:CameraWallControl GridLayout="{Binding GridLayout}"/>
+        <core:CameraWallControl GridLayout="{Binding GridLayout}" IsActivatedForDrop="{Binding IsCameraListVisible}"/>
         
         <HeaderedContentControl
             Grid.Column="1"
-            x:Name="CameraListHeader" x:FieldModifier="private"
             Header="Available Cameras"
             Margin="2"
             MaxWidth="200"

@@ -1,5 +1,6 @@
 ﻿using Restless.App.Database.Tables;
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -91,6 +92,25 @@ namespace Restless.App.Camera.Core
                 }
             }
         }
+
+        /// <summary>
+        /// Called when the give feedback event is raised.
+        /// </summary>
+        /// <param name="e">The event arguments.</param>
+        protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
+        {
+            base.OnGiveFeedback(e);
+            if (DragCursor != null)
+            {
+                e.UseDefaultCursors = false;
+                Win32Point w32Mouse = new Win32Point();
+                GetCursorPos(ref w32Mouse);
+                DragCursor.Left = w32Mouse.X + 2;
+                DragCursor.Top = w32Mouse.Y - (DragCursor.ActualHeight / 2);
+                DragCursor.Opacity = (e.Effects == DragDropEffects.Move) ? 1.0 : 0.35;
+                e.Handled = true;
+            }
+        }
         #endregion
 
         /************************************************************************/
@@ -122,6 +142,17 @@ namespace Restless.App.Camera.Core
                 },
             };
         }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Win32Point
+        {
+            public int X;
+            public int Y;
+        };
         #endregion
     }
 }
