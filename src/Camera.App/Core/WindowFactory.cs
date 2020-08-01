@@ -24,8 +24,9 @@ namespace Restless.App.Camera.Core
                 var window = new MainWindow()
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Width = Config.Default.MainWindow.Width,
-                    Height = Config.Default.MainWindow.Height,
+                    Width = Config.Instance.MainWindowWidth,
+                    Height = Config.Instance.MainWindowHeight,
+                    WindowState = Config.Instance.MainWindowState,
                     MinWidth = Config.Default.MainWindow.MinWidth,
                     MinHeight = Config.Default.MainWindow.MinHeight,
                     DataContext = viewModel ?? new MainWindowViewModel()

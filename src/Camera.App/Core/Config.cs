@@ -1,10 +1,20 @@
-﻿namespace Restless.App.Camera.Core
+﻿using Restless.App.Database.Core;
+using Restless.App.Database.Tables;
+using System.Windows;
+
+namespace Restless.App.Camera.Core
 {
     /// <summary>
     /// Provides application configuration services
     /// </summary>
-    public class Config
+    public class Config : Tools.Database.SQLite.KeyValueTableBase
     {
+        #region Private
+        private static Config instance;
+        #endregion
+
+        /************************************************************************/
+
         #region Public fields
         /// <summary>
         /// Provides static default values for properties
@@ -75,6 +85,58 @@
                 /// </summary>
                 public const int Height = 600;
             }
+        }
+        #endregion
+
+
+        /************************************************************************/
+
+        #region Static singleton access and constructor
+        /// <summary>
+        /// Gets the singleton instance of this class
+        /// </summary>
+        public static Config Instance { get; } = new Config();
+
+        private Config() : base(DatabaseController.Instance.GetTable<ConfigTable>())
+        {
+        }
+
+        /// <summary>
+        /// Static constructor. Tells C# compiler not to mark type as beforefieldinit.
+        /// </summary>
+        static Config()
+        {
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Window settings
+        /// <summary>
+        /// Gets or sets the width of the main window
+        /// </summary>
+        public int MainWindowWidth
+        {
+            get => GetItem(Default.MainWindow.Width);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the main window
+        /// </summary>
+        public int MainWindowHeight
+        {
+            get => GetItem(Default.MainWindow.Height);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the state of the main window
+        /// </summary>
+        public WindowState MainWindowState
+        {
+            get => (WindowState)GetItem((int)WindowState.Normal);
+            set => SetItem((int)value);
         }
         #endregion
     }

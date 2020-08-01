@@ -87,6 +87,7 @@ namespace Restless.App.Database.Core
             Attach(CameraSchemaName, databaseName, () =>
             {
                 CreateAndRegisterTable<CameraTable>();
+                CreateAndRegisterTable<ConfigTable>();
                 CreateAndRegisterTable<PluginTable>();
                 TableRegistrationComplete(CameraSchemaName);
             });

@@ -3,6 +3,7 @@ using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using Restless.Tools.Mvvm;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Restless.App.Camera
 {
@@ -51,7 +52,7 @@ namespace Restless.App.Camera
 
         /************************************************************************/
 
-        #region Constrcutor
+        #region Constructor
         public MainWindowViewModel()
         {
             DisplayName = "Camera Eye";
@@ -75,6 +76,30 @@ namespace Restless.App.Camera
             };
 
             RunChangeGridSizeCommand(WallGridLayout.TwoByTwo);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Protected methods
+        /// <summary>
+        /// Called when the view model is closing, that is when <see cref="ViewModelBase.SignalClosing"/> is called.
+        /// </summary>
+        protected override void OnClosing()
+        {
+            base.OnClosing();
+            if (WindowOwner != null)
+            {
+                if (WindowOwner.WindowState != WindowState.Maximized)
+                {
+                    Config.MainWindowWidth = (int)WindowOwner.Width;
+                    Config.MainWindowHeight = (int)WindowOwner.Height;
+                }
+                if (WindowOwner.WindowState != WindowState.Minimized)
+                {
+                    Config.MainWindowState = WindowOwner.WindowState;
+                }
+            }
         }
         #endregion
 
