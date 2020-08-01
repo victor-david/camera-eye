@@ -8,7 +8,7 @@ respository, but you can download them at:
 https://ffmpeg.zeranoe.com/builds/
 
 Download the shared versions (both x86 and x64), and extract the .dlls (don't need the .exes)
-into the corresponding x86 / x64 directory.
+into the corresponding x86 / x64 directory. There's a total of eight .dlls from FFMPEG, plus:
 
 **libffmpeghelper.dll** - This file *is* included in the respository. It's not part of FFMPEG,
 but comes from:
