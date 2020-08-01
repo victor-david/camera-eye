@@ -63,16 +63,17 @@ namespace Restless.App.Camera
 
             CameraList = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
 
-            IsGridSizeChecked = new bool[] { false, false, false, false, false };
+            IsGridSizeChecked = new bool[] { false, false, false, false, false, false };
 
             /* grid layout => index into IsGridSizeChecked */
             gridLayoutMap = new Dictionary<WallGridLayout, int>()
             {
                 { WallGridLayout.OneByOne, 0 },
-                { WallGridLayout.TwoByOne, 1 },
-                { WallGridLayout.TwoByTwo, 2 },
-                { WallGridLayout.ThreeByTwo, 3 },
-                { WallGridLayout.ThreeByThree, 4 }
+                { WallGridLayout.OneByTwo, 1 },
+                { WallGridLayout.TwoByOne, 2 },
+                { WallGridLayout.TwoByTwo, 3 },
+                { WallGridLayout.ThreeByTwo, 4 },
+                { WallGridLayout.ThreeByThree, 5 }
             };
 
             RunChangeGridSizeCommand(WallGridLayout.TwoByTwo);

@@ -12,23 +12,27 @@
         /// <summary>
         /// One row, one column. One slot total, one camera has the whole window
         /// </summary>
-        OneByOne = 1,
+        OneByOne = 11,
+        /// <summary>
+        /// One row, two columns. Two slots total, one camera left, one camera right.
+        /// </summary>
+        OneByTwo = 12,
         /// <summary>
         /// Two rows, one column. Two slots total, one camera top, one camera bottom.
         /// </summary>
-        TwoByOne = 2,
+        TwoByOne = 21,
         /// <summary>
         /// Two rows, two columns. Four slots total.
         /// </summary>
-        TwoByTwo = 4,
+        TwoByTwo = 22,
         /// <summary>
         /// Three rows, two columns. Six slots total.
         /// </summary>
-        ThreeByTwo = 6,
+        ThreeByTwo = 32,
         /// <summary>
         /// Three rows, three columns. Nine slots total.
         /// </summary>
-        ThreeByThree = 9,
+        ThreeByThree = 33,
     }
 
     /// <summary>
@@ -46,6 +50,7 @@
             return layout switch
             {
                 WallGridLayout.OneByOne => 1,
+                WallGridLayout.OneByTwo => 1,
                 WallGridLayout.TwoByOne => 2,
                 WallGridLayout.TwoByTwo => 2,
                 WallGridLayout.ThreeByTwo => 3,
@@ -64,6 +69,7 @@
             return layout switch
             {
                 WallGridLayout.OneByOne => 1,
+                WallGridLayout.OneByTwo => 2,
                 WallGridLayout.TwoByOne => 1,
                 WallGridLayout.TwoByTwo => 2,
                 WallGridLayout.ThreeByTwo => 2,

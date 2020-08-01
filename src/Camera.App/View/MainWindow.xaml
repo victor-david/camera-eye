@@ -10,6 +10,7 @@
     Title="{Binding DisplayName, Mode=OneTime}" Width="300" Height="150">
     <core:AppWindow.Resources>
         <core:WallGridLayout x:Key="LayoutOneByOne">OneByOne</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutOneByTwo">OneByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutTwoByOne">TwoByOne</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutTwoByTwo">TwoByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutThreeByTwo">ThreeByTwo</core:WallGridLayout>
@@ -44,23 +45,28 @@
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutOneByOne}"/>
                 <MenuItem 
-                    Header="2x1" 
+                    Header="1x2" 
                     IsChecked="{Binding IsGridSizeChecked[1]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutOneByTwo}"/>                
+                <MenuItem 
+                    Header="2x1" 
+                    IsChecked="{Binding IsGridSizeChecked[2]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutTwoByOne}"/>
                 <MenuItem
                     Header="2x2"
-                    IsChecked="{Binding IsGridSizeChecked[2]}"
+                    IsChecked="{Binding IsGridSizeChecked[3]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutTwoByTwo}"/>
                 <MenuItem
                     Header="3x2"
-                    IsChecked="{Binding IsGridSizeChecked[3]}"
+                    IsChecked="{Binding IsGridSizeChecked[4]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutThreeByTwo}"/>
                 <MenuItem
                     Header="3x3"
-                    IsChecked="{Binding IsGridSizeChecked[4]}"
+                    IsChecked="{Binding IsGridSizeChecked[5]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutThreeByThree}"/>
             </MenuItem>
