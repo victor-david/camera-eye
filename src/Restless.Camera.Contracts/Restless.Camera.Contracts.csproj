@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Restless.Camera.Contracts</AssemblyName>
+    <RootNamespace>Restless.Camera.Contracts</RootNamespace>
+    <PackageId>Restless.Camera.Contracts</PackageId>
+    <Product>Restless.Camera.Contracts</Product>
+    <Description>Provides interface defs and helper base classes to implement a camera plugin</Description>
+    <Authors>Restless Animal Development</Authors>
+    <Company>Restless Animal Development</Company>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageTags>ipcam webcam foscam axis</PackageTags>
+    <PackageReleaseNotes>1.0.0 Initial release</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>

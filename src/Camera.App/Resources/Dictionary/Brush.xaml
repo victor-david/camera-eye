@@ -1,0 +1,36 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <LinearGradientBrush x:Key="AlternationBrushStandard" StartPoint="0.00,1.00" EndPoint="1.00,0.01">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FFD6D6D5" Offset="0.069"/>
+                <GradientStop Color="#FFF4F4FA" Offset="1.000"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0.00,0.00" EndPoint="1.00,1.00">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FF0060CE" Offset="0.000"/>
+                <GradientStop Color="#C000B6FF" Offset="1.000"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <!-- Solid Brushes -->
+    <SolidColorBrush x:Key="DefaultHeaderBrush" Color="DarkGray"/>
+    <SolidColorBrush x:Key="DefaultForegroundDarkBrush" Color="DarkBlue"/>
+    <SolidColorBrush x:Key="DefaultForegroundDisabledBrush" Color="LightGray"/>
+    <SolidColorBrush x:Key="DefaultForegroundAlertBrush" Color="Red"/>
+    <SolidColorBrush x:Key="AlternationBrushSecondary" Color="#FFDFDFDF" />
+
+    <!-- Defines the color used to highlight grid rows -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF79ABBB"/>
+
+    <!-- This enables the selected row to retain a highlight when the data grid loses focus. -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#9079ABBB"/>
+
+</ResourceDictionary>

@@ -1,0 +1,77 @@
+﻿<core:AppWindow 
+    x:Class="Restless.App.Camera.CameraConfigWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="clr-namespace:Restless.App.Camera.Core"
+    xmlns:con="clr-namespace:Restless.Tools.Controls;assembly=Restless.Tools.Controls"
+    mc:Ignorable="d"
+    Icon="{StaticResource ImageCamera}"
+    Title="{Binding DisplayName}" Height="450" Width="800">
+    <Grid core:Property.ColumnWidths="*,*" core:Property.RowHeights="*,Auto">
+
+        <!-- Camera list (left side) -->
+        <HeaderedContentControl Header="{Binding DisplayName}">
+            <DataGrid
+                x:Name="MyDataGrid"
+                ItemsSource="{Binding ListView}" 
+                SelectedItem="{Binding SelectedItem}" 
+                con:DataGridColumns.Columns="{Binding Columns}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding MenuItems}"/>
+                </DataGrid.ContextMenu>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="con:RestlessDataGrid.DoubleClickCommand" Value="{Binding ElementName=MyDataGrid, Path=DataContext.Commands[Open]}"/>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+        </HeaderedContentControl>
+        <Border 
+            Grid.Row="1"
+            Style="{StaticResource BorderError}"
+            core:Property.IsVisible="{Binding IsError}">
+            <TextBlock Text="{Binding ErrorText}"/>
+        </Border>
+
+        <!-- Camera detail (right side) -->
+        <HeaderedContentControl 
+            Grid.Column="1" Grid.RowSpan="2" Header="Detail"
+            core:Property.IsVisible="{Binding IsItemSelected}">
+            <StackPanel Margin="4" Style="{StaticResource StackPanelDataEntry}">
+                <TextBlock Text="Camera Name"/>
+                <TextBox Text="{Binding Camera.Name}"/>
+                <TextBlock Text="Description"/>
+                <TextBox Text="{Binding Camera.Description}"/>
+                <Grid 
+                    core:Property.RowHeights="Auto,*"
+                    core:Property.ColumnWidths="*,100">
+                    <TextBlock Text="Ip Address"/>
+                    <TextBlock Grid.Column="1" Text="Port"/>
+                    <TextBox Grid.Row="1" Text="{Binding Camera.IpAddress}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Port}"/>
+                </Grid>
+                <TextBlock Text="User"/>
+                <TextBox Text="{Binding Camera.UserId}"/>
+                <TextBlock Text="Password"/>
+                <TextBox Text="{Binding Camera.Password}"/>
+                <TextBlock Text="Notes"/>
+                <TextBox
+                    Height="150"
+                    VerticalContentAlignment="Top"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
+                    Text="{Binding Camera.Note}"/>
+
+                <TextBlock Text="Service Plugin"/>
+                <ComboBox
+                    ItemsSource="{Binding CameraPlugins}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Id"
+                    SelectedValue="{Binding Camera.PluginId,Mode=TwoWay}"/>
+
+            </StackPanel>
+        </HeaderedContentControl>
+    </Grid>
+</core:AppWindow>

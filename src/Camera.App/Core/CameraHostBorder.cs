@@ -1,0 +1,63 @@
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+namespace Restless.App.Camera.Core
+{
+    /// <summary>
+    /// Represents the border that hosts a <see cref="CameraControl"/>
+    /// </summary>
+    public class CameraHostBorder : Border
+    {
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CameraHostBorder"/> class.
+        /// </summary>
+        public CameraHostBorder()
+        {
+            AllowDrop = true;
+            Background = Brushes.Transparent;
+            BorderBrush = Brushes.DarkGray;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CameraHostBorder"/> class.
+        /// </summary>
+        /// <param name="gridRow">The grid row to place the border.</param>
+        /// <param name="gridCol">The grid column to place the border.</param>
+        public CameraHostBorder(int gridRow, int gridCol) : this()
+        {
+            Grid.SetRow(this, gridRow);
+            Grid.SetColumn(this, gridCol);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Properties
+        /// <summary>
+        /// Gets or sets the camera control associated with this host border.
+        /// </summary>
+        public CameraControl CameraControl
+        {
+            get => Child as CameraControl;
+            set => Child = value;
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Public methods
+        /// <summary>
+        /// Sets the activation state of the border.
+        /// </summary>
+        /// <param name="state">true to set activated state, false to set unactivated state.</param>
+        public void SetActivationState(bool state)
+        {
+            double thickness = state ? 1.0 : 0.0;
+            BorderThickness = new Thickness(thickness);
+            Margin = new Thickness(thickness);
+        }
+        #endregion
+    }
+}

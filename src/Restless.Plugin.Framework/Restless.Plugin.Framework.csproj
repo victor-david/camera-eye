@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Restless.Plugin.Framework</AssemblyName>
+    <RootNamespace>Restless.Plugin.Framework</RootNamespace>
+    <PackageId>Restless.Plugin.Framework</PackageId>
+    <Product>Restless.Plugin.Framework</Product>
+    <Description>Provides partial implemention and helper classes for camera plugins. A plugin may use this assembly if desired, or implement on its own.</Description>
+    <Authors>Restless Animal Development</Authors>
+    <Company>Restless Animal Development</Company>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageTags>ipcam webcam foscam amcrest</PackageTags>
+    <PackageReleaseNotes>1.0.0 Initial release</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RtspClientSharp" Version="1.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Restless.Camera.Contracts\Restless.Camera.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

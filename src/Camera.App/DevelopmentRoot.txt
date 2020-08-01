@@ -1,0 +1,15 @@
+﻿; This file enables you to specify a default application root used during development.
+; The application root is used to locate the database file. The sub-directory "db" is always appended
+; to obtain: <applicationRoot>\db<DatabaseFileName>
+;
+; During normal application execution, the directory from which the app is running is used
+; as the application root.This setting is only used when the path to the executable includes:
+;
+;   "bin\debug", "bin\release"
+;   "bin\x86\debug", "bin\x86\release"
+;   "bin\x64\debug", "bin\x64\release"
+;
+; This check occurs in the constructor of the ApplicationInfo class,
+; which looks at the executing assembly location and sets its RootFolder property.
+;
+DevelopmentRoot=D:\Utility\CameraEye

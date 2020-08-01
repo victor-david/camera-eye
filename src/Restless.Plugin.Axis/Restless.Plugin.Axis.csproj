@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Restless.Plugin.Axis</AssemblyName>
+    <RootNamespace>Restless.Plugin.Axis</RootNamespace>
+    <PackageId>Restless.Plugin.Axis</PackageId>
+    <Product>Restless.Plugin.Axis</Product>
+    <Description>Provides plugin services for Axis IP cameras</Description>
+    <Authors>Restless Animal Development</Authors>
+    <Company>Restless Animal Development</Company>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageTags>ipcam webcam axis</PackageTags>
+    <PackageReleaseNotes>1.0.0 Initial release</PackageReleaseNotes>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Restless.Camera.Contracts\Restless.Camera.Contracts.csproj" />
+    <ProjectReference Include="..\Restless.Plugin.Framework\Restless.Plugin.Framework.csproj" />
+  </ItemGroup>
+
+</Project>

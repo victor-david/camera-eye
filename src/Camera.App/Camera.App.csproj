@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Restless.App.Camera</RootNamespace>
+    <Authors>Restless Animal Development</Authors>
+    <Product>Foscam Vision</Product>
+    <Description>A Wpf app for viewing and controlling a Foscam IP camera</Description>
+    <ApplicationIcon>App.Icon.ico</ApplicationIcon>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <Copyright>Copyright © 2020</Copyright>
+    <Version>1.0.0</Version>
+    <AssemblyName>CameraEye</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Restless.Tools.Controls" Version="2.0.0" />
+    <PackageReference Include="Restless.Tools.Mvvm" Version="2.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+  </ItemGroup> 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Restless.Camera.Contracts\Restless.Camera.Contracts.csproj" />
+    <ProjectReference Include="..\Restless.App.Database\Restless.App.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Image\Add.48.png" />
+    <Resource Include="Resources\Image\Arrow.64.png" />
+    <Resource Include="Resources\Image\Camera.64.png" />
+    <Resource Include="Resources\Image\Chevron.Down.64.png" />
+    <Resource Include="Resources\Image\Chevron.Up.64.png" />
+    <Resource Include="Resources\Image\Database.64.png" />
+    <Resource Include="Resources\Image\X.Red.32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DevelopmentRoot.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call $(ProjectDir)PostBuild.cmd $(ProjectDir) $(TargetDir) $(PlatformName) $(ConfigurationName)" />
+  </Target>
+
+</Project>

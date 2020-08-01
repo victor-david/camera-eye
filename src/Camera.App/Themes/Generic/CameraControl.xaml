@@ -1,0 +1,354 @@
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:Restless.App.Camera.Core"
+    xmlns:cont="clr-namespace:Restless.Camera.Contracts;assembly=Restless.Camera.Contracts">
+
+    <cont:CameraMotion x:Key="CameraMotionStop">Stop</cont:CameraMotion>
+    <cont:CameraMotion x:Key="CameraMotionLeft">Left</cont:CameraMotion>
+    <cont:CameraMotion x:Key="CameraMotionRight">Right</cont:CameraMotion>
+    <cont:CameraMotion x:Key="CameraMotionUp">Up</cont:CameraMotion>
+    <cont:CameraMotion x:Key="CameraMotionDown">Down</cont:CameraMotion>
+    <cont:CameraMotion x:Key="CameraMotionCenter">Center</cont:CameraMotion>
+
+    <cont:Orientation x:Key="OrientationNormal">Normal</cont:Orientation>
+    <cont:Orientation x:Key="OrientationFlip">Flip</cont:Orientation>
+    <cont:Orientation x:Key="OrientationMirror">Mirror</cont:Orientation>
+    <cont:Orientation x:Key="OrientationFlipAndMirror">FlipAndMirror</cont:Orientation>
+
+    <VerticalAlignment x:Key="VerticalAlignmentTop">Top</VerticalAlignment>
+    <VerticalAlignment x:Key="VerticalAlignmentBottom">Bottom</VerticalAlignment>
+    <VerticalAlignment x:Key="VerticalAlignmentCenter">Center</VerticalAlignment>
+    
+    <Style TargetType="Path" x:Key="PathIcon">
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="Width" Value="18"/>
+        <Setter Property="Fill" Value="SteelBlue"/>
+        <Setter Property="Stretch" Value="Uniform"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+    </Style>
+
+    <Path x:Key="IconArrowLeft" Style="{StaticResource PathIcon}" x:Shared="False">
+        <Path.Data>F1M646.688,13.5518L646.783,13.4593 646.965,13.639 668.383,35.0583 689.459,35.0583 665.155,10.751 657.503,3.10126 657.323,2.92023 664.876,-4.63837 689.184,-28.9417 668.109,-28.9417 646.688,-7.52637 636.15,3.01398 646.688,13.5518z</Path.Data>
+    </Path>
+    
+    <Path x:Key="IconArrowRight" Style="{StaticResource PathIcon}" x:Shared="False">
+        <Path.Data>F1M568.254,-7.43524L568.159,-7.34277 567.977,-7.52246 546.559,-28.9417 525.484,-28.9417 549.787,-4.63446 557.439,3.01532 557.619,3.19629 550.067,10.7549 525.758,35.0583 546.834,35.0583 568.254,13.6429 578.792,3.10254 568.254,-7.43524z</Path.Data>
+    </Path>
+
+    <Path x:Key="IconArrowUp" Style="{StaticResource PathIcon}" x:Shared="False">
+        <Path.Data>F1M753.644,-13.0589L753.736,-12.9639 753.557,-12.7816 732.137,8.63641 732.137,29.7119 756.445,5.40851 764.094,-2.24384 764.275,-2.42352 771.834,5.1286 796.137,29.4372 796.137,8.36163 774.722,-13.0589 764.181,-23.5967 753.644,-13.0589z</Path.Data>
+    </Path>
+
+    <Path x:Key="IconArrowDown" Style="{StaticResource PathIcon}" x:Shared="False">
+        <Path.Data>F1M181.297,177.841L181.205,177.746 181.385,177.563 202.804,156.146 202.804,135.07 178.497,159.373 170.847,167.026 170.666,167.205 163.107,159.653 138.804,135.345 138.804,156.42 160.219,177.841 170.76,188.379 181.297,177.841z</Path.Data>
+    </Path>
+
+    <Path x:Key="IconFullScreen" Style="{StaticResource PathIcon}" Fill="White" x:Shared="False">
+        <Path.Data>M9.6560059,19.516005L12.484985,22.345999 6.414978,28.413002 10,32 0,32 0,21.999998 3.5849915,25.585007z M22.342987,19.512999L28.412994,25.585007 32,21.999998 32,32 22,32 25.584991,28.413002 19.513,22.345999z M22,0L32,0 32,10.000001 28.414978,6.4129991 22.342987,12.486002 19.513,9.6559991 25.584991,3.5849995z M0,0L10,0 6.414978,3.5849995 12.483978,9.6569986 9.6569824,12.485002 3.5849915,6.4129991 0,10.000001z</Path.Data>
+    </Path>
+
+    <Style TargetType="ButtonBase" x:Key="ControllerButton">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="DarkGray"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="3"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Width" Value="54"/>
+        <Setter Property="Height" Value="23"/>
+        <Setter Property="Margin" Value="3,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Border 
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="1"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#606060"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ButtonBase" x:Key="ControllerSquareButton" BasedOn="{StaticResource ControllerButton}">
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Width" Value="28"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="ControllerToggleButton" BasedOn="{StaticResource ControllerButton}">
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="#606060"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Border" x:Key="BorderStreamStatus">
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="Background" Value="#A0FFFFFF"/>
+        <Setter Property="Padding" Value="4,0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Style.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style TargetType="Border" x:Key="BorderStreamError">
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="Background" Value="#C0FF0000"/>
+        <Setter Property="BorderBrush" Value="#C0000000"/>
+        <Setter Property="BorderThickness" Value="0,1"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Padding" Value="4,0"/>
+        <Style.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="2,0"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <ControlTemplate TargetType="core:CameraControl" x:Key="CameraControlTemplate">
+        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+            
+            <!-- Main grid (pieces occupy the same space [overlays] -->
+            <Grid core:Property.ColumnWidths="*">
+                <!-- Feed -->
+                <Grid Grid.Column="1" VerticalAlignment="Center">
+
+                    <Image 
+                        x:Name="PART_Image"
+                        HorizontalAlignment="Center"
+                        Cursor="Hand"
+                        RenderTransformOrigin="0.5,0.5"
+                        MaxWidth="{TemplateBinding ImageMaxWidth}"
+                        MinWidth="{TemplateBinding ImageMinWidth}"
+                        Source="{TemplateBinding ImageSource}">
+                    </Image>
+
+                    <!-- Image status banner -->
+                    <Border
+                        x:Name="StatusBanner"
+                        Style="{StaticResource BorderStreamStatus}"
+                        Width="{TemplateBinding StatusWidth}"
+                        VerticalAlignment="{TemplateBinding StatusVerticalAlignment}">
+                            <Grid core:Property.ColumnWidths="Auto,*,*">
+
+                                <TextBlock Text="{TemplateBinding CameraName}"/>
+
+                                <TextBlock Grid.Column="1" Margin="6,0" Text="{TemplateBinding StatusTimeText}"/>
+
+                                <TextBlock Grid.Column="2" HorizontalAlignment="Right">
+                            <Run Text="Frames:"/>
+                            <Run Foreground="Red" Text="{Binding FrameCount,RelativeSource={RelativeSource AncestorType=core:CameraControl},Mode=OneWay}"/>
+                                </TextBlock>
+                            </Grid>
+                    </Border>
+                    <!-- Error banner -->
+                    <Border
+                        x:Name="PART_Error"
+                        Style="{StaticResource BorderStreamError}"
+                        Width="{TemplateBinding ErrorWidth}"
+                        Visibility="Collapsed">
+                            <TextBlock Text="{TemplateBinding ErrorText}"/>
+                        </Border>
+                </Grid>
+
+                <!-- Controls (display on mouse over control) -->
+                <Border 
+                    x:Name="PART_Controller"
+                    Height="0"
+                    Opacity="0.75"
+                    Cursor="Arrow"
+                    Background="{TemplateBinding ControlsBackground}" 
+                    VerticalAlignment="Bottom">
+
+                    <!-- Main grid for controls -->
+                    <Grid core:Property.ColumnWidths="Auto,Auto,Auto,*">
+
+                        <!-- Motion controls-->
+                        <Grid
+                            x:Name="MotionControl"
+                            Margin="8,2"
+                            HorizontalAlignment="Left"
+                            core:Property.ColumnWidths="Auto,Auto,Auto"
+                            core:Property.RowHeights="Auto,Auto,Auto">
+
+                            <!-- Left -->
+                            <core:ReleaseButton 
+                                Grid.Row="1"
+                                PressedDirection="Left"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionLeft}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                                Content="{StaticResource IconArrowLeft}"/>
+
+                            <!-- Right -->
+                            <core:ReleaseButton 
+                                Grid.Row="1" Grid.Column="2"
+                                PressedDirection="Right"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionRight}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                                Content="{StaticResource IconArrowRight}"/>
+
+                            <!-- Up -->
+                            <core:ReleaseButton
+                                Grid.Column="1"
+                                PressedDirection="Up"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionUp}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                            Content="{StaticResource IconArrowUp}"/>
+
+                            <!-- Down -->
+                            <core:ReleaseButton
+                                Grid.Row="2" Grid.Column="1"
+                                PressedDirection="Down"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionDown}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"                        
+                            Content="{StaticResource IconArrowDown}"/>
+
+                            <!-- Center -->
+                            <core:ReleaseButton
+                                Grid.Row="1" Grid.Column="1"
+                                PressedDirection="Up"
+                                Command="{TemplateBinding MotionCommand}"
+                                CommandParameter="{StaticResource CameraMotionCenter}">
+                                <Border Background="Gray" Height="18" Width="18" CornerRadius="9"/>
+                            </core:ReleaseButton>
+                        </Grid>
+
+                        <!-- Orientation -->
+                        <Grid 
+                            Grid.Column="1"
+                            core:Property.ColumnWidths="Auto,Auto"
+                            core:Property.RowHeights="Auto,Auto"
+                            Margin="12,9,12,0"
+                            VerticalAlignment="Top">
+
+                            <TextBlock Grid.ColumnSpan="2" Text="Orientation" Foreground="White" Margin="3"/>
+
+                            <ToggleButton
+                                Grid.Row="1"
+                                Style="{StaticResource ControllerToggleButton}"
+                                IsChecked="{Binding IsOrientationFlip, RelativeSource={RelativeSource AncestorType=core:CameraControl}, Mode=TwoWay}"
+                                Content="Flip"/>
+                            
+                            <ToggleButton
+                                Grid.Row="1" Grid.Column="1"
+                                Style="{StaticResource ControllerToggleButton}"
+                                IsChecked="{Binding IsOrientationMirror, RelativeSource={RelativeSource AncestorType=core:CameraControl}, Mode=TwoWay}"
+                                Content="Mirror"/>
+                        </Grid>
+                        
+                        <!-- Status banner -->
+                        <Grid
+                            Grid.Column="2"
+                            core:Property.ColumnWidths="Auto,Auto,Auto"
+                            core:Property.RowHeights="Auto,Auto"
+                            Margin="12,9,12,0"
+                            VerticalAlignment="Top">
+
+                            <TextBlock Grid.ColumnSpan="4" Text="Status" Foreground="White" Margin="3"/>
+
+                            <Button 
+                                Grid.Row="1" 
+                                Style="{StaticResource ControllerButton}"
+                                Command="{TemplateBinding StatusAlignmentCommand}"
+                                CommandParameter="{StaticResource VerticalAlignmentTop}"
+                                Content="Top"/>
+
+                            <Button 
+                                Grid.Row="1" Grid.Column="1"
+                                Style="{StaticResource ControllerButton}" 
+                                Command="{TemplateBinding StatusAlignmentCommand}"
+                                CommandParameter="{StaticResource VerticalAlignmentBottom}"
+                                Content="Bottom"/>
+
+                            <Button
+                                Grid.Row="1" Grid.Column="2"
+                                Style="{StaticResource ControllerButton}"
+                                Command="{TemplateBinding StatusAlignmentCommand}"
+                                CommandParameter="{StaticResource VerticalAlignmentCenter}"                                
+                                Content="Off"/>
+                        </Grid>
+                        
+                        <!-- TODO: Full screen -->
+                        <!--<Button
+                            Grid.Column="3"
+                            Style="{StaticResource ControllerSquareButton}"
+                            Margin="4,0,20,0"
+                            HorizontalAlignment="Right"
+                            Command="{TemplateBinding FullScreenCommand}"
+                            Content="{StaticResource IconFullScreen}"/>-->
+                        
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="HavePlugin" Value="False">
+                <Setter TargetName="MotionControl" Property="IsEnabled" Value="False"/>
+                <Setter TargetName="MotionControl" Property="Opacity" Value="0.25"/>
+                <Setter TargetName="PART_Controller" Property="IsEnabled" Value="False"/>
+            </Trigger>
+            <Trigger Property="IsPluginMotion" Value="False">
+                <Setter TargetName="MotionControl" Property="Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="StatusVerticalAlignment" Value="Center">
+                <Setter TargetName="StatusBanner" Property="Visibility" Value="Collapsed"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="core:CameraControl">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ControlsBackground" Value="Black"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="Cursor" Value="Arrow"/>
+        <Setter Property="Template" Value="{StaticResource CameraControlTemplate}"/>
+    </Style>
+    
+</ResourceDictionary>

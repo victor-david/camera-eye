@@ -1,0 +1,9 @@
+*.suo
+*.dll
+*.exe
+.doc/
+.vs/
+bin/
+help/
+obj/
+install.cmd
