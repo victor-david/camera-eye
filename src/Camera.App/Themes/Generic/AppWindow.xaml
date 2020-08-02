@@ -58,13 +58,6 @@
         </Style.Resources>
     </Style>
 
-    <!--<SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}" Color="Black"/>
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="Red"/>
-    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="Red"/>-->
-    <!--<SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightColorKey}" Color="Black"/>-->
-
-    <!--  IsOpen=""-->
-
     <ControlTemplate x:Key="MenuItemControlTemplate" TargetType="MenuItem">
         <Border Background="{TemplateBinding Background}" Height="{TemplateBinding Height}">
             <Grid>
@@ -154,24 +147,10 @@
                             </MultiTrigger>
                         </Style.Triggers>
                     </Style>
-
-                    <Style TargetType="Separator">
-                        <Setter Property="Height" Value="1" />
-                        <Setter Property="Margin" Value="0,4,0,4" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Separator">
-                                    <Border BorderThickness="1" BorderBrush="Blue"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
                 </Style.Resources>
             </Style>
         </Style.Resources>
     </Style>
-
-
 
     <Style TargetType="Image" x:Key="ImageTitleBar">
         <Setter Property="Margin" Value="2,0,3,0"/>
