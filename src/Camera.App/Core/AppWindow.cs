@@ -23,6 +23,8 @@ namespace Restless.App.Camera.Core
             /* see comments in this method */
             SystemParameters.StaticPropertyChanged += SystemParametersStaticPropertyChanged;
             Loaded += (s, e) => OnLoaded(s, e);
+            UseLayoutRounding = true;
+            RenderOptions.SetEdgeMode(this, EdgeMode.Aliased);
         }
 
         static AppWindow()
@@ -66,7 +68,59 @@ namespace Restless.App.Camera.Core
         /// </summary>
         public static readonly DependencyProperty TitleBarBackgroundProperty = DependencyProperty.Register
             (
-                nameof(TitleBarBackground), typeof(Brush), typeof(AppWindow), new PropertyMetadata(Brushes.LightSteelBlue)
+                nameof(TitleBarBackground), typeof(Brush), typeof(AppWindow), new PropertyMetadata(Brushes.Black)
+            );
+
+
+        /// <summary>
+        /// Gets or sets the brush used for the foreground of the title bar
+        /// </summary>
+        public Brush TitleBarForeground
+        {
+            get => (Brush)GetValue(TitleBarForegroundProperty);
+            set => SetValue(TitleBarForegroundProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="TitleBarForeground"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty TitleBarForegroundProperty = DependencyProperty.Register
+            (
+                nameof(TitleBarForeground), typeof(Brush), typeof(AppWindow), new PropertyMetadata(Brushes.White)
+            );
+
+        /// <summary>
+        /// Gets or sets the brush used for the buttons in the title bar.
+        /// </summary>
+        public Brush TitleBarButtonBrush
+        {
+            get => (Brush)GetValue(TitleBarButtonBrushProperty);
+            set => SetValue(TitleBarButtonBrushProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="TitleBarButtonBrush"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty TitleBarButtonBrushProperty = DependencyProperty.Register
+            (
+                nameof(TitleBarButtonBrush), typeof(Brush), typeof(AppWindow), new PropertyMetadata(Brushes.White)
+            );
+
+        /// <summary>
+        /// Gets or sets the brush used for the bottom border of the title bar.
+        /// </summary>
+        public Brush TitleBarBorderBrush
+        {
+            get => (Brush)GetValue(TitleBarBorderBrushProperty);
+            set => SetValue(TitleBarBorderBrushProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="TitleBarBorderBrush"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty TitleBarBorderBrushProperty = DependencyProperty.Register
+            (
+                nameof(TitleBarBorderBrush), typeof(Brush), typeof(AppWindow), new PropertyMetadata(Brushes.Black)
             );
         #endregion
 

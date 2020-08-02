@@ -6,27 +6,26 @@
     <Style TargetType="Button" x:Key="ButtonTitleBar">
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Margin" Value="0"/>    
-        <Setter Property="Width" Value="32"/>
-        <Setter Property="Height" Value="32"/>
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Foreground" Value="{Binding TitleBarButtonBrush, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsTabStop" Value="False"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border 
-                        Width="{TemplateBinding Width}"
-                        Height="{TemplateBinding Height}"
+                        Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Padding="{TemplateBinding Padding}"
-                        CornerRadius="2"
                         BorderThickness="{TemplateBinding BorderThickness}">
+                        
                         <ContentPresenter
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -41,8 +40,8 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="LightSteelBlue"/>
-                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="Background" Value="#FF888888"/>
+                <Setter Property="Foreground" Value="White"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="CornflowerBlue"/>
@@ -51,24 +50,128 @@
 
         <Style.Resources>
             <Style TargetType="Path">
-                <Setter Property="Width" Value="32"/>
-                <Setter Property="Height" Value="32"/>
-                <Setter Property="Stroke" Value="Black"/>
+                <Setter Property="Width" Value="10"/>
+                <Setter Property="Height" Value="10"/>
                 <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
             </Style>
         </Style.Resources>
     </Style>
-    
+
+    <!--<SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}" Color="Black"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="Red"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="Red"/>-->
+    <!--<SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightColorKey}" Color="Black"/>-->
+
+    <!--  IsOpen=""-->
+
+    <ControlTemplate x:Key="MenuItemControlTemplate" TargetType="MenuItem">
+        <Border Background="{TemplateBinding Background}" Height="{TemplateBinding Height}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="Column0" Width="18"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Border 
+                    x:Name="BorderCheck"
+                    Height="10" Width="10"
+                    CornerRadius="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Background="Firebrick"
+                    Visibility="Collapsed"/>
+
+                <ContentPresenter
+                    Grid.Column="1"
+                    Margin="{TemplateBinding Padding}"
+                    VerticalAlignment="Center"
+                    ContentSource="Header"
+                    RecognizesAccessKey="True"/>
+
+                <Popup
+                    x:Name="Popup"
+                    Grid.Column="1"
+                    Placement="Bottom"
+                    IsOpen="{TemplateBinding IsSubmenuOpen}"
+                    AllowsTransparency="True"
+                    Focusable="False"
+                    PopupAnimation="None">
+
+                    <Border BorderBrush="Gray" BorderThickness="1" Background="#fff0f0f0" Opacity="0.90">
+                        <StackPanel IsItemsHost="True"/>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Role" Value="TopLevelHeader">
+                <Setter TargetName="Column0" Property="Width" Value="0"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="BorderCheck" Property="Visibility" Value="Visible"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <Style TargetType="Border" x:Key="BorderMenu">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Style.Resources>
             <Style TargetType="Menu">
                 <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Foreground" Value="{Binding TitleBarForeground, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
+
+                <Style.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Height" Value="28"/>
+                        <Setter Property="Padding" Value="6,2"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Template" Value="{StaticResource MenuItemControlTemplate}"/>
+                        <Style.Triggers>
+                            <Trigger Property="Role" Value="SubmenuItem">
+                                <Setter Property="Foreground" Value="#F0000000"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Role" Value="TopLevelHeader"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Role" Value="SubmenuItem"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" Value="LightBlue"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                            </MultiTrigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style TargetType="Separator">
+                        <Setter Property="Height" Value="1" />
+                        <Setter Property="Margin" Value="0,4,0,4" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Separator">
+                                    <Border BorderThickness="1" BorderBrush="Blue"/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Style.Resources>
             </Style>
         </Style.Resources>
     </Style>
+
+
 
     <Style TargetType="Image" x:Key="ImageTitleBar">
         <Setter Property="Margin" Value="2,0,3,0"/>
@@ -79,11 +182,11 @@
         <Setter Property="Margin" Value="4,0"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="FontSize" Value="11.5"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{Binding TitleBarForeground, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
-                <Setter Property="Foreground" Value="WhiteSmoke"/>
+                <Setter Property="Opacity" Value="0.5"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -95,9 +198,12 @@
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}"
             Background="Transparent">
-            <Grid core:Property.RowHeights="32,*">
+            <Grid core:Property.RowHeights="28,*">
                 <!-- Title bar -->
-                <Border Background="{TemplateBinding TitleBarBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,0,0,1">
+                <Border 
+                    Background="{TemplateBinding TitleBarBackground}" 
+                    BorderBrush="{TemplateBinding TitleBarBorderBrush}"
+                    BorderThickness="0,0,0,1">
 
                     <Grid core:Property.ColumnWidths="Auto,Auto,*,Auto,Auto,Auto,Auto">
 
@@ -113,24 +219,24 @@
                             Text="{TemplateBinding Title}"/>
 
 
-                        <!-- Minimize -->
+                        <!-- Minimize  Orig: M 11,16 h 10-->
                         <Button Grid.Column="3" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding MinimizeCommand}">
-                            <Path  Data="M 11,16 h 10"/>
+                            <Path Data="M 0,5 10,5"/>
                         </Button>
 
-                        <!-- Maximize -->
+                        <!-- Maximize Orig: M 10.5,10.5 h 10 v 10 h-10 Z-->
                         <Button Name="ButtonMaximize" Grid.Column="4" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
-                            <Path Data="M 10.5,10.5 h 10 v 10 h-10 Z"/>
+                            <Path Data="M 0,0 0,10 10,10 10,0 Z"/>
                         </Button>
 
-                        <!-- Restore -->
+                        <!-- Restore Orig: M 9.5,12.5 h 8 v 8 h -8 Z M 13.5,12.5 v -3.0 h 8 v 8 h-3.5-->
                         <Button Name="ButtonRestore" Grid.Column="5" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
-                            <Path Data="M 9.5,12.5 h 8 v 8 h -8 Z M 13.5,12.5 v -3.0 h 8 v 8 h-3.5"/>
+                            <Path Data="m 2,1e-5 0,2 -2,0 0,8 8,0 0,-2 2,0 0,-8 z m 1,1 6,0 0,6 -1,0 0,-5 -5,0 z m -2,2 6,0 0,6 -6,0 z"/>
                         </Button>
 
-                        <!-- Close -->
+                        <!-- Close Orig: M 11,11 21,21 M 21,11 11,21-->
                         <Button Grid.Column="6" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding CloseCommand}">
-                            <Path Stroke="Red" Data="M 11,11 21,21 M 21,11 11,21"/>
+                            <Path Data="M 0,0 10,10 M 0,10 10,0"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -153,15 +259,18 @@
     </ControlTemplate>
 
     <Style TargetType="core:AppWindow">
-        <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="DarkGray"/>
-        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="BorderBrush" Value="#ff1f3c76"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="TitleBarBackground" Value="#ff24292e"/>
+        <Setter Property="TitleBarForeground" Value="White"/>
+        <Setter Property="TitleBarButtonBrush" Value="#ffa0a0a0"/>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome CaptionHeight="32" CornerRadius="0" GlassFrameThickness="0"/>
+                <WindowChrome 
+                    CaptionHeight="28"
+                    CornerRadius="0"
+                    ResizeBorderThickness="8"/>
             </Setter.Value>
         </Setter>
         <Setter Property="Template" Value="{StaticResource AppWindowTemplate}"/>

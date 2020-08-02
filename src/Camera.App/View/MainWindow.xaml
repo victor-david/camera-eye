@@ -20,7 +20,7 @@
         <Menu>
             <MenuItem Header="File">
                 <MenuItem
-                    Header="Exit"
+                    Header="Exit application"
                     Icon="{StaticResource ImageRedXMenu}"
                     Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
             </MenuItem>
