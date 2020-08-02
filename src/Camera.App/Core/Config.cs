@@ -139,5 +139,26 @@ namespace Restless.App.Camera.Core
             set => SetItem((int)value);
         }
         #endregion
+
+        /************************************************************************/
+
+        #region Cameras
+        /// <summary>
+        /// Gets or sets whether the camera list is visible.
+        /// </summary>
+        public bool IsCameraListVisible
+        {
+            get => GetItem(false);
+            set => SetItem(value);
+        }
+        /// <summary>
+        /// Gets or sets the camera wall grid layout.
+        /// </summary>
+        public WallGridLayout GridLayout
+        {
+            get => (WallGridLayout)GetItem((int)WallGridLayout.TwoByTwo);
+            set => SetItem((int)value);
+        }
+        #endregion
     }
 }

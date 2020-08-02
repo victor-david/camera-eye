@@ -10,8 +10,6 @@ namespace Restless.App.Camera
     public class MainWindowViewModel : WindowViewModel
     {
         #region Private
-        private WallGridLayout gridLayout;
-        private bool isCameraListVisible;
         private Dictionary<WallGridLayout, int> gridLayoutMap;
         #endregion
 
@@ -23,8 +21,26 @@ namespace Restless.App.Camera
         /// </summary>
         public WallGridLayout GridLayout
         {
-            get => gridLayout;
-            private set => SetProperty(ref gridLayout, value);
+            get => Config.GridLayout;
+            private set
+            {
+                Config.GridLayout = value;
+                UpdateGridLayoutChecked(value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value that determines is the camera list is visible.
+        /// </summary>
+        public bool IsCameraListVisible
+        {
+            get => Config.IsCameraListVisible;
+            private set
+            {
+                Config.IsCameraListVisible = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -36,15 +52,9 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
-        /// Gets a value that determines is the camera list is visible.
+        /// Gets an array of boolean values that determine which grid layout menu item is checked.
         /// </summary>
-        public bool IsCameraListVisible
-        {
-            get => isCameraListVisible;
-            private set => SetProperty(ref isCameraListVisible, value);
-        }
-
-        public bool[] IsGridSizeChecked
+        public bool[] IsGridLayoutChecked
         {
             get;
         }
@@ -56,14 +66,14 @@ namespace Restless.App.Camera
         public MainWindowViewModel()
         {
             DisplayName = "Camera Eye";
-            Commands.Add("ChangeGridLayout", RelayCommand.Create(RunChangeGridSizeCommand));
+            Commands.Add("ChangeGridLayout", RelayCommand.Create((p) => GridLayout = (WallGridLayout)p));
             Commands.Add("OpenCameraList", RelayCommand.Create((p) => IsCameraListVisible = !IsCameraListVisible));
             Commands.Add("OpenCameraConfig", RelayCommand.Create(RunOpenCameraConfigWindowCommand));
             Commands.Add("OpenAppSettings", RelayCommand.Create(RunOpenAppSettingsCommand));
 
             CameraList = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
 
-            IsGridSizeChecked = new bool[] { false, false, false, false, false, false };
+            IsGridLayoutChecked = new bool[] { false, false, false, false, false, false };
 
             /* grid layout => index into IsGridSizeChecked */
             gridLayoutMap = new Dictionary<WallGridLayout, int>()
@@ -76,7 +86,7 @@ namespace Restless.App.Camera
                 { WallGridLayout.ThreeByThree, 5 }
             };
 
-            RunChangeGridSizeCommand(WallGridLayout.TwoByTwo);
+            UpdateGridLayoutChecked(Config.GridLayout);
         }
         #endregion
 
@@ -108,16 +118,15 @@ namespace Restless.App.Camera
 
         #region Private methods
 
-        private void RunChangeGridSizeCommand(object parm)
+        private void UpdateGridLayoutChecked(WallGridLayout layout)
         {
-            if (parm is WallGridLayout layout && gridLayoutMap.ContainsKey(layout))
+            if (gridLayoutMap.ContainsKey(layout))
             {
-                GridLayout = layout;
-                for (int idx = 0; idx < IsGridSizeChecked.Length; idx++)
+                for (int idx = 0; idx < IsGridLayoutChecked.Length; idx++)
                 {
-                    IsGridSizeChecked[idx] = idx == gridLayoutMap[layout];
+                    IsGridLayoutChecked[idx] = idx == gridLayoutMap[layout];
                 }
-                OnPropertyChanged(nameof(IsGridSizeChecked));
+                OnPropertyChanged(nameof(IsGridLayoutChecked));
             }
         }
 

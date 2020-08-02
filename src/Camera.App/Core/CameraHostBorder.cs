@@ -49,6 +49,32 @@ namespace Restless.App.Camera.Core
 
         #region Public methods
         /// <summary>
+        /// Saves the camera location (if hosted) to the specified row and column.
+        /// </summary>
+        /// <param name="row">The row</param>
+        /// <param name="col">The column</param>
+        public void MoveCameraLocation(int row, int col)
+        {
+            if (CameraControl != null)
+            {
+                CameraControl.Camera.WallRow = row;
+                CameraControl.Camera.WallColumn = col;
+            }
+        }
+
+        /// <summary>
+        /// Prepares this host border for removal by stopping the camera video
+        /// if a camera control has been assigned.
+        /// </summary>
+        public void PrepareForRemoval()
+        {
+            if (CameraControl != null)
+            {
+                CameraControl.IsVideoRunning = false;
+            }
+        }
+
+        /// <summary>
         /// Sets the activation state of the border.
         /// </summary>
         /// <param name="state">true to set activated state, false to set unactivated state.</param>

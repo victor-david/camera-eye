@@ -131,45 +131,40 @@ namespace Restless.App.Camera.Core
                 ColumnDefinitions.Add(new ColumnDefinition());
             }
 
+            while (Children.Count < TotalSlots)
+            {
+                Children.Add(new CameraHostBorder());
+            }
+
+            while (Children.Count > TotalSlots)
+            {
+                int idx = Children.Count - 1;
+                (Children[idx] as CameraHostBorder)?.PrepareForRemoval();
+                Children.RemoveAt(idx);
+            }
+
+            int childIndex = 0;
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
                 {
-                    if (GetCameraHost(row, col) == null)
-                    {
-                        Children.Add(new CameraHostBorder(row, col));
-                    }
+                    SetRow(Children[childIndex], row);
+                    SetColumn(Children[childIndex], col);
+                    (Children[childIndex] as CameraHostBorder)?.MoveCameraLocation(row, col);
+                    childIndex++;
                 }
             }
-
-            CleanExtraSlots();
             ChangeVisualForDropActivationState(IsActivatedForDrop);
-        }
-
-        private void CleanExtraSlots()
-        {
-            while (Children.Count > TotalSlots)
-            {
-                int idx = Children.Count - 1;
-                if (Children[idx] is CameraHostBorder host)
-                {
-                    if (host.CameraControl != null)
-                    {
-                        host.CameraControl.IsVideoRunning = false;
-                    }
-                }
-                Children.RemoveAt(idx);
-            }
         }
 
         private void CameraWallControlLoaded(object sender, RoutedEventArgs e)
         {
             foreach (CameraRow camera in DatabaseController.Instance.GetTable<CameraTable>().EnumerateFlaggedForWall())
             {
-                //if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
-                //{
-                //    AddCameraToWall(host, camera);
-                //}
+                if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
+                {
+                    AddCameraToWall(host, camera);
+                }
             }
             Loaded -= CameraWallControlLoaded;
         }
