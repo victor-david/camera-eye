@@ -10,7 +10,6 @@ namespace Restless.App.Camera.Core
     public class Config : Tools.Database.SQLite.KeyValueTableBase
     {
         #region Private
-        private static Config instance;
         #endregion
 
         /************************************************************************/
@@ -39,12 +38,12 @@ namespace Restless.App.Camera.Core
                 /// <summary>
                 /// Gets the minimum width for the main window.
                 /// </summary>
-                public const int MinWidth = 980;
+                public const int MinWidth = 343;
 
                 /// <summary>
                 /// Gets the minimum height for the main window.
                 /// </summary>
-                public const int MinHeight = 590;
+                public const int MinHeight = 418;
             }
 
             /// <summary>
@@ -87,7 +86,6 @@ namespace Restless.App.Camera.Core
             }
         }
         #endregion
-
 
         /************************************************************************/
 
