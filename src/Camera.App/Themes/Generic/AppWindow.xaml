@@ -7,7 +7,7 @@
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Margin" Value="0"/>    
         <Setter Property="Width" Value="44"/>
-        <Setter Property="Height" Value="28"/>
+        <Setter Property="Height" Value="29"/>
         <Setter Property="Foreground" Value="{Binding TitleBarButtonBrush, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -178,7 +178,7 @@
             BorderBrush="{TemplateBinding BorderBrush}"
             BorderThickness="{TemplateBinding BorderThickness}"
             Background="Transparent">
-            <Grid core:Property.RowHeights="28,*">
+            <Grid core:Property.RowHeights="29,*">
                 <!-- Title bar -->
                 <Border 
                     Background="{TemplateBinding TitleBarBackground}" 
@@ -187,7 +187,7 @@
 
                     <Grid core:Property.ColumnWidths="Auto,Auto,*,Auto,Auto,Auto,Auto">
 
-                        <Image Style="{StaticResource ImageTitleBar}" Source="{TemplateBinding Icon}"/>
+                        <Image Style="{StaticResource ImageTitleBar}" Source="{TemplateBinding Icon}" Margin="5,0"/>
 
                         <Border Grid.Column="1" Style="{StaticResource BorderMenu}">
                             <ContentPresenter Content="{TemplateBinding Menu}"/>
@@ -206,17 +206,17 @@
 
                         <!-- Maximize Orig: M 10.5,10.5 h 10 v 10 h-10 Z-->
                         <Button Name="ButtonMaximize" Grid.Column="4" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
-                            <Path Data="M 0,0 0,10 10,10 10,0 Z"/>
+                            <Path Data="M 0,0 0,9 9,9 9,0 Z"/>
                         </Button>
 
                         <!-- Restore Orig: M 9.5,12.5 h 8 v 8 h -8 Z M 13.5,12.5 v -3.0 h 8 v 8 h-3.5-->
                         <Button Name="ButtonRestore" Grid.Column="5" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
-                            <Path Data="m 2,1e-5 0,2 -2,0 0,8 8,0 0,-2 2,0 0,-8 z m 1,1 6,0 0,6 -1,0 0,-5 -5,0 z m -2,2 6,0 0,6 -6,0 z"/>
+                            <Path Data="M 0,2 7,2 7,9 0,9 Z M 2,2 2,0 9,0 9,7 7,7"/>
                         </Button>
 
                         <!-- Close Orig: M 11,11 21,21 M 21,11 11,21-->
                         <Button Grid.Column="6" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding CloseCommand}">
-                            <Path Data="M 0,0 10,10 M 0,10 10,0"/>
+                            <Path Data="M 0,0 9,9 M 0,9 9,0"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -247,10 +247,10 @@
         <Setter Property="TitleBarButtonBrush" Value="#ffa0a0a0"/>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
-                <WindowChrome 
-                    CaptionHeight="28"
+                <WindowChrome
+                    CaptionHeight="25"
                     CornerRadius="0"
-                    ResizeBorderThickness="8"/>
+                    ResizeBorderThickness="4"/>
             </Setter.Value>
         </Setter>
         <Setter Property="Template" Value="{StaticResource AppWindowTemplate}"/>
