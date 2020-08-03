@@ -79,7 +79,8 @@ namespace Restless.Plugin.Framework
                 var credentials = new NetworkCredential(Parms.UserId, Parms.Password);
                 var connectionParms = new RtspClientSharp.ConnectionParameters(serverUri, credentials)
                 {
-                    RtpTransport = RtpTransportProtocol.TCP
+                    RtpTransport = RtpTransportProtocol.TCP,
+                    ConnectTimeout = TimeSpan.FromSeconds(10),
                 };
 
                 using (var rtspClient = new RtspClient(connectionParms))
