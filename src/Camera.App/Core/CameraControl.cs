@@ -36,8 +36,9 @@ namespace Restless.App.Camera.Core
         private double imageScaledWidth;
         private bool isMouseDown;
         private bool isCameraMotionStarted;
-        private System.Windows.Point mouseDownPoint;
+        private Point mouseDownPoint;
         private const int CameraMotionMovementThreshold = 10;
+        private string pendingError;
         private WriteableBitmap writeable;
         private Int32Rect dirtyRect;
         private Storyboard ShowController; 
@@ -488,6 +489,10 @@ namespace Restless.App.Camera.Core
                         control.HideErrorControl.Begin();
                     }
                 }
+                else
+                {
+                    control.pendingError = control.ErrorText;
+                }
             }
         }
 
@@ -596,6 +601,19 @@ namespace Restless.App.Camera.Core
             }
 
             InitializeIsMouseCameraMotionAvailable();
+            /*
+             * A camera can attempt to initialize before OnAppyTemplate(), which gets
+             * the error control from the template. If an error occurs during camera
+             * initialization (no plugin, etc.) and the error control is not ready
+             * at the time the error message is set, we save the pending error until
+             * it can be displayed here. 
+             */ 
+            if (!string.IsNullOrEmpty(pendingError))
+            {
+                ErrorText = null;
+                ErrorText = pendingError;
+                pendingError = null;
+            }
         }
         #endregion
 
