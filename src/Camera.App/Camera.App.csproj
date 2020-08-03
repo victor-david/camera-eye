@@ -8,14 +8,12 @@
     <Authors>Restless Animal Development</Authors>
     <Product>Foscam Vision</Product>
     <Description>A Wpf app for viewing and controlling IP cameras</Description>
+    <ApplicationIcon>App.ico</ApplicationIcon>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2020</Copyright>
     <Version>1.0.0</Version>
     <AssemblyName>CameraEye</AssemblyName>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
@@ -41,6 +39,7 @@
     <Resource Include="Resources\Image\Chevron.Down.64.png" />
     <Resource Include="Resources\Image\Chevron.Up.64.png" />
     <Resource Include="Resources\Image\Database.64.png" />
+    <Resource Include="Resources\Image\Lens.36.png" />
     <Resource Include="Resources\Image\X.Red.32.png" />
   </ItemGroup>
 
