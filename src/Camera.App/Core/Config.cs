@@ -136,6 +136,15 @@ namespace Restless.App.Camera.Core
             get => (WindowState)GetItem((int)WindowState.Normal);
             set => SetItem((int)value);
         }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the window is topmost.
+        /// </summary>
+        public bool MainWindowTopmost
+        {
+            get => GetItem(false);
+            set => SetItem(value);
+        }
         #endregion
 
         /************************************************************************/

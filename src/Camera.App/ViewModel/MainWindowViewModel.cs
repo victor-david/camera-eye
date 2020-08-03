@@ -58,6 +58,19 @@ namespace Restless.App.Camera
         {
             get;
         }
+
+        /// <summary>
+        /// Gets a boolean value that determines if the window is topmost.
+        /// </summary>
+        public bool IsTopmost
+        {
+            get => Config.MainWindowTopmost;
+            private set
+            {
+                Config.MainWindowTopmost = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
 
         /************************************************************************/
@@ -70,6 +83,7 @@ namespace Restless.App.Camera
             Commands.Add("OpenCameraList", RelayCommand.Create((p) => IsCameraListVisible = !IsCameraListVisible));
             Commands.Add("OpenCameraConfig", RelayCommand.Create(RunOpenCameraConfigWindowCommand));
             Commands.Add("OpenAppSettings", RelayCommand.Create(RunOpenAppSettingsCommand));
+            Commands.Add("ToggleTopmost", RelayCommand.Create((p) => IsTopmost = !IsTopmost));
 
             CameraList = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
 

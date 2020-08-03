@@ -7,7 +7,9 @@
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
     mc:Ignorable="d"
     Icon="{StaticResource ImageApp}"
-    Title="{Binding DisplayName, Mode=OneTime}" Width="300" Height="150">
+    Title="{Binding DisplayName, Mode=OneTime}"
+    Topmost="{Binding IsTopmost, Mode=OneWay}"
+    Width="300" Height="150">
     <core:AppWindow.Resources>
         <core:WallGridLayout x:Key="LayoutOneByOne">OneByOne</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutOneByTwo">OneByTwo</core:WallGridLayout>
@@ -29,6 +31,7 @@
                     Header="Camera list"
                     IsChecked="{Binding IsCameraListVisible,Mode=OneWay}"
                     Command="{Binding Commands[OpenCameraList]}"/>
+                
                 <Separator/>
 
                 <MenuItem
@@ -37,6 +40,14 @@
                 <MenuItem
                     Header="Application settings"
                     Command="{Binding Commands[OpenAppSettings]}"/>
+                
+                <Separator/>
+
+                <MenuItem
+                    Header="Always on top"
+                    IsChecked="{Binding IsTopmost,Mode=OneWay}"
+                    Command="{Binding Commands[ToggleTopmost]}"/>
+
             </MenuItem>
             <MenuItem Header="Grid">
                 <MenuItem 
