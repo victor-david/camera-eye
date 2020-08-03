@@ -7,8 +7,7 @@
     <RootNamespace>Restless.App.Camera</RootNamespace>
     <Authors>Restless Animal Development</Authors>
     <Product>Foscam Vision</Product>
-    <Description>A Wpf app for viewing and controlling a Foscam IP camera</Description>
-    <ApplicationIcon>App.Icon.ico</ApplicationIcon>
+    <Description>A Wpf app for viewing and controlling IP cameras</Description>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2020</Copyright>

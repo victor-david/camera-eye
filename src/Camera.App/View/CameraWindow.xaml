@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
     mc:Ignorable="d"
-    Icon="{StaticResource ImageCamera}"
+    Icon="{StaticResource ImageApp}"
     Topmost="{Binding IsTopmost}"
     Width="800" Height="450"
     Title="{Binding DisplayName}">

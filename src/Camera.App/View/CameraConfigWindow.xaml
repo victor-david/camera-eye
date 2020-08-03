@@ -7,7 +7,7 @@
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
     xmlns:con="clr-namespace:Restless.Tools.Controls;assembly=Restless.Tools.Controls"
     mc:Ignorable="d"
-    Icon="{StaticResource ImageCamera}"
+    Icon="{StaticResource ImageApp}"
     Title="{Binding DisplayName}" Height="450" Width="800">
     <Grid core:Property.ColumnWidths="*,*" core:Property.RowHeights="*,Auto">
 
