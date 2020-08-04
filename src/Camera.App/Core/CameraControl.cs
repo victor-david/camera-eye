@@ -31,7 +31,7 @@ namespace Restless.App.Camera.Core
         private Controls.Border errorControl;
         private Controls.Border controllerControl;
 
-        private const double ControllerHeight = 82.0;
+        private const double ControllerHeight = 75.0;
         private const double ControllerHeightCushion = 10.0;
         private double imageScaledWidth;
         private bool isMouseDown;

@@ -60,7 +60,7 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             Padding="{TemplateBinding PressedPadding}"
-            CornerRadius="2"
+            CornerRadius="1"
             BorderThickness="{TemplateBinding BorderThickness}">
             <ContentPresenter
                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
