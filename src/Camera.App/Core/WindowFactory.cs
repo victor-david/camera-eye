@@ -23,14 +23,10 @@ namespace Restless.App.Camera.Core
             {
                 var window = new MainWindow()
                 {
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Width = Config.Instance.MainWindowWidth,
-                    Height = Config.Instance.MainWindowHeight,
-                    WindowState = Config.Instance.MainWindowState,
-                    MinWidth = Config.Default.MainWindow.MinWidth,
-                    MinHeight = Config.Default.MainWindow.MinHeight,
                     DataContext = viewModel ?? new MainWindowViewModel()
                 };
+
+                Config.Instance.RestoreMainWindow(window);
 
                 (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
                 TextOptions.SetTextFormattingMode(window);

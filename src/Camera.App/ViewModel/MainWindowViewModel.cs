@@ -113,18 +113,7 @@ namespace Restless.App.Camera
         protected override void OnClosing()
         {
             base.OnClosing();
-            if (WindowOwner != null)
-            {
-                if (WindowOwner.WindowState != WindowState.Maximized)
-                {
-                    Config.MainWindowWidth = (int)WindowOwner.Width;
-                    Config.MainWindowHeight = (int)WindowOwner.Height;
-                }
-                if (WindowOwner.WindowState != WindowState.Minimized)
-                {
-                    Config.MainWindowState = WindowOwner.WindowState;
-                }
-            }
+            Config.SaveMainWindow(WindowOwner);
         }
         #endregion
 

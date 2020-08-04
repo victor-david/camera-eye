@@ -138,12 +138,76 @@ namespace Restless.App.Camera.Core
         }
 
         /// <summary>
+        /// Gets or sets the left cooridinate of the main window.
+        /// </summary>
+        public int MainWindowLeft
+        {
+            get => GetItem(int.MaxValue);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the top cooridinate of the main window.
+        /// </summary>
+        public int MainWindowTop
+        {
+            get => GetItem(int.MaxValue);
+            set => SetItem(value);
+        }
+
+        /// <summary>
         /// Gets or sets a boolean value that determines if the window is topmost.
         /// </summary>
         public bool MainWindowTopmost
         {
             get => GetItem(false);
             set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Saves the main window for later restoral.
+        /// </summary>
+        /// <param name="window">The window.</param>
+        public void SaveMainWindow(Window window)
+        {
+            if (window != null)
+            {
+                if (window.WindowState != WindowState.Maximized)
+                {
+                    MainWindowWidth = (int)window.Width;
+                    MainWindowHeight = (int)window.Height;
+                }
+
+                /* don't save state as minimized. if closed as minmized, will restore as normal */
+                MainWindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
+                MainWindowLeft = (int)window.Left;
+                MainWindowTop = (int)window.Top;
+            }
+        }
+
+        /// <summary>
+        /// Restores the main window to its saved size and position.
+        /// </summary>
+        /// <param name="window">The window.</param>
+        public void RestoreMainWindow(Window window)
+        {
+            if (window != null)
+            {
+                window.MinWidth = Default.MainWindow.MinWidth;
+                window.MinHeight = Default.MainWindow.MinHeight;
+                window.WindowState = MainWindowState;
+                window.Width = MainWindowWidth;
+                window.Height = MainWindowHeight;
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+                /* default values are int.MaxValue which will only be present on first run. */
+                if (MainWindowLeft != int.MaxValue && MainWindowTop != int.MaxValue)
+                {
+                    window.Left = MainWindowLeft;
+                    window.Top = MainWindowTop;
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                }
+            }
         }
         #endregion
 
