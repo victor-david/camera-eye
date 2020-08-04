@@ -31,8 +31,12 @@ namespace Restless.App.Camera.Core
         private Controls.Border errorControl;
         private Controls.Border controllerControl;
 
+        /* width is set in xaml. height in xaml is zero, gets animated up when mouse within activation zone */
+        private const double ControllerWidth = 75.0; 
         private const double ControllerHeight = 75.0;
-        private const double ControllerHeightCushion = 10.0;
+        private const double ControllerActivationX = ControllerWidth + 10.0;
+        private const double ControllerActivationY = ControllerHeight + 10.0;
+
         private double imageScaledWidth;
         private bool isMouseDown;
         private bool isCameraMotionStarted;
@@ -588,14 +592,14 @@ namespace Restless.App.Camera.Core
 
             Point point = e.GetPosition(this);
 
-            if (point.Y > ActualHeight - ControllerHeight - ControllerHeightCushion && controllerStatus == ControllerStatus.Hidden)
+            if (controllerStatus == ControllerStatus.Hidden && point.Y > ActualHeight - ControllerActivationY &&  point.X < ControllerActivationX)
             {
                 controllerStatus = ControllerStatus.Showing;
                 ShowController.Begin();
                 return;
             }
 
-            if (point.Y < ActualHeight - ControllerHeight * 2.0 && controllerStatus == ControllerStatus.Shown)
+            if (controllerStatus == ControllerStatus.Shown && (point.Y < ActualHeight - ControllerActivationY ||  point.X > ControllerActivationX))
             {
                 controllerStatus = ControllerStatus.Hiding;
                 HideController.Begin();
