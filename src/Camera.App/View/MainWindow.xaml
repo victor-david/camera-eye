@@ -84,6 +84,19 @@
         </Menu>
     </core:AppWindow.Menu>
     <Grid core:Property.ColumnWidths="*,Auto">
+        <Grid.Resources>
+            <Button
+                x:Key="CloseCameraListButton"
+                Style="{StaticResource HeaderButton}"
+                Command="{Binding DataContext.Commands[CloseCameraList], RelativeSource={RelativeSource AncestorType=HeaderedContentControl}}">
+                <Path 
+                    Height="10" Width="10"
+                    Stroke="Gray"
+                    StrokeThickness="2"
+                    Data="M 0,0 10,10 M 10,0 0,10"/>
+            </Button>
+        </Grid.Resources>
+        
         <core:CameraWallControl GridLayout="{Binding GridLayout}" IsActivatedForDrop="{Binding IsCameraListVisible}"/>
         
         <HeaderedContentControl
@@ -91,11 +104,11 @@
             Header="Available Cameras"
             Margin="2"
             MaxWidth="200"
+            Tag="{StaticResource CloseCameraListButton}"
             core:Property.IsVisible="{Binding IsCameraListVisible}">
             <StackPanel>
                 <core:CameraListControl 
-                    x:Name="CameraList"
-                    x:FieldModifier="private"
+
                     Style="{StaticResource ListBoxCameraList}" 
                     ItemsSource="{Binding CameraList}" />
                     <TextBlock 

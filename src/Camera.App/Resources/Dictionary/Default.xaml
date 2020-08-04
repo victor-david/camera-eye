@@ -73,7 +73,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Style="{StaticResource HCCHeaderText}" Text="{TemplateBinding Content}" />
-                            <ContentControl Grid.Column="1" HorizontalAlignment="Right" Content="{Binding Tag, RelativeSource={RelativeSource AncestorType={x:Type HeaderedContentControl}}}"/>
+                            <ContentControl
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Content="{Binding Tag, RelativeSource={RelativeSource AncestorType=HeaderedContentControl}}"/>
                         </Grid>
                     </Border>
                 </DataTemplate>

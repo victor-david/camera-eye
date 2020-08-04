@@ -11,7 +11,7 @@
             Background="{TemplateBinding Background}"
             BorderBrush="{TemplateBinding BorderBrush}"
             Padding="{TemplateBinding Padding}"
-            CornerRadius="2"
+            CornerRadius="1"
             BorderThickness="{TemplateBinding BorderThickness}">
             <ContentPresenter
                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -28,6 +28,8 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Padding" Value="3"/>
         <Setter Property="IsTabStop" Value="False"/>
@@ -42,6 +44,13 @@
                 <Setter Property="Background" Value="CornflowerBlue"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Button" x:Key="HeaderButton" BasedOn="{StaticResource FlatButtonStyle}">
+        <Setter Property="Height" Value="14"/>
+        <Setter Property="Width" Value="14"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
     <ControlTemplate TargetType="core:ReleaseButton" x:Key="FlatRelaseButtonTemplate">

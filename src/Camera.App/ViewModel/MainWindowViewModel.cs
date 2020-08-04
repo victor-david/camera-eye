@@ -84,6 +84,7 @@ namespace Restless.App.Camera
             Commands.Add("OpenCameraConfig", RelayCommand.Create(RunOpenCameraConfigWindowCommand));
             Commands.Add("OpenAppSettings", RelayCommand.Create(RunOpenAppSettingsCommand));
             Commands.Add("ToggleTopmost", RelayCommand.Create((p) => IsTopmost = !IsTopmost));
+            Commands.Add("CloseCameraList", RelayCommand.Create((p) => IsCameraListVisible = false));
 
             CameraList = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
 
