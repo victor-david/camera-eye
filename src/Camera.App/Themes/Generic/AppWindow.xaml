@@ -11,9 +11,11 @@
         <Setter Property="Foreground" Value="{Binding TitleBarButtonBrush, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="core:Property.RolloverBrush" Value="#FF888888"/>
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Template">
@@ -40,7 +42,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#FF888888"/>
+                <Setter Property="Background" Value="{Binding Path=(core:Property.RolloverBrush), RelativeSource={RelativeSource Self}}"/>
                 <Setter Property="Foreground" Value="White"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
@@ -199,23 +201,23 @@
                             Text="{TemplateBinding Title}"/>
 
 
-                        <!-- Minimize  Orig: M 11,16 h 10-->
+                        <!-- Minimize -->
                         <Button Grid.Column="3" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding MinimizeCommand}">
                             <Path Data="M 0,5 10,5"/>
                         </Button>
 
-                        <!-- Maximize Orig: M 10.5,10.5 h 10 v 10 h-10 Z-->
+                        <!-- Maximize -->
                         <Button Name="ButtonMaximize" Grid.Column="4" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
                             <Path Data="M 0,0 0,9 9,9 9,0 Z"/>
                         </Button>
 
-                        <!-- Restore Orig: M 9.5,12.5 h 8 v 8 h -8 Z M 13.5,12.5 v -3.0 h 8 v 8 h-3.5-->
+                        <!-- Restore -->
                         <Button Name="ButtonRestore" Grid.Column="5" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding ChangeStateCommand}">
                             <Path Data="M 0,2 7,2 7,9 0,9 Z M 2,2 2,0 9,0 9,7 7,7"/>
                         </Button>
 
-                        <!-- Close Orig: M 11,11 21,21 M 21,11 11,21-->
-                        <Button Grid.Column="6" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding CloseCommand}">
+                        <!-- Close -->
+                        <Button Grid.Column="6" Style="{StaticResource ButtonTitleBar}" Command="{TemplateBinding CloseCommand}" core:Property.RolloverBrush="#FFEE0000">
                             <Path Data="M 0,0 9,9 M 0,9 9,0"/>
                         </Button>
                     </Grid>

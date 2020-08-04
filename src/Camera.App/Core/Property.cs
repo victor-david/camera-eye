@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Restless.App.Camera.Core
 {
@@ -157,6 +155,27 @@ namespace Restless.App.Camera.Core
         public static bool GetIsVisible(DependencyObject element)
         {
             return (bool)element.GetValue(IsVisibleProperty);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region RolloverBrush
+        private const string RolloverBrushPropertyName = "RolloverBrush";
+
+        public static readonly DependencyProperty RolloverBrushProperty = DependencyProperty.RegisterAttached
+            (
+                RolloverBrushPropertyName, typeof(Brush), typeof(Property), new PropertyMetadata(Brushes.Transparent)
+            );
+
+        public static void SetRolloverBrush(DependencyObject element, Brush value)
+        {
+            element.SetValue(RolloverBrushProperty, value);
+        }
+
+        public static Brush GetRolloverBrush(DependencyObject element)
+        {
+            return (Brush)element.GetValue(RolloverBrushProperty);
         }
         #endregion
     }
