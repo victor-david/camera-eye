@@ -29,14 +29,6 @@ namespace Restless.App.Database.Core
         /// </summary>
         IncludeOnWall = 8,
         /// <summary>
-        /// Orientation is flipped.
-        /// </summary>
-        OrientationFlip = 16,
-        /// <summary>
-        /// Orienation is mirrored.
-        /// </summary>
-        OrientationMirror = 32,
-        /// <summary>
         /// Low frame rate
         /// </summary>
         FrameRateLow = 128,

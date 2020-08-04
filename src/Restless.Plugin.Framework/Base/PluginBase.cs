@@ -21,15 +21,6 @@ namespace Restless.Plugin.Framework
         }
 
         /// <summary>
-        /// Gets or sets the video orientation
-        /// </summary>
-        public virtual Orientation Orientation
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Gets a list of available video streams.
         /// </summary>
         public IList<VideoStreamDescriptor> VideoStreams { get; }
@@ -77,7 +68,6 @@ namespace Restless.Plugin.Framework
         {
             Parms = parms ?? throw new ArgumentNullException(nameof(parms));
             VideoStreams = new List<VideoStreamDescriptor>();
-            Orientation = Orientation.Normal;
             VideoStreamIndex = 0;
         }
         #endregion

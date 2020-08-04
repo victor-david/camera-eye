@@ -233,48 +233,6 @@ namespace Restless.App.Camera.Core
                 control.StartStopVideo();
             }
         }
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if the image orientation is flipped.
-        /// </summary>
-        public bool? IsOrientationFlip
-        {
-            get => (bool?)GetValue(IsOrientationFlipProperty);
-            set => SetValue(IsOrientationFlipProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="IsOrientationFlip"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty IsOrientationFlipProperty = DependencyProperty.Register
-            (
-                nameof(IsOrientationFlip), typeof(bool?), typeof(CameraControl), new PropertyMetadata(false, OnIsOrientationChanged)
-            );
-
-        /// <summary>
-        /// Gets or sets a boolean value that determines if the image orientation is mirrored.
-        /// </summary>
-        public bool? IsOrientationMirror
-        {
-            get => (bool?)GetValue(IsOrientationMirrorProperty);
-            set => SetValue(IsOrientationMirrorProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="IsOrientationMirror"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty IsOrientationMirrorProperty = DependencyProperty.Register
-            (
-                nameof(IsOrientationMirror), typeof(bool?), typeof(CameraControl), new PropertyMetadata(false, OnIsOrientationChanged)
-            );
-
-        private static void OnIsOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is CameraControl control)
-            {
-                control.ChangeOrientation();
-            }
-        }
         #endregion
 
         /************************************************************************/
@@ -856,11 +814,6 @@ namespace Restless.App.Camera.Core
                 StatusAlignmentCommand = RelayCommand.Create(RunStatusAlignmentCommand);
                 FullScreenCommand = RelayCommand.Create(RunFullScreenCommand);
 
-                /* establish orientation. Cache mirror because setting Flip will turn off the mirror flag */
-                bool mirror = Camera.Flags.HasFlag(CameraFlags.OrientationMirror);
-                IsOrientationFlip = Camera.Flags.HasFlag(CameraFlags.OrientationFlip);
-                IsOrientationMirror = mirror;
-
                 Plugin.VideoFrameReceived += PluginVideoFrameReceived;
                 Plugin.PluginException += PluginPluginException;
                 InitializeIsMouseCameraMotionAvailable();
@@ -929,7 +882,7 @@ namespace Restless.App.Camera.Core
 
         private void InitializeWritableBitmap(DecodedVideoFrameParameters parms)
         {
-            /* Pixel format for transform parms and for writeable bit map must match.
+            /* Pixel format for transform parms and for writeable bitmap must match.
              * Only PixelFormats.Pbgra32, Bgr24, and Gray8 are supported.
             */
             PixelFormat pixelFormat = PixelFormats.Pbgra32;
@@ -983,38 +936,6 @@ namespace Restless.App.Camera.Core
         private void ReturnFromFullScreen()
         {
             // placeholder
-        }
-
-        private void ChangeOrientation()
-        {
-            bool flip = IsOrientationFlip.Value;
-            bool mirror = IsOrientationMirror.Value;
-            if (!flip && !mirror)
-            {
-                Camera.ChangeFlags(CameraFlags.None, CameraFlags.OrientationFlip | CameraFlags.OrientationMirror);
-                Plugin.Orientation = Orientation.Normal;
-                return;
-            }
-
-            if (flip && mirror)
-            {
-                Camera.ChangeFlags(CameraFlags.OrientationFlip | CameraFlags.OrientationMirror, CameraFlags.None);
-                Plugin.Orientation = Orientation.FlipAndMirror;
-                return;
-            }
-
-            if (flip && !mirror)
-            {
-                Camera.ChangeFlags(CameraFlags.OrientationFlip, CameraFlags.OrientationMirror);
-                Plugin.Orientation = Orientation.Flip;
-                return;
-            }
-
-            if (!flip && mirror)
-            {
-                Camera.ChangeFlags(CameraFlags.OrientationMirror, CameraFlags.OrientationFlip);
-                Plugin.Orientation = Orientation.Mirror;
-            }
         }
 
         private void ZoomImage(int factor)

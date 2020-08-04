@@ -3,7 +3,6 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 
 namespace Restless.Plugin.Amcrest
 {
@@ -31,7 +30,6 @@ namespace Restless.Plugin.Amcrest
         {
             return new AmcrestController(parms);
         }
-
     }
 
     public class AmcrestController : RtspPluginBase, ICameraPlugin, ICameraMotion
@@ -112,7 +110,7 @@ namespace Restless.Plugin.Amcrest
         {
             if (motionMap.ContainsKey(motion))
             {
-                await PerformClientRequest(GetCameraMotionUri(GetAdjustedMotion(motion)));
+                await PerformClientRequest(GetCameraMotionUri(motion));
             }
         }
         #endregion
@@ -123,23 +121,6 @@ namespace Restless.Plugin.Amcrest
         private string GetCameraMotionUri(CameraMotion motion)
         {
             return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlCgi, motionMap[motion].Item1, motionMap[motion].Item2, MotionSpeed)}";
-        }
-
-        private CameraMotion GetAdjustedMotion(CameraMotion motion)
-        {
-            if (Orientation.HasFlag(Orientation.Mirror))
-            {
-                if (motion == CameraMotion.Left) return CameraMotion.Right;
-                if (motion == CameraMotion.Right) return CameraMotion.Left;
-            }
-
-            if (Orientation.HasFlag(Orientation.Flip))
-            {
-                if (motion == CameraMotion.Up) return CameraMotion.Down;
-                if (motion == CameraMotion.Down) return CameraMotion.Up;
-            }
-
-            return motion;
         }
         #endregion
     }

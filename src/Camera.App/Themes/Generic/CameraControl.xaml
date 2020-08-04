@@ -11,11 +11,6 @@
     <cont:CameraMotion x:Key="CameraMotionDown">Down</cont:CameraMotion>
     <cont:CameraMotion x:Key="CameraMotionCenter">Center</cont:CameraMotion>
 
-    <cont:Orientation x:Key="OrientationNormal">Normal</cont:Orientation>
-    <cont:Orientation x:Key="OrientationFlip">Flip</cont:Orientation>
-    <cont:Orientation x:Key="OrientationMirror">Mirror</cont:Orientation>
-    <cont:Orientation x:Key="OrientationFlipAndMirror">FlipAndMirror</cont:Orientation>
-
     <VerticalAlignment x:Key="VerticalAlignmentTop">Top</VerticalAlignment>
     <VerticalAlignment x:Key="VerticalAlignmentBottom">Bottom</VerticalAlignment>
     <VerticalAlignment x:Key="VerticalAlignmentCenter">Center</VerticalAlignment>
@@ -200,7 +195,7 @@
                     VerticalAlignment="Bottom">
 
                     <!-- Main grid for controls -->
-                    <Grid core:Property.ColumnWidths="Auto,Auto,Auto,*">
+                    <Grid core:Property.ColumnWidths="Auto,Auto,*">
 
                         <!-- Motion controls-->
                         <Grid
@@ -259,33 +254,10 @@
                                 <Border Background="Gray" Height="18" Width="18" CornerRadius="9"/>
                             </core:ReleaseButton>
                         </Grid>
-
-                        <!-- Orientation -->
-                        <Grid 
-                            Grid.Column="1"
-                            core:Property.ColumnWidths="Auto,Auto"
-                            core:Property.RowHeights="Auto,Auto"
-                            Margin="12,9,12,0"
-                            VerticalAlignment="Top">
-
-                            <TextBlock Grid.ColumnSpan="2" Text="Orientation" Foreground="White" Margin="3"/>
-
-                            <ToggleButton
-                                Grid.Row="1"
-                                Style="{StaticResource ControllerToggleButton}"
-                                IsChecked="{Binding IsOrientationFlip, RelativeSource={RelativeSource AncestorType=core:CameraControl}, Mode=TwoWay}"
-                                Content="Flip"/>
-                            
-                            <ToggleButton
-                                Grid.Row="1" Grid.Column="1"
-                                Style="{StaticResource ControllerToggleButton}"
-                                IsChecked="{Binding IsOrientationMirror, RelativeSource={RelativeSource AncestorType=core:CameraControl}, Mode=TwoWay}"
-                                Content="Mirror"/>
-                        </Grid>
-                        
+                       
                         <!-- Status banner -->
                         <Grid
-                            Grid.Column="2"
+                            Grid.Column="1"
                             core:Property.ColumnWidths="Auto,Auto,Auto"
                             core:Property.RowHeights="Auto,Auto"
                             Margin="12,9,12,0"

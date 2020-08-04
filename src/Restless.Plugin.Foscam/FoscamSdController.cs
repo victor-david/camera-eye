@@ -106,7 +106,7 @@ namespace Restless.Plugin.Foscam
         {
             if (motionMap.ContainsKey(motion))
             {
-                await PerformClientRequest(GetCameraMotionUri(GetAdjustedMotion(motion)));
+                await PerformClientRequest(GetCameraMotionUri(motion));
             }
         }
         #endregion
@@ -130,23 +130,6 @@ namespace Restless.Plugin.Foscam
         private string GetCameraMotionUri(CameraMotion motion)
         {
             return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlCgi, motionMap[motion])}";
-        }
-
-        private CameraMotion GetAdjustedMotion(CameraMotion motion)
-        {
-            if (Orientation.HasFlag(Orientation.Mirror))
-            {
-                if (motion == CameraMotion.Left) return CameraMotion.Right;
-                if (motion == CameraMotion.Right) return CameraMotion.Left;
-            }
-
-            if (Orientation.HasFlag(Orientation.Flip))
-            {
-                if (motion == CameraMotion.Up) return CameraMotion.Down;
-                if (motion == CameraMotion.Down) return CameraMotion.Up;
-            }
-
-            return motion;
         }
         #endregion
     }

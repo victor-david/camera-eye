@@ -12,11 +12,6 @@ namespace Restless.Camera.Contracts
     public interface ICameraPlugin : IDisposable
     {
         /// <summary>
-        /// Gets or sets the orientation of the video.
-        /// </summary>
-        Orientation Orientation { get; set; }
-
-        /// <summary>
         /// Gets or sets which video stream to use, i.e. the index into <see cref="VideoStreams"/>
         /// </summary>
         int VideoStreamIndex { get; set; }
