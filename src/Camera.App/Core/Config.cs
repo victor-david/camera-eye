@@ -219,7 +219,7 @@ namespace Restless.App.Camera.Core
         /// </summary>
         public bool IsCameraListVisible
         {
-            get => GetItem(false);
+            get => GetItem(true);
             set => SetItem(value);
         }
         /// <summary>
