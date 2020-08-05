@@ -1,12 +1,11 @@
-﻿using Restless.App.Camera.Core;
-using Restless.App.Database.Core;
+﻿using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using System;
 using System.Collections.Generic;
 
 namespace Restless.App.Camera
 {
-    public class CameraConfigViewModel : ApplicationViewModel
+    public class CameraEditViewModel : ApplicationViewModel
     {
         #region Private
         #endregion
@@ -32,7 +31,7 @@ namespace Restless.App.Camera
         /************************************************************************/
 
         #region Constructor
-        public CameraConfigViewModel(CameraRow camera)
+        public CameraEditViewModel(CameraRow camera)
         {
             Camera = camera ?? throw new ArgumentNullException(nameof(camera));
             DisplayName = Camera.Name;

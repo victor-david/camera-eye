@@ -5,9 +5,9 @@ namespace Restless.App.Camera
     /// <summary>
     /// Interaction logic for CameraConfigWindow.xaml
     /// </summary>
-    public partial class CameraConfigWindow : AppWindow
+    public partial class CameraEditWindow : AppWindow
     {
-        public CameraConfigWindow()
+        public CameraEditWindow()
         {
             InitializeComponent();
         }

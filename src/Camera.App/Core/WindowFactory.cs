@@ -77,12 +77,12 @@ namespace Restless.App.Camera.Core
         public static class CameraConfig
         {
 
-            public static CameraConfigWindow Create(CameraRow camera)
+            public static CameraEditWindow Create(CameraRow camera)
             {
-                var window = new CameraConfigWindow()
+                var window = new CameraEditWindow()
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    DataContext = new CameraConfigViewModel(camera),
+                    DataContext = new CameraEditViewModel(camera),
                     Width = Config.Default.CameraConfigWindow.Width,
                     Height = Config.Default.CameraConfigWindow.Height,
                     ResizeMode = ResizeMode.NoResize,
@@ -92,7 +92,6 @@ namespace Restless.App.Camera.Core
 
                 TextOptions.SetTextFormattingMode(window);
                 return window;
-
             }
         }
         #endregion
