@@ -3,14 +3,17 @@ using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using Restless.Tools.Mvvm;
 using System.Collections.Generic;
-using System.Windows;
+using System.Windows.Data;
 
 namespace Restless.App.Camera
 {
     public class MainWindowViewModel : WindowViewModel
     {
         #region Private
-        private Dictionary<WallGridLayout, int> gridLayoutMap;
+        private const int MaxCamera = 9;
+        private readonly List<CameraRow> cameraList;
+        private readonly Dictionary<WallGridLayout, int> gridLayoutMap;
+        private PushCommand pushCommand;
         #endregion
 
         /************************************************************************/
@@ -44,11 +47,29 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
-        /// Gets the list of cameras
+        /// Gets the list collection view that displays the list of cameras.
         /// </summary>
-        public IEnumerable<CameraRow> CameraList
+        public ListCollectionView CameraList
         {
             get;
+        }
+
+        /// <summary>
+        /// Gets or sets the currently selected camera.
+        /// </summary>
+        public CameraRow SelectedCamera
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the push command associated with the camera wall control.
+        /// </summary>
+        public PushCommand PushCommand
+        {
+            get => pushCommand;
+            private set => SetProperty(ref pushCommand, value);
         }
 
         /// <summary>
@@ -80,13 +101,22 @@ namespace Restless.App.Camera
         {
             DisplayName = "Camera Eye";
             Commands.Add("ChangeGridLayout", RelayCommand.Create((p) => GridLayout = (WallGridLayout)p));
-            Commands.Add("OpenCameraList", RelayCommand.Create((p) => IsCameraListVisible = !IsCameraListVisible));
-            Commands.Add("OpenCameraConfig", RelayCommand.Create(RunOpenCameraConfigWindowCommand));
+            Commands.Add("ToggleCameraList", RelayCommand.Create((p) => IsCameraListVisible = !IsCameraListVisible));
+            Commands.Add("CloseCameraList", RelayCommand.Create((p) => IsCameraListVisible = false));
             Commands.Add("OpenAppSettings", RelayCommand.Create(RunOpenAppSettingsCommand));
             Commands.Add("ToggleTopmost", RelayCommand.Create((p) => IsTopmost = !IsTopmost));
-            Commands.Add("CloseCameraList", RelayCommand.Create((p) => IsCameraListVisible = false));
 
-            CameraList = DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll();
+            Commands.Add("AddCamera", RelayCommand.Create(RunAddCameraCommand, (p) => CameraList.Count < MaxCamera));
+            Commands.Add("EditCamera", RelayCommand.Create(RunEditCameraCommand, (p) => SelectedCamera != null));
+            Commands.Add("RemoveCamera", RelayCommand.Create(RunRemoveCameraFromWallCommand, (p) => SelectedCamera != null));
+            Commands.Add("DeleteCamera", RelayCommand.Create(RunDeleteCameraCommand, (p) => SelectedCamera != null));
+
+            cameraList = new List<CameraRow>(DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll());
+
+            CameraList = new ListCollectionView(cameraList)
+            {
+                CustomSort = new CameraRow.Comparer()
+            };
 
             IsGridLayoutChecked = new bool[] { false, false, false, false, false, false };
 
@@ -134,9 +164,41 @@ namespace Restless.App.Camera
             }
         }
 
-        private void RunOpenCameraConfigWindowCommand(object parm)
+        private void RunAddCameraCommand(object parm)
         {
-            WindowFactory.CameraConfig.Create().ShowDialog();
+            CameraRow newRow = DatabaseController.Instance.GetTable<CameraTable>().Add();
+            cameraList.Add(newRow);
+            CameraList.Refresh();
+        }
+
+        private void RunEditCameraCommand(object parm)
+        {
+            if (SelectedCamera != null)
+            {
+                //WindowFactory.CameraConfig.Create().ShowDialog();
+                CameraList.Refresh();
+            }
+        }
+
+        private void RunRemoveCameraFromWallCommand(object parm)
+        {
+            if (SelectedCamera != null)
+            {
+                PushCommand = PushCommand.Create(PushCommandType.RemoveFromWall, SelectedCamera.Id);
+            }
+        }
+
+        private void RunDeleteCameraCommand(object parm)
+        {
+            if (SelectedCamera != null && Messages.ShowYesNo($"Remove camera {SelectedCamera.Name}?"))
+            {
+                PushCommand = PushCommand.Create(PushCommandType.RemoveFromWall, SelectedCamera.Id);
+                cameraList.Remove(SelectedCamera);
+                SelectedCamera.Row.Delete();
+                DatabaseController.Instance.Save();
+                SelectedCamera = null;
+                CameraList.Refresh();
+            }
         }
 
         private void RunOpenAppSettingsCommand(object parm)

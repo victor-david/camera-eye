@@ -95,6 +95,35 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
+        #region PushCommand
+        /// <summary>
+        /// Gets or sets the push command.
+        /// </summary>
+        public PushCommand PushCommand
+        {
+            get => (PushCommand)GetValue(PushCommandProperty);
+            set => SetValue(PushCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="PushCommand"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty PushCommandProperty = DependencyProperty.Register
+            (
+                nameof(PushCommand), typeof(PushCommand), typeof(CameraWallControl), new PropertyMetadata(null, OnPushCommandChanged)
+            );
+
+        private static void OnPushCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CameraWallControl control && e.NewValue is PushCommand command)
+            {
+                control.ExecutePushCommand(command);
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
         #region Protected methods
         /// <summary>
         /// Called when the drop operation has completed
@@ -245,11 +274,21 @@ namespace Restless.App.Camera.Core
         /// <returns>The host, or null if a no host with the specified camera</returns>
         private CameraHostBorder GetCameraHost(CameraRow camera)
         {
+            return GetCameraHost(camera.Id);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="CameraHostBorder"/> that contains the camera with the specified id.
+        /// </summary>
+        /// <param name="camera">The camera</param>
+        /// <returns>The host, or null if a no host with the specified camera</returns>
+        private CameraHostBorder GetCameraHost(long id)
+        {
             foreach (var child in Children.OfType<CameraHostBorder>())
             {
                 if (child.CameraControl is CameraControl cameraControl)
                 {
-                    if (cameraControl.Camera.Id == camera.Id)
+                    if (cameraControl.Camera.Id == id)
                     {
                         return child;
                     }
@@ -263,6 +302,30 @@ namespace Restless.App.Camera.Core
             foreach (var child in Children.OfType<CameraHostBorder>())
             {
                 child.SetActivationState(activationState);
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods (other)
+        private void RemoveCameraFromWall(long id)
+        {
+            if (GetCameraHost(id) is CameraHostBorder host)
+            {
+                host.CameraControl.IsVideoRunning = false;
+                host.CameraControl.Camera.RemoveWallProperties();
+                host.CameraControl = null;
+            }
+        }
+
+        private void ExecutePushCommand(PushCommand command)
+        {
+            switch (command.CommandType)
+            {
+                case PushCommandType.RemoveFromWall:
+                    RemoveCameraFromWall(command.Id);
+                    break;
             }
         }
         #endregion

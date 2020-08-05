@@ -129,20 +129,22 @@ namespace Restless.App.Database.Tables
             Load(null, Defs.Columns.Name);
         }
 
-        public void Add()
+        public CameraRow Add()
         {
-            MakeNewRow((row) =>
+            int cameraNum = Rows.Count + 1;
+            DataRow newRow = MakeNewRow((row) =>
             {
                 row[Defs.Columns.Created] = DateTime.Now;
                 row[Defs.Columns.Description] = "Camera description";
                 row[Defs.Columns.IpAddress] = "127.0.0.1";
-                row[Defs.Columns.Name] = "Camera name";
+                row[Defs.Columns.Name] = $"Camera {cameraNum}";
                 row[Defs.Columns.Port] = 80;
                 row[Defs.Columns.PluginId] = 0;
                 row[Defs.Columns.Flags] = (long)CameraFlags.StatusTop;
                 row[Defs.Columns.WallRow] = 0;
                 row[Defs.Columns.WallColumn] = 0;
             });
+            return new CameraRow(newRow);
         }
 
         /// <summary>

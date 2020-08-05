@@ -2,6 +2,7 @@
 using Restless.App.Database.Tables;
 using Restless.Tools.Database.SQLite;
 using System;
+using System.Collections;
 using System.Data;
 using Columns = Restless.App.Database.Tables.CameraTable.Defs.Columns;
 
@@ -189,5 +190,24 @@ namespace Restless.App.Database.Tables
             ChangeFlags(CameraFlags.None, CameraFlags.IncludeOnWall);
         }
         #endregion;
+
+        /************************************************************************/
+
+        #region IComparer class
+        /// <summary>
+        /// Provides a comparer for <see cref="CameraRow"/>
+        /// </summary>
+        public class Comparer : IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                if (x is CameraRow s1 && y is CameraRow s2)
+                {
+                    return s1.Name.CompareTo(s2.Name);
+                }
+                return 0;
+            }
+        }
+        #endregion
     }
 }

@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
+    xmlns:con="clr-namespace:Restless.Tools.Controls;assembly=Restless.Tools.Controls"
     mc:Ignorable="d"
     Icon="{StaticResource ImageApp}"
     Title="{Binding DisplayName, Mode=OneTime}"
@@ -30,13 +31,8 @@
                 <MenuItem
                     Header="Camera list"
                     IsChecked="{Binding IsCameraListVisible,Mode=OneWay}"
-                    Command="{Binding Commands[OpenCameraList]}"/>
-                
-                <Separator/>
+                    Command="{Binding Commands[ToggleCameraList]}"/>
 
-                <MenuItem
-                    Header="Camera configuration"
-                    Command="{Binding Commands[OpenCameraConfig]}"/>
                 <MenuItem
                     Header="Application settings"
                     Command="{Binding Commands[OpenAppSettings]}"/>
@@ -97,7 +93,7 @@
             </Button>
         </Grid.Resources>
         
-        <core:CameraWallControl GridLayout="{Binding GridLayout}" IsActivatedForDrop="{Binding IsCameraListVisible}"/>
+        <core:CameraWallControl GridLayout="{Binding GridLayout}" IsActivatedForDrop="{Binding IsCameraListVisible}" PushCommand="{Binding PushCommand,Mode=OneWay}"/>
         
         <HeaderedContentControl
             Grid.Column="1"
@@ -107,15 +103,29 @@
             Tag="{StaticResource CloseCameraListButton}"
             core:Property.IsVisible="{Binding IsCameraListVisible}">
             <StackPanel>
-                <core:CameraListControl 
-
+                <core:CameraListControl
                     Style="{StaticResource ListBoxCameraList}" 
-                    ItemsSource="{Binding CameraList}" />
-                    <TextBlock 
-                        Margin="1,10"
-                        Foreground="Gray"
-                        TextWrapping="Wrap"
-                        Text="To add a camera to the display, drag it to the position you want."/>
+                    ItemsSource="{Binding CameraList}"
+                    SelectedItem="{Binding SelectedCamera}"
+                    >
+                    <core:CameraListControl.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Edit camera" Command="{Binding Commands[EditCamera]}"/>
+                            <MenuItem Header="Remove from wall" Command="{Binding Commands[RemoveCamera]}"/>
+                            <Separator/>
+                            <MenuItem Icon="{StaticResource ImageRedXMenu}" Header="Delete camera" Command="{Binding Commands[DeleteCamera]}"/>
+                        </ContextMenu>
+                    </core:CameraListControl.ContextMenu>
+                </core:CameraListControl>
+                <con:ImageButton ImageSource="{StaticResource ImageAdd}" Content="Add" Command="{Binding Commands[AddCamera]}"/>
+                
+                <TextBlock Style="{StaticResource TextBlockInfo}">
+                    <Run Text="To add a camera, click"/>
+                    <Run Foreground="Red" Text="Add."/>
+                    <Run Text="Once added, you can edit its properties."/>
+                </TextBlock>
+                <TextBlock Style="{StaticResource TextBlockInfo}" Text="Once a camera is added and configured, drag it to the display position you want."/>
+                
             </StackPanel>
         </HeaderedContentControl>
     </Grid>
