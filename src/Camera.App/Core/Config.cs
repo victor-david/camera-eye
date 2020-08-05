@@ -77,12 +77,12 @@ namespace Restless.App.Camera.Core
                 /// <summary>
                 /// Gets the default width for the camera configuration window.
                 /// </summary>
-                public const int Width = 1080;
+                public const int Width = 352;
 
                 /// <summary>
                 /// Gets the default height for the camera configuration window.
                 /// </summary>
-                public const int Height = 600;
+                public const int Height = 560;
             }
         }
         #endregion

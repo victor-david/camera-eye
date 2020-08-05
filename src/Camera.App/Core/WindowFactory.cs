@@ -77,12 +77,12 @@ namespace Restless.App.Camera.Core
         public static class CameraConfig
         {
 
-            public static CameraConfigWindow Create()
+            public static CameraConfigWindow Create(CameraRow camera)
             {
                 var window = new CameraConfigWindow()
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    DataContext = new CameraConfigViewModel(),
+                    DataContext = new CameraConfigViewModel(camera),
                     Width = Config.Default.CameraConfigWindow.Width,
                     Height = Config.Default.CameraConfigWindow.Height,
                     ResizeMode = ResizeMode.NoResize,

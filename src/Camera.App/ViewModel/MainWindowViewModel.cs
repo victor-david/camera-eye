@@ -175,7 +175,7 @@ namespace Restless.App.Camera
         {
             if (SelectedCamera != null)
             {
-                //WindowFactory.CameraConfig.Create().ShowDialog();
+                WindowFactory.CameraConfig.Create(SelectedCamera).ShowDialog();
                 CameraList.Refresh();
             }
         }
