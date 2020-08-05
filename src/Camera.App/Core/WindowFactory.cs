@@ -74,7 +74,7 @@ namespace Restless.App.Camera.Core
         /// <summary>
         /// Provides static methods for creating camera configuration windows.
         /// </summary>
-        public static class CameraConfig
+        public static class CameraEdit
         {
 
             public static CameraEditWindow Create(CameraRow camera)
@@ -83,9 +83,10 @@ namespace Restless.App.Camera.Core
                 {
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     DataContext = new CameraEditViewModel(camera),
-                    Width = Config.Default.CameraConfigWindow.Width,
-                    Height = Config.Default.CameraConfigWindow.Height,
-                    ResizeMode = ResizeMode.NoResize,
+                    Width = Config.Default.CameraEditWindow.Width,
+                    Height = Config.Default.CameraEditWindow.Height,
+                    MinWidth = Config.Default.CameraEditWindow.MinWidth,
+                    MinHeight = Config.Default.CameraEditWindow.MinHeight,
                 };
 
                 (window.DataContext as WindowViewModel)?.SetWindowOwner(window);

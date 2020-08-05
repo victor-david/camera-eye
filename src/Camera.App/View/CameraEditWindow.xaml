@@ -30,10 +30,11 @@
             <TextBox Text="{Binding Camera.Password}"/>
             <TextBlock Text="Notes"/>
             <TextBox
-                Height="150"
+                Height="126"
                 VerticalContentAlignment="Top"
                 AcceptsReturn="True"
                 TextWrapping="Wrap"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
                 Text="{Binding Camera.Note}"/>
 
             <TextBlock Text="Service Plugin"/>

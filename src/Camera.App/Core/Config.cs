@@ -72,17 +72,30 @@ namespace Restless.App.Camera.Core
                 public const int MinHeight = 320;
             }
 
-            public static class CameraConfigWindow
+            /// <summary>
+            /// Provides static default values for the camera edit window.
+            /// </summary>
+            public static class CameraEditWindow
             {
                 /// <summary>
-                /// Gets the default width for the camera configuration window.
+                /// Gets the default width for the camera edit window.
                 /// </summary>
-                public const int Width = 352;
+                public const int Width = 410;
 
                 /// <summary>
-                /// Gets the default height for the camera configuration window.
+                /// Gets the default height for the camera edit window.
                 /// </summary>
-                public const int Height = 560;
+                public const int Height = 526;
+
+                /// <summary>
+                /// Gets the minimum width for the camera edit window.
+                /// </summary>
+                public const int MinWidth = 374;
+
+                /// <summary>
+                /// Gets the minimum height for the camera edit window.
+                /// </summary>
+                public const int MinHeight = 526;
             }
         }
         #endregion
