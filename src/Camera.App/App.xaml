@@ -7,10 +7,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Dictionary/Value.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Brush.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionary/Image.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionary/Default.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Border.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Button.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionary/Control.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/DataGrid.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Headered.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Image.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Other.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/TextBlock.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

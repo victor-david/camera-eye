@@ -91,7 +91,6 @@
         </Style.Triggers>
     </Style>
 
-
     <!-- ImageButton -->
     <Style TargetType="con:ImageButton">
         <Setter Property="Margin" Value="4"/>
@@ -113,6 +112,5 @@
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
-
 
 </ResourceDictionary>
