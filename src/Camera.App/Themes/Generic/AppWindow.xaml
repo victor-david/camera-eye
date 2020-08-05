@@ -241,6 +241,7 @@
     </ControlTemplate>
 
     <Style TargetType="core:AppWindow">
+        <Setter Property="WindowStyle" Value="None"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderBrush" Value="#ff1f3c76"/>
         <Setter Property="BorderThickness" Value="1"/>
