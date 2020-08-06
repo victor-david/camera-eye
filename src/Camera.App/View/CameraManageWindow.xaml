@@ -58,9 +58,7 @@
                     TextWrapping="Wrap"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding Camera.Note}"/>
-
-
-
+                
             </StackPanel>
         </HeaderedContentControl>
 
@@ -73,6 +71,23 @@
                     DisplayMemberPath="Name"
                     SelectedValuePath="Id"
                     SelectedValue="{Binding Camera.PluginId,Mode=TwoWay}"/>
+
+                <!-- Plugin settings -->
+                <GroupBox Header="Settings" MinHeight="130" core:Property.IsVisible="{Binding PluginIsSettings}">
+                    
+                </GroupBox>
+
+                <!-- Settings not supported -->
+                <TextBlock 
+                    Margin="0,6"
+                    Text="This plugin does not support additional settings"
+                    core:Property.IsCollapsed="{Binding PluginIsSettings}"/>
+
+
+                <TextBlock
+                    Style="{StaticResource TextBlockError}"
+                    Text="{Binding ErrorText}" 
+                    core:Property.IsVisible="{Binding HaveError}"/>
 
             </StackPanel>
         </HeaderedContentControl>

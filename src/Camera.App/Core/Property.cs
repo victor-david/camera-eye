@@ -143,8 +143,10 @@ namespace Restless.App.Camera.Core
 
         private static void OnIsVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is FrameworkElement element))return;
-            element.Visibility = ((bool)e.NewValue) == true ? Visibility.Visible : Visibility.Collapsed;
+            if (d is FrameworkElement element)
+            {
+                element.Visibility = ((bool)e.NewValue) == true ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         public static void SetIsVisible(DependencyObject element, bool value)
@@ -157,6 +159,50 @@ namespace Restless.App.Camera.Core
             return (bool)element.GetValue(IsVisibleProperty);
         }
         #endregion
+
+        /************************************************************************/
+
+        #region IsCollapsed
+        private const string IsCollapsedPropertyName = "IsCollapsed";
+
+        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.RegisterAttached
+            (
+                IsCollapsedPropertyName, typeof(bool), typeof(Property), new PropertyMetadata(false, OnIsCollapsedChanged)
+            );
+
+        private static void OnIsCollapsedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is FrameworkElement element)
+            {
+                element.Visibility = ((bool)e.NewValue) == true ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public static void SetIsCollapsed(DependencyObject element, bool value)
+        {
+            element.SetValue(IsCollapsedProperty, value);
+        }
+
+        public static bool GetIsCollapsed(DependencyObject element)
+        {
+            return (bool)element.GetValue(IsCollapsedProperty);
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /************************************************************************/
 

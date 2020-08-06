@@ -24,6 +24,10 @@
                 <Setter Property="Background" Value="#EEEEEE"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
+            <Style TargetType="GroupBox">
+                <Setter Property="Margin" Value="0,6"/>
+                <Setter Property="Foreground" Value="DarkGray"/>
+            </Style>
         </Style.Resources>
     </Style>
 

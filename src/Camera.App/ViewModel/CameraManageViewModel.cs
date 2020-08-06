@@ -1,5 +1,7 @@
-﻿using Restless.App.Database.Core;
+﻿using Restless.App.Camera.Core;
+using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
+using Restless.Camera.Contracts;
 using Restless.Tools.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,8 @@ namespace Restless.App.Camera
     public class CameraManageViewModel : WindowViewModel
     {
         #region Private
+        private ICameraPlugin plugin;
+        private string errorText;
         #endregion
 
         /************************************************************************/
@@ -21,6 +25,45 @@ namespace Restless.App.Camera
         public CameraRow Camera
         {
             get;
+        }
+
+        private ICameraPlugin Plugin
+        {
+            get => plugin;
+            set
+            {
+                plugin = value;
+                OnPropertyChanged(nameof(PluginIsSettings));
+            }
+        }
+
+        /// <summary>
+        /// Gets a boolean value that indicates if the plugin supports ICameraSettings.
+        /// </summary>
+        public bool PluginIsSettings
+        {
+            get => plugin is ICameraSettings;
+        }
+
+        /// <summary>
+        /// Gets error text
+        /// </summary>
+        public string ErrorText
+        {
+            get => errorText;
+            private set
+            {
+                SetProperty(ref errorText, value);
+                OnPropertyChanged(nameof(HaveError));
+            }
+        }
+
+        /// <summary>
+        /// Gets a boolean value that indicates if an error message is present.
+        /// </summary>
+        public bool HaveError
+        {
+            get => !string.IsNullOrEmpty(ErrorText);
         }
 
         /// <summary>
@@ -39,6 +82,7 @@ namespace Restless.App.Camera
             DisplayName = Camera.Name;
             Commands.Add("ChangeStatusBanner", RelayCommand.Create(RunChangeStatusBannerCommand));
             Camera.PropertyChanged += CameraPropertyChanged;
+            CreatePlugin();
         }
         #endregion
 
@@ -68,6 +112,33 @@ namespace Restless.App.Camera
 
             if (e.PropertyName == CameraTable.Defs.Columns.PluginId)
             {
+                DestroyPlugin();
+                CreatePlugin();
+            }
+        }
+
+        private void CreatePlugin()
+        {
+            try
+            {
+                ErrorText = null;
+                if (Camera.PluginId != PluginTable.Defs.Values.NullPluginId)
+                {
+                    Plugin = PluginFactory.Create(Camera);
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorText = ex.Message;
+            }
+        }
+
+        private void DestroyPlugin()
+        {
+            if (Plugin != null)
+            {
+                Plugin.StopVideoAsync();
+                Plugin = null;
             }
         }
 

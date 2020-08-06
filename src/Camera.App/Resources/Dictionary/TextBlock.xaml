@@ -14,6 +14,11 @@
         <Setter Property="Margin" Value="8,0,0,0"/>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="TextBlockError">
+        <Setter Property="Foreground" Value="Red"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="TextBlockStatus">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Bold"/>
