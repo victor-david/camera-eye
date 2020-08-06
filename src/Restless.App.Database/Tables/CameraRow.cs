@@ -3,6 +3,7 @@ using Restless.App.Database.Tables;
 using Restless.Tools.Database.SQLite;
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Data;
 using Columns = Restless.App.Database.Tables.CameraTable.Defs.Columns;
 
@@ -11,7 +12,7 @@ namespace Restless.App.Database.Tables
     /// <summary>
     /// Represents database data about a single camera
     /// </summary>
-    public class CameraRow : RowObjectBase<CameraTable>
+    public class CameraRow : RowObjectBase<CameraTable>, INotifyPropertyChanged
     {
         #region Properties
         /// <summary>
@@ -158,6 +159,12 @@ namespace Restless.App.Database.Tables
 
         /************************************************************************/
 
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        /************************************************************************/
+
         #region Public methods
         /// <summary>
         /// Changes the <see cref="Flags property"/>
@@ -166,8 +173,11 @@ namespace Restless.App.Database.Tables
         /// <param name="remove">The flags to remove</param>
         public void ChangeFlags(CameraFlags add, CameraFlags remove)
         {
-            Flags |= add;
-            Flags &= ~remove;
+            /* change a local copy to trigger property changed only once */
+            CameraFlags current = Flags;
+            current |= add;
+            current &= ~remove;
+            Flags = current;
         }
 
         /// <summary>
@@ -189,7 +199,21 @@ namespace Restless.App.Database.Tables
         {
             ChangeFlags(CameraFlags.None, CameraFlags.IncludeOnWall);
         }
-        #endregion;
+        #endregion
+
+        /************************************************************************/
+
+        #region Protected methods
+        /// <summary>
+        /// Called when a call to SetValue() results in a changed value.
+        /// </summary>
+        /// <param name="columnName">The name of the column that changed its value.</param>
+        /// <param name="value">The new value.</param>
+        protected override void OnSetValue(string columnName, object value)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(columnName));
+        }
+        #endregion
 
         /************************************************************************/
 

@@ -3,6 +3,8 @@ using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
 using Restless.Tools.Mvvm;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Data;
 
 namespace Restless.App.Camera
@@ -115,8 +117,11 @@ namespace Restless.App.Camera
 
             CameraList = new ListCollectionView(cameraList)
             {
-                CustomSort = new CameraRow.Comparer()
+                IsLiveSorting = true,
+                CustomSort = new CameraRow.Comparer(),
             };
+
+            CameraList.LiveSortingProperties.Add(nameof(CameraRow.Name));
 
             IsGridLayoutChecked = new bool[] { false, false, false, false, false, false };
 
@@ -175,8 +180,18 @@ namespace Restless.App.Camera
         {
             if (SelectedCamera != null)
             {
+                SelectedCamera.PropertyChanged += SelectedCameraPropertyChanged;
                 WindowFactory.CameraEdit.Create(SelectedCamera).ShowDialog();
+                SelectedCamera.PropertyChanged -= SelectedCameraPropertyChanged;
                 CameraList.Refresh();
+            }
+        }
+
+        private void SelectedCameraPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == CameraTable.Defs.Columns.Flags)
+            {
+                // TODO - Notify camera wall that flags have changed.
             }
         }
 

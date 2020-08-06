@@ -1,7 +1,9 @@
 ﻿using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
+using Restless.Tools.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Restless.App.Camera
 {
@@ -35,6 +37,7 @@ namespace Restless.App.Camera
         {
             Camera = camera ?? throw new ArgumentNullException(nameof(camera));
             DisplayName = Camera.Name;
+            Commands.Add("ChangeStatusBanner", RelayCommand.Create(RunChangeStatusBannerCommand));
         }
         #endregion
 
@@ -46,6 +49,23 @@ namespace Restless.App.Camera
         /************************************************************************/
 
         #region Private methods
+        private void RunChangeStatusBannerCommand(object parm)
+        {
+            if (parm is CameraFlags flag)
+            {
+                Camera.ChangeFlags(flag, StatusFlagsToRemove(flag));
+            }
+        }
+
+        private CameraFlags StatusFlagsToRemove(CameraFlags flag)
+        {
+            return flag switch
+            {
+                CameraFlags.StatusTop => CameraFlags.StatusBottom | CameraFlags.StatusOff,
+                CameraFlags.StatusBottom => CameraFlags.StatusTop | CameraFlags.StatusOff,
+                _ => CameraFlags.StatusTop | CameraFlags.StatusBottom,
+            };
+        }
         //private void RunOpenCameraCommand(object parm)
         //{
         //    if (Camera == null) return;

@@ -5,29 +5,49 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
-    xmlns:con="clr-namespace:Restless.Tools.Controls;assembly=Restless.Tools.Controls"
     mc:Ignorable="d"
     Icon="{StaticResource ImageApp}"
     Title="{Binding DisplayName}" Height="450" Width="800">
     <!-- Camera detail -->
     <HeaderedContentControl Header="Detail">
         <StackPanel Margin="4" Style="{StaticResource StackPanelDataEntry}">
+            <!-- Camera name -->
             <TextBlock Text="Camera Name"/>
             <TextBox Text="{Binding Camera.Name}"/>
+            
+            <!-- Description -->
             <TextBlock Text="Description"/>
             <TextBox Text="{Binding Camera.Description}"/>
-            <Grid 
-                core:Property.RowHeights="Auto,*"
+            
+            <!-- Ip address / port -->
+            <Grid
+                core:Property.RowHeights="*,*"
                 core:Property.ColumnWidths="*,100">
                 <TextBlock Text="Ip Address"/>
                 <TextBlock Grid.Column="1" Text="Port"/>
                 <TextBox Grid.Row="1" Text="{Binding Camera.IpAddress}"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Port}"/>
             </Grid>
-            <TextBlock Text="User"/>
-            <TextBox Text="{Binding Camera.UserId}"/>
-            <TextBlock Text="Password"/>
-            <TextBox Text="{Binding Camera.Password}"/>
+            
+            <!-- User / password -->
+            <Grid
+                core:Property.RowHeights="*,*"
+                core:Property.ColumnWidths="*,160">
+                
+                <TextBlock Text="User"/>
+                <TextBlock Grid.Column="1" Text="Password"/>
+                <TextBox Grid.Row="1" Text="{Binding Camera.UserId}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Password}"/>    
+            </Grid>
+
+            <!-- Status banner -->
+            <HeaderedItemsControl Style="{StaticResource MenuButtonGroup}" Header="Status banner">
+                <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
+                <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
+                <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusOff}"/>
+            </HeaderedItemsControl>
+            
+            <!-- Notes -->
             <TextBlock Text="Notes"/>
             <TextBox
                 Height="126"
@@ -37,6 +57,7 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 Text="{Binding Camera.Note}"/>
 
+            <!-- PLugin -->
             <TextBlock Text="Service Plugin"/>
             <ComboBox
                 ItemsSource="{Binding CameraPlugins}"
