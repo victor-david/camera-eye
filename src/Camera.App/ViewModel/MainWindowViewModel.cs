@@ -180,9 +180,12 @@ namespace Restless.App.Camera
         {
             if (SelectedCamera != null)
             {
+                bool isTop = IsTopmost;
+                IsTopmost = false;
                 SelectedCamera.PropertyChanged += SelectedCameraPropertyChanged;
                 WindowFactory.CameraEdit.Create(SelectedCamera).ShowDialog();
                 SelectedCamera.PropertyChanged -= SelectedCameraPropertyChanged;
+                IsTopmost = isTop;
                 CameraList.Refresh();
             }
         }
