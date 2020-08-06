@@ -3,10 +3,11 @@ using Restless.App.Database.Tables;
 using Restless.Tools.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Restless.App.Camera
 {
-    public class CameraManageViewModel : ApplicationViewModel
+    public class CameraManageViewModel : WindowViewModel
     {
         #region Private
         #endregion
@@ -37,17 +38,39 @@ namespace Restless.App.Camera
             Camera = camera ?? throw new ArgumentNullException(nameof(camera));
             DisplayName = Camera.Name;
             Commands.Add("ChangeStatusBanner", RelayCommand.Create(RunChangeStatusBannerCommand));
+            Camera.PropertyChanged += CameraPropertyChanged;
         }
         #endregion
 
         /************************************************************************/
 
         #region Protected methods
+        /// <summary>
+        /// Called when the view model is closing, that is when <see cref="ViewModelBase.SignalClosing"/> is called.
+        /// </summary>
+        protected override void OnClosing()
+        {
+            base.OnClosing();
+            Camera.PropertyChanged -= CameraPropertyChanged;
+        }
         #endregion
 
         /************************************************************************/
 
         #region Private methods
+
+        private void CameraPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == CameraTable.Defs.Columns.Name)
+            {
+                DisplayName = Camera.Name;
+            }
+
+            if (e.PropertyName == CameraTable.Defs.Columns.PluginId)
+            {
+            }
+        }
+
         private void RunChangeStatusBannerCommand(object parm)
         {
             if (parm is CameraFlags flag)
@@ -65,23 +88,6 @@ namespace Restless.App.Camera
                 _ => CameraFlags.StatusTop | CameraFlags.StatusBottom,
             };
         }
-        //private void RunOpenCameraCommand(object parm)
-        //{
-        //    if (Camera == null) return;
-        //    try
-        //    {
-        //        /* This throws if the plugin is not specified (null plugin) or the plugin itself cannot be found */
-        //        var window = WindowFactory.Camera.Create(Camera);
-        //        window.Show();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ErrorText = ex.Message;
-        //        IsError = true;
-        //    }
-        //}
-
-
         #endregion
     }
 }

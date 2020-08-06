@@ -1,5 +1,6 @@
 ﻿using Restless.Tools.Mvvm;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -59,13 +60,30 @@ namespace Restless.App.Camera
         /// <param name="owner">The owner.</param>
         public void SetWindowOwner(Window owner)
         {
+            if (WindowOwner != null) throw new InvalidOperationException();
             WindowOwner = owner ?? throw new ArgumentNullException(nameof(owner));
+            WindowOwner.Loaded += WindowOwnerLoaded;
+            WindowOwner.Closing += WindowOwnerClosing;
         }
         #endregion
 
         /************************************************************************/
 
         #region Private methods
+        private void WindowOwnerLoaded(object sender, RoutedEventArgs e)
+        {
+            Activate();
+        }
+
+        private void WindowOwnerClosing(object sender, CancelEventArgs e)
+        {
+            if (!e.Cancel)
+            {
+                WindowOwner.Loaded -= WindowOwnerLoaded;
+                WindowOwner.Closing -= WindowOwnerClosing;
+                SignalClosing();
+            }
+        }
         private void RunChangeWindowStateCommand(object parm)
         {
             WindowOwner.WindowState = WindowOwner.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;

@@ -4,7 +4,8 @@ using Restless.App.Database.Tables;
 using Restless.Tools.Mvvm;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Restless.App.Camera
@@ -149,6 +150,13 @@ namespace Restless.App.Camera
         protected override void OnClosing()
         {
             base.OnClosing();
+
+            /* Close other windows. They aren't connected via owner to this window */
+            foreach (var window in Application.Current.Windows.OfType<Window>())
+            {
+                if (window != WindowOwner) window.Close();
+            }
+
             Config.SaveMainWindow(WindowOwner);
         }
         #endregion
