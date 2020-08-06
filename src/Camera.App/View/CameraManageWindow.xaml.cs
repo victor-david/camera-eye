@@ -3,11 +3,11 @@
 namespace Restless.App.Camera
 {
     /// <summary>
-    /// Interaction logic for CameraConfigWindow.xaml
+    /// Interaction logic for CameraManageWindow.xaml
     /// </summary>
-    public partial class CameraEditWindow : AppWindow
+    public partial class CameraManageWindow : AppWindow
     {
-        public CameraEditWindow()
+        public CameraManageWindow()
         {
             InitializeComponent();
         }

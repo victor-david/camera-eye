@@ -109,7 +109,7 @@ namespace Restless.App.Camera
             Commands.Add("ToggleTopmost", RelayCommand.Create((p) => IsTopmost = !IsTopmost));
 
             Commands.Add("AddCamera", RelayCommand.Create(RunAddCameraCommand, (p) => CameraList.Count < MaxCamera));
-            Commands.Add("EditCamera", RelayCommand.Create(RunEditCameraCommand, (p) => SelectedCamera != null));
+            Commands.Add("ManageCamera", RelayCommand.Create(RunManageCameraCommand, (p) => SelectedCamera != null));
             Commands.Add("RemoveCamera", RelayCommand.Create(RunRemoveCameraFromWallCommand, (p) => SelectedCamera != null));
             Commands.Add("DeleteCamera", RelayCommand.Create(RunDeleteCameraCommand, (p) => SelectedCamera != null));
 
@@ -176,17 +176,16 @@ namespace Restless.App.Camera
             CameraList.Refresh();
         }
 
-        private void RunEditCameraCommand(object parm)
+        private void RunManageCameraCommand(object parm)
         {
             if (SelectedCamera != null)
             {
                 bool isTop = IsTopmost;
                 IsTopmost = false;
                 SelectedCamera.PropertyChanged += SelectedCameraPropertyChanged;
-                WindowFactory.CameraEdit.Create(SelectedCamera).ShowDialog();
+                WindowFactory.CameraManage.Create(SelectedCamera).ShowDialog();
                 SelectedCamera.PropertyChanged -= SelectedCameraPropertyChanged;
                 IsTopmost = isTop;
-                CameraList.Refresh();
             }
         }
 

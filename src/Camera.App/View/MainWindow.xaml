@@ -110,7 +110,7 @@
                     >
                     <core:CameraListControl.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Edit camera" Command="{Binding Commands[EditCamera]}"/>
+                            <MenuItem Header="Manage camera" Command="{Binding Commands[ManageCamera]}"/>
                             <MenuItem Header="Remove from wall" Command="{Binding Commands[RemoveCamera]}"/>
                             <Separator/>
                             <MenuItem Icon="{StaticResource ImageRedXMenu}" Header="Delete camera" Command="{Binding Commands[DeleteCamera]}"/>
@@ -122,7 +122,7 @@
                 <TextBlock Style="{StaticResource TextBlockInfo}">
                     <Run Text="To add a camera, click"/>
                     <Run Foreground="Red" Text="Add."/>
-                    <Run Text="Once added, you can edit its properties."/>
+                    <Run Text="Once added, you can manage its properties."/>
                 </TextBlock>
                 <TextBlock Style="{StaticResource TextBlockInfo}" Text="Once a camera is added and configured, drag it to the display position you want."/>
                 
