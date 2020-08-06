@@ -319,12 +319,31 @@ namespace Restless.App.Camera.Core
             }
         }
 
+        private void UpdateStatusBanner(long id)
+        {
+            if (GetCameraHost(id) is CameraHostBorder host)
+            {
+                host.CameraControl.StatusAlignment = GetStatusAlignment(host.CameraControl.Camera);
+            }
+        }
+
+        private VerticalAlignment GetStatusAlignment(CameraRow camera)
+        {
+            if (camera.Flags.HasFlag(CameraFlags.StatusTop)) return VerticalAlignment.Top;
+            if (camera.Flags.HasFlag(CameraFlags.StatusBottom)) return VerticalAlignment.Bottom;
+            /* center causes trigger to hide the status banner */
+            return VerticalAlignment.Center;
+        }
+
         private void ExecutePushCommand(PushCommand command)
         {
             switch (command.CommandType)
             {
                 case PushCommandType.RemoveFromWall:
                     RemoveCameraFromWall(command.Id);
+                    break;
+                case PushCommandType.UpdateStatusBanner:
+                    UpdateStatusBanner(command.Id);
                     break;
             }
         }

@@ -61,8 +61,8 @@ namespace Restless.App.Camera
         {
             return flag switch
             {
-                CameraFlags.StatusTop => CameraFlags.StatusBottom | CameraFlags.StatusOff,
-                CameraFlags.StatusBottom => CameraFlags.StatusTop | CameraFlags.StatusOff,
+                CameraFlags.StatusTop => CameraFlags.StatusBottom,
+                CameraFlags.StatusBottom => CameraFlags.StatusTop,
                 _ => CameraFlags.StatusTop | CameraFlags.StatusBottom,
             };
         }

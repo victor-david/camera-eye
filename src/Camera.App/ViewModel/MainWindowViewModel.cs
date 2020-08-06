@@ -189,9 +189,9 @@ namespace Restless.App.Camera
 
         private void SelectedCameraPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == CameraTable.Defs.Columns.Flags)
+            if (e.PropertyName == CameraTable.Defs.Columns.Flags && sender is CameraRow camera)
             {
-                // TODO - Notify camera wall that flags have changed.
+                PushCommand = PushCommand.Create(PushCommandType.UpdateStatusBanner, camera.Id);
             }
         }
 

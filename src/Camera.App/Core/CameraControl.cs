@@ -323,42 +323,36 @@ namespace Restless.App.Camera.Core
         public static readonly DependencyProperty StatusWidthProperty = StatusWidthPropertyKey.DependencyProperty;
 
         /// <summary>
-        /// Gets the command to change the status alignment
+        /// Gets or sets the vertical alignment for the status banner.
+        /// Use Top, Bottom, or Center. Center causes the status banner to hide.
         /// </summary>
-        public ICommand StatusAlignmentCommand
+        public VerticalAlignment StatusAlignment
         {
-            get => (ICommand)GetValue(StatusAlignmentCommandProperty);
-            private set => SetValue(StatusAlignmentCommandPropertyKey, value);
+            get => (VerticalAlignment)GetValue(StatusAlignmentProperty);
+            set => SetValue(StatusAlignmentProperty, value);
         }
 
-        private static readonly DependencyPropertyKey StatusAlignmentCommandPropertyKey = DependencyProperty.RegisterReadOnly
+        /// <summary>
+        /// Identifies the <see cref="StatusAlignment"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty StatusAlignmentProperty = DependencyProperty.Register
             (
-                nameof(StatusAlignmentCommand), typeof(ICommand), typeof(CameraControl), new PropertyMetadata(null)
+                nameof(StatusAlignment), typeof(VerticalAlignment), typeof(CameraControl), new PropertyMetadata()
+                {
+                    DefaultValue = VerticalAlignment.Top,
+                    CoerceValueCallback = OnCoerceStatusAlignment
+                }
             );
 
-        /// <summary>
-        /// Identifies the <see cref="StatusAlignmentCommand"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty StatusAlignmentCommandProperty = StatusAlignmentCommandPropertyKey.DependencyProperty;
-
-        /// <summary>
-        /// Gets the vertical alignment for the status banner
-        /// </summary>
-        public VerticalAlignment StatusVerticalAlignment
+        private static object OnCoerceStatusAlignment(DependencyObject d, object baseValue)
         {
-            get => (VerticalAlignment)GetValue(StatusVerticalAlignmentProperty);
-            private set => SetValue(StatusVerticalAlignmentPropertyKey, value);
+            VerticalAlignment align = (VerticalAlignment)baseValue;
+            if (align == VerticalAlignment.Stretch)
+            {
+                align = VerticalAlignment.Center;
+            }
+            return align;
         }
-
-        private static readonly DependencyPropertyKey StatusVerticalAlignmentPropertyKey = DependencyProperty.RegisterReadOnly
-            (
-                nameof(StatusVerticalAlignment), typeof(VerticalAlignment), typeof(CameraControl), new PropertyMetadata(VerticalAlignment.Top)
-            );
-
-        /// <summary>
-        /// Identifies the <see cref="StatusVerticalAlignment"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty StatusVerticalAlignmentProperty = StatusVerticalAlignmentPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets or sets the date/time format to use on the status banner. Default is "yyyy-MMM-dd hh:mm:ss tt".
@@ -803,19 +797,8 @@ namespace Restless.App.Camera.Core
                     MotionCommand = RelayCommand.Create(RunMotionCommand);
                 }
 
-                /* establish status alignment (alignment top is default, don't need to check) */
-                if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))
-                {
-                    StatusVerticalAlignment = VerticalAlignment.Bottom;
-                }
+                StatusAlignment = GetStatusAlignment();
 
-                if (Camera.Flags.HasFlag(CameraFlags.StatusOff))
-                {
-                    // center causes trigger to hide status banner
-                    StatusVerticalAlignment = VerticalAlignment.Center;
-                }
-
-                StatusAlignmentCommand = RelayCommand.Create(RunStatusAlignmentCommand);
                 FullScreenCommand = RelayCommand.Create(RunFullScreenCommand);
 
                 Plugin.VideoFrameReceived += PluginVideoFrameReceived;
@@ -827,6 +810,14 @@ namespace Restless.App.Camera.Core
             {
                 ErrorText = ex.Message;
             }
+        }
+
+        private VerticalAlignment GetStatusAlignment()
+        {
+            if (Camera.Flags.HasFlag(CameraFlags.StatusTop)) return VerticalAlignment.Top;
+            if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))  return VerticalAlignment.Bottom;
+            /* center causes trigger to hide the status banner */
+            return VerticalAlignment.Center;
         }
 
         private void InitializeIsMouseCameraMotionAvailable()
@@ -909,26 +900,6 @@ namespace Restless.App.Camera.Core
             if (parm is CameraMotion motion)
             {
                 (Plugin as ICameraMotion)?.Move(motion);
-            }
-        }
-
-        private void RunStatusAlignmentCommand(object parm)
-        {
-            if (parm is VerticalAlignment alignment)
-            {
-                switch (alignment)
-                {
-                    case VerticalAlignment.Top:
-                        Camera.ChangeFlags(CameraFlags.StatusTop, CameraFlags.StatusOff | CameraFlags.StatusBottom);
-                        break;
-                    case VerticalAlignment.Bottom:
-                        Camera.ChangeFlags(CameraFlags.StatusBottom, CameraFlags.StatusOff | CameraFlags.StatusTop);
-                        break;
-                    default:
-                        Camera.ChangeFlags(CameraFlags.StatusOff, CameraFlags.StatusTop | CameraFlags.StatusBottom);
-                        break;
-                }
-                StatusVerticalAlignment = alignment;
             }
         }
 

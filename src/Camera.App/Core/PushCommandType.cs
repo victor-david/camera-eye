@@ -12,6 +12,10 @@
         /// <summary>
         /// Remove camera from wall.
         /// </summary>
-        RemoveFromWall
+        RemoveFromWall,
+        /// <summary>
+        /// Update camera's status banner.
+        /// </summary>
+        UpdateStatusBanner,
     }
 }

@@ -44,7 +44,7 @@
             <HeaderedItemsControl Style="{StaticResource MenuButtonGroup}" Header="Status banner">
                 <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
                 <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
-                <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusOff}"/>
+                <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
             </HeaderedItemsControl>
             
             <!-- Notes -->

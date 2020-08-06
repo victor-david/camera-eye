@@ -21,10 +21,6 @@ namespace Restless.App.Database.Core
         /// </summary>
         StatusBottom = 2,
         /// <summary>
-        /// Status is off.
-        /// </summary>
-        StatusOff = 4,
-        /// <summary>
         /// Camera is on the wall
         /// </summary>
         IncludeOnWall = 8,

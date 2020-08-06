@@ -162,7 +162,7 @@
                         x:Name="StatusBanner"
                         Style="{StaticResource BorderStreamStatus}"
                         Width="{TemplateBinding StatusWidth}"
-                        VerticalAlignment="{TemplateBinding StatusVerticalAlignment}">
+                        VerticalAlignment="{TemplateBinding StatusAlignment}">
                             <Grid core:Property.ColumnWidths="Auto,*,*">
 
                                 <TextBlock Text="{TemplateBinding CameraName}"/>
@@ -259,7 +259,7 @@
             <Trigger Property="IsPluginMotion" Value="False">
                 <Setter TargetName="MotionControl" Property="Visibility" Value="Collapsed"/>
             </Trigger>
-            <Trigger Property="StatusVerticalAlignment" Value="Center">
+            <Trigger Property="StatusAlignment" Value="Center">
                 <Setter TargetName="StatusBanner" Property="Visibility" Value="Collapsed"/>
             </Trigger>
         </ControlTemplate.Triggers>
