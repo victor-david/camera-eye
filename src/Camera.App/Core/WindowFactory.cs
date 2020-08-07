@@ -37,39 +37,6 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
-        #region Camera
-        /// <summary>
-        /// Provides static methods for creating camera windows.
-        /// </summary>
-        public static class Camera
-        {
-            /// <summary>
-            /// Creates an instance of CameraWindow and its corresponding view model.
-            /// </summary>
-            /// <param name="viewModel">The view model to inject, or null to use the default.</param>
-            /// <returns>The window</returns>
-            public static CameraWindow Create(CameraRow camera, ApplicationViewModel viewModel = null)
-            {
-                var window = new CameraWindow()
-                {
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    Width = Config.Default.CameraWindow.Width,
-                    Height = Config.Default.CameraWindow.Height,
-                    MinWidth = Config.Default.CameraWindow.MinWidth,
-                    MinHeight = Config.Default.CameraWindow.MinHeight,
-                    DataContext = viewModel ?? new CameraWindowViewModel(camera)
-                };
-
-                (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
-
-                TextOptions.SetTextFormattingMode(window);
-                return window;
-            }
-        }
-        #endregion
-
-        /************************************************************************/
-
         #region CameraManage
         /// <summary>
         /// Provides static methods for creating camera configuration windows.
