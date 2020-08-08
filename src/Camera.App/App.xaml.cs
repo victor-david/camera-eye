@@ -56,7 +56,7 @@ namespace Restless.App.Camera
         {
             foreach (var creator in CompositionManager.Instance.PluginCreators)
             {
-                DatabaseController.Instance.GetTable<PluginTable>().AddPlugin(creator.Value.UniqueId, (row) =>
+                DatabaseController.Instance.GetTable<PluginTable>().AddOrUpdatePlugin(creator.Value.UniqueId, (row) =>
                 {
                     row.AssemblyName = creator.Value.AssemblyName;
                     row.Description = creator.Value.Description;

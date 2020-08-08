@@ -104,9 +104,11 @@ namespace Restless.App.Database.Tables
         /// </summary>
         /// <param name="guid">The unique identifier. Obtained from service contract.</param>
         /// <param name="initializer">Initializer</param>
-        public void AddPlugin(string guid, Action<PluginRow> initializer)
+        public void AddOrUpdatePlugin(string guid, Action<PluginRow> initializer)
         {
-            if (GetPlugin(guid) == null)
+            PluginRow plugin = GetPlugin(guid);
+
+            if (plugin == null)
             {
                 var obj = new PluginRow(NewRow())
                 {
@@ -115,8 +117,12 @@ namespace Restless.App.Database.Tables
                 };
                 initializer(obj);
                 Rows.Add(obj.Row);
-                Save();
             }
+            else
+            {
+                initializer(plugin);
+            }
+            Save();
         }
 
         /// <summary>
