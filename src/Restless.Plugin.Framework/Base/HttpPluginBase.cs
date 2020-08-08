@@ -120,7 +120,12 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Protected methods
-        protected async Task<string> PerformClientRequest(string requestUri)
+        /// <summary>
+        /// Performs a client request using GET.
+        /// </summary>
+        /// <param name="requestUri">The request uri</param>
+        /// <returns>The body of the response, or null if error.</returns>
+        protected async Task<string> PerformClientGetAsync(string requestUri)
         {
             try
             {
@@ -131,7 +136,7 @@ namespace Restless.Plugin.Framework
             }
             catch (Exception ex)
             {
-                OnPluginException(new PluginException(nameof(PerformClientRequest), requestUri, ex));
+                OnPluginException(new PluginException(nameof(PerformClientGetAsync), requestUri, ex));
                 return null;
             }
         }

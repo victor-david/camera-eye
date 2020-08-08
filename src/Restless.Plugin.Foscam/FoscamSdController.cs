@@ -106,7 +106,7 @@ namespace Restless.Plugin.Foscam
         {
             if (motionMap.ContainsKey(motion))
             {
-                await PerformClientRequest(GetCameraMotionUri(motion));
+                await PerformClientGetAsync(GetCameraMotionUri(motion));
             }
         }
         #endregion
@@ -120,7 +120,7 @@ namespace Restless.Plugin.Foscam
 
         public async void Reboot()
         {
-            await PerformClientRequest($"{GetDeviceRoot(TransportProtocol.Http)}/reboot.cgi");
+            await PerformClientGetAsync($"{GetDeviceRoot(TransportProtocol.Http)}/reboot.cgi");
         }
         #endregion
 

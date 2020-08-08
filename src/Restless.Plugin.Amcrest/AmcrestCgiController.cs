@@ -26,7 +26,7 @@ namespace Restless.Plugin.Amcrest
         /// Creates an instance of the plugin.
         /// </summary>
         /// <param name="parms">The connection parameters</param>
-        /// <returns>An instance of <see cref="FoscamSdController"/></returns>
+        /// <returns>An instance of <see cref="AmcrestCgiController"/></returns>
         public ICameraPlugin Create(ConnectionParameters parms)
         {
             return new AmcrestCgiController(parms);
@@ -146,7 +146,7 @@ namespace Restless.Plugin.Amcrest
         {
             if (motionMap.ContainsKey(motion))
             {
-                await PerformClientRequest(GetCameraMotionUri(motion));
+                await PerformClientGetAsync(GetCameraMotionUri(motion));
             }
         }
         #endregion
@@ -209,30 +209,30 @@ namespace Restless.Plugin.Amcrest
         /// Sets video flip
         /// </summary>
         /// <param name="value">true to flip video; otherwise, false.</param>
-        public async void SetFlip(bool value)
+        public virtual async void SetFlip(bool value)
         {
             ConfigItem item = value ? ConfigItem.FlipOn : ConfigItem.FlipOff;
-            await PerformClientRequest(GetConfigurationUri(item));
+            await PerformClientGetAsync(GetConfigurationUri(item));
         }
 
         /// <summary>
         /// Sets video mirror.
         /// </summary>
         /// <param name="value">true to mirror video; otherwise false.</param>
-        public async void SetMirror(bool value)
+        public virtual async void SetMirror(bool value)
         {
             ConfigItem item = value ? ConfigItem.MirrorOn : ConfigItem.MirrorOff;
-            await PerformClientRequest(GetConfigurationUri(item));
+            await PerformClientGetAsync(GetConfigurationUri(item));
         }
 
         /// <summary>
         /// Sets infra red.
         /// </summary>
         /// <param name="value">true to turn on infra red; false to turn it off.</param>
-        public async void SetInfraRed(bool value)
+        public virtual async void SetInfraRed(bool value)
         {
             ConfigItem item = value ? ConfigItem.InfraRedOn : ConfigItem.InfraRedOff;
-            await PerformClientRequest(GetConfigurationUri(item));
+            await PerformClientGetAsync(GetConfigurationUri(item));
         }
         #endregion
 
@@ -246,7 +246,7 @@ namespace Restless.Plugin.Amcrest
             {
                 string uri = GetConfigurationUri(item);
                 uri = string.Format(uri, value);
-                await PerformClientRequest(uri);
+                await PerformClientGetAsync(uri);
                 colorValueMap[item] = value;
             }
         }
@@ -254,7 +254,7 @@ namespace Restless.Plugin.Amcrest
         private async Task InitializeColorValues()
         {
             string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigGetControlPath}VideoColor";
-            string body = await PerformClientRequest(uri);
+            string body = await PerformClientGetAsync(uri);
             if (!string.IsNullOrEmpty(body))
             {
                 string[] lines = body.Split(Environment.NewLine);
