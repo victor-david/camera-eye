@@ -7,12 +7,12 @@ using System.ComponentModel.Composition;
 namespace Restless.Plugin.Amcrest
 {
     [Export(typeof(ICameraPluginCreator))]
-    public class AmcrestCreator : PluginCreatorBase, ICameraPluginCreator
+    public class AmcrestCgiCreator : PluginCreatorBase, ICameraPluginCreator
     {
         /// <summary>
         /// Gets the display name for the plugin.
         /// </summary>
-        public string DisplayName => "Amcrest Camera Controller";
+        public string DisplayName => "Amcrest Camera Controller (CGI)";
         /// <summary>
         /// Gets the description for the plugin.
         /// </summary>
@@ -28,11 +28,11 @@ namespace Restless.Plugin.Amcrest
         /// <returns>An instance of <see cref="FoscamSdController"/></returns>
         public ICameraPlugin Create(ConnectionParameters parms)
         {
-            return new AmcrestController(parms);
+            return new AmcrestCgiController(parms);
         }
     }
 
-    public class AmcrestController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor
+    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor
     {
         #region Private
         // start / stop
@@ -63,7 +63,7 @@ namespace Restless.Plugin.Amcrest
         /************************************************************************/
 
         #region Constructor (internal)
-        internal AmcrestController(ConnectionParameters parms) : base(parms)
+        internal AmcrestCgiController(ConnectionParameters parms) : base(parms)
         {
             VideoStreams.Add(new VideoStreamDescriptor(TransportProtocol.Rtsp, RtspVideoStreamPath0, "Rtsp High Res"));
             VideoStreams.Add(new VideoStreamDescriptor(TransportProtocol.Rtsp, RtspVideoStreamPath1, "Rtsp Low Res (640x480)"));
