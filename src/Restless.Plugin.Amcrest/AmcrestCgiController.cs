@@ -3,6 +3,7 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 
 namespace Restless.Plugin.Amcrest
 {
@@ -84,10 +85,10 @@ namespace Restless.Plugin.Amcrest
 
             colorValueMap = new Dictionary<ConfigItem, int>()
             {
-                { ConfigItem.Brightness, -1 },
-                { ConfigItem.Contrast, -1 },
-                { ConfigItem.Hue, -1 },
-                { ConfigItem.Saturation, -1 },
+                { ConfigItem.Brightness, 50 },
+                { ConfigItem.Contrast, 50 },
+                { ConfigItem.Hue, 50 },
+                { ConfigItem.Saturation, 50 },
             };
 
             configMap = new Dictionary<ConfigItem, string>()
@@ -103,8 +104,6 @@ namespace Restless.Plugin.Amcrest
                 { ConfigItem.InfraRedOn, "VideoInOptions[0].InfraRed=true&VideoInOptions[0].InfraRedLevel=50" },
                 { ConfigItem.InfraRedOff, "VideoInOptions[0].InfraRed=false" },
             };
-
-            InitializeColorValues();
         }
         #endregion
 
@@ -192,9 +191,15 @@ namespace Restless.Plugin.Amcrest
         }
 
         /// <summary>
-        /// Occurs when the color values (brightness, contrast, etc.) have been retrieved from the camera.
+        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
-        public event EventHandler ColorValuesInitialized;
+        /// <param name="completed">A method to call when the values have been retrieved</param>
+        public async void InitializeCameraValues(Action completed)
+        {
+            if (completed == null) throw new ArgumentNullException(nameof(completed));
+            await InitializeColorValues();
+            completed();
+        }
         #endregion
 
         /************************************************************************/
@@ -246,7 +251,7 @@ namespace Restless.Plugin.Amcrest
             }
         }
 
-        private async void InitializeColorValues()
+        private async Task InitializeColorValues()
         {
             string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigGetControlPath}VideoColor";
             string body = await PerformClientRequest(uri);
@@ -280,16 +285,6 @@ namespace Restless.Plugin.Amcrest
                     }
                 }
             }
-            EnsureColorValuesInitialized();
-            ColorValuesInitialized?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void EnsureColorValuesInitialized()
-        {
-            foreach (ConfigItem key in colorValueMap.Keys)
-            {
-                if (colorValueMap[key] == -1) colorValueMap[key] = 50;
-            }
         }
 
         private int GetIntegerValue(string input, int defaultValue = 50)
@@ -297,7 +292,6 @@ namespace Restless.Plugin.Amcrest
             if (int.TryParse(input, out int result)) return result;
             return defaultValue;
         }
-
 
         private string GetConfigurationUri(ConfigItem item)
         {

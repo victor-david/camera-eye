@@ -214,7 +214,13 @@ namespace Restless.App.Camera
                     Plugin.PluginException += PluginPluginException;
                     if (Plugin is ICameraColor color)
                     {
-                        color.ColorValuesInitialized += ColorValuesInitialized;
+                        color.InitializeCameraValues(() =>
+                        {
+                            Brightness = color.Brightness;
+                            Contrast = color.Contrast;
+                            Hue = color.Hue;
+                            Saturation = color.Saturation;
+                        });
                     }
                 }
             }
@@ -229,27 +235,12 @@ namespace Restless.App.Camera
             ErrorText = e.Message;
         }
 
-        private void ColorValuesInitialized(object sender, EventArgs e)
-        {
-            if (sender is ICameraColor color)
-            {
-                Brightness = color.Brightness;
-                Contrast = color.Contrast;
-                Hue = color.Hue;
-                Saturation = color.Saturation;
-            }
-        }
-
         private void DestroyPlugin()
         {
             if (Plugin != null)
             {
                 Plugin.StopVideoAsync();
                 Plugin.PluginException -= PluginPluginException;
-                if (Plugin is ICameraColor color)
-                {
-                    color.ColorValuesInitialized -= ColorValuesInitialized;
-                }
                 Plugin = null;
             }
         }

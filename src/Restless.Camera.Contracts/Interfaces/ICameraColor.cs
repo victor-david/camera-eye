@@ -29,61 +29,9 @@ namespace Restless.Camera.Contracts
         int Saturation { get; set; }
 
         /// <summary>
-        /// Occurs when the color values (brightness, contrast, etc.) have been retrieved from the camera.
+        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
-        event EventHandler ColorValuesInitialized;
-
-        ///// <summary>
-        ///// Gets the current brightness value.
-        ///// </summary>
-        ///// <returns>The value</returns>
-        //int GetBrightness();
-
-        ///// <summary>
-        ///// Gets the current contrast value.
-        ///// </summary>
-        ///// <returns>The value</returns>
-        //int GetContrast();
-
-        ///// <summary>
-        ///// Gets the current hue value.
-        ///// </summary>
-        ///// <returns>The value</returns>
-        //int GetHue();
-
-        ///// <summary>
-        ///// Gets the current saturation value.
-        ///// </summary>
-        ///// <returns>The value</returns>
-        //int GetSaturation();
-
-        ///// <summary>
-        ///// Sets the brightness.
-        ///// </summary>
-        ///// <param name="value">The value to set.</param>
-        //void SetBrightness(int value);
-
-        ///// <summary>
-        ///// Sets the contrast.
-        ///// </summary>
-        ///// <param name="value">The value to set.</param>
-        //void SetContrast(int value);
-
-        ///// <summary>
-        ///// Sets the hue.
-        ///// </summary>
-        ///// <param name="value">The value to set.</param>
-        //void SetHue(int value);
-
-        ///// <summary>
-        ///// Sets the saturation.
-        ///// </summary>
-        ///// <param name="value">The value to set.</param>
-        //void SetSaturation(int value);
-
-        ///// <summary>
-        ///// Occurs when the color values (brightness, contrast, etc.) have been retrieved from the camera.
-        ///// </summary>
-        //event EventHandler ColorValuesInitialized;
+        /// <param name="completed">A method to call when the values have been retrieved.</param>
+        void InitializeCameraValues(Action completed);
     }
 }
