@@ -50,14 +50,6 @@ namespace Restless.Plugin.Amcrest
         private readonly Dictionary<ConfigItem, int> colorValueMap;
         private int videoStreamIndex;
         private int motionSpeed;
-
-        private enum ConfigItem
-        {
-            Brightness,Contrast,
-            Hue,Saturation,
-            FlipOn, FlipOff,
-            MirrorOn, MirrorOff,
-        }
         #endregion
 
         /************************************************************************/
