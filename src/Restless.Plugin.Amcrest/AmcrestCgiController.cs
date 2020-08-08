@@ -57,7 +57,6 @@ namespace Restless.Plugin.Amcrest
             Hue,Saturation,
             FlipOn, FlipOff,
             MirrorOn, MirrorOff,
-            InfraRedOn, InfraRedOff,
         }
         #endregion
 
@@ -101,8 +100,6 @@ namespace Restless.Plugin.Amcrest
                 { ConfigItem.FlipOff, "VideoInOptions[0].Flip=false" },
                 { ConfigItem.MirrorOn, "VideoInOptions[0].Mirror=true" },
                 { ConfigItem.MirrorOff, "VideoInOptions[0].Mirror=false" },
-                { ConfigItem.InfraRedOn, "VideoInOptions[0].InfraRed=true&VideoInOptions[0].InfraRedLevel=50" },
-                { ConfigItem.InfraRedOff, "VideoInOptions[0].InfraRed=false" },
             };
         }
         #endregion
@@ -222,16 +219,6 @@ namespace Restless.Plugin.Amcrest
         public virtual async void SetMirror(bool value)
         {
             ConfigItem item = value ? ConfigItem.MirrorOn : ConfigItem.MirrorOff;
-            await PerformClientGetAsync(GetConfigurationUri(item));
-        }
-
-        /// <summary>
-        /// Sets infra red.
-        /// </summary>
-        /// <param name="value">true to turn on infra red; false to turn it off.</param>
-        public virtual async void SetInfraRed(bool value)
-        {
-            ConfigItem item = value ? ConfigItem.InfraRedOn : ConfigItem.InfraRedOff;
             await PerformClientGetAsync(GetConfigurationUri(item));
         }
         #endregion

@@ -162,9 +162,6 @@ namespace Restless.App.Camera
             Commands.Add("MirrorOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(true)));
             Commands.Add("MirrorOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(false)));
 
-            Commands.Add("InfraRedOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetInfraRed(true)));
-            Commands.Add("InfraRedOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetInfraRed(false)));
-
             Brightness = Contrast = Hue = Saturation = 50;
 
             Camera.PropertyChanged += CameraPropertyChanged;

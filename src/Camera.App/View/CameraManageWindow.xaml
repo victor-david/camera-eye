@@ -91,12 +91,6 @@
                                 <Button Content="Off" Command="{Binding Commands[MirrorOff]}"/>
                             </HeaderedItemsControl>
 
-                            <Separator/>
-
-                            <HeaderedItemsControl Header="Infra Red">
-                                <Button Content="On" Command="{Binding Commands[InfraRedOn]}"/>
-                                <Button Content="Off" Command="{Binding Commands[InfraRedOff]}"/>
-                            </HeaderedItemsControl>
                         </ToolBar>
 
                     </StackPanel>
