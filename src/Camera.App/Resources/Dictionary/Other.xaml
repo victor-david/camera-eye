@@ -2,21 +2,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style TargetType="Menu" x:Key="MenuMain">
-        <Setter Property="BorderBrush" Value="LightSlateGray"/>
-        <Setter Property="BorderThickness" Value="0,0,0,1"/>
-        <Setter Property="Height" Value="24"/>
-        <Setter Property="Background" Value="AliceBlue"/>
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
-    </Style>
-
-    <Style TargetType="StackPanel" x:Key="StackPanelDataEntry">
+    <Style TargetType="Panel" x:Key="DataPanel">
         <Style.Resources>
             <Style TargetType="TextBlock">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
                 <Setter Property="Foreground" Value="DarkGray"/>
                 <Setter Property="FontSize" Value="12"/>
             </Style>
             <Style TargetType="TextBox">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
                 <Setter Property="Margin" Value="0,2,4,4"/>
                 <Setter Property="Height" Value="30"/>
                 <Setter Property="FontSize" Value="12.5"/>
@@ -25,8 +19,15 @@
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
             <Style TargetType="GroupBox">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
                 <Setter Property="Margin" Value="0,6"/>
                 <Setter Property="Foreground" Value="DarkGray"/>
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+            </Style>
+            <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource MenuButtonGroup}">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
             </Style>
         </Style.Resources>
     </Style>

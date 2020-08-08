@@ -12,7 +12,7 @@
     <Grid core:Property.ColumnWidths="360,*">
         <!-- Camera detail -->
         <HeaderedContentControl Header="Detail">
-            <StackPanel Margin="4" Style="{StaticResource StackPanelDataEntry}">
+            <DockPanel Margin="4" Style="{StaticResource DataPanel}">
                 <!-- Camera name -->
                 <TextBlock Text="Camera Name"/>
                 <TextBox Text="{Binding Camera.Name}" MaxLength="28"/>
@@ -43,7 +43,7 @@
                 </Grid>
 
                 <!-- Status banner -->
-                <HeaderedItemsControl Style="{StaticResource MenuButtonGroup}" Header="Status banner">
+                <HeaderedItemsControl Header="Status banner">
                     <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
                     <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
                     <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
@@ -52,18 +52,19 @@
                 <!-- Notes -->
                 <TextBlock Text="Notes"/>
                 <TextBox
-                    Height="126"
+                    Height="Auto"
                     VerticalContentAlignment="Top"
                     AcceptsReturn="True"
                     TextWrapping="Wrap"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     Text="{Binding Camera.Note}"/>
-                
-            </StackPanel>
+
+            </DockPanel>
         </HeaderedContentControl>
 
+        <!-- Plugin and additional settings -->
         <HeaderedContentControl Grid.Column="1" Header="Plugin Settings">
-            <StackPanel Margin="4" Style="{StaticResource StackPanelDataEntry}">
+            <StackPanel Margin="4" Style="{StaticResource DataPanel}">
                 <!-- Plugin -->
                 <TextBlock Text="Service Plugin"/>
                 <ComboBox
@@ -73,17 +74,66 @@
                     SelectedValue="{Binding Camera.PluginId,Mode=TwoWay}"/>
 
                 <!-- Plugin settings -->
-                <GroupBox Header="Settings" MinHeight="130" core:Property.IsVisible="{Binding PluginIsSettings}">
-                    
-                </GroupBox>
+                <Border core:Property.IsVisible="{Binding PluginIsSettings}">
+                    <StackPanel Style="{StaticResource DataPanel}">
 
-                <!-- Settings not supported -->
+                        <ToolBar Margin="0,4">
+                        
+                            <HeaderedItemsControl Header="Flip">
+                                <Button Content="On" Command="{Binding Commands[FlipOn]}"/>
+                                <Button Content="Off" Command="{Binding Commands[FlipOff]}"/>
+                            </HeaderedItemsControl>
+
+                            <Separator/>
+
+                            <HeaderedItemsControl Header="Mirror">
+                                <Button Content="On" Command="{Binding Commands[MirrorOn]}"/>
+                                <Button Content="Off" Command="{Binding Commands[MirrorOff]}"/>
+                            </HeaderedItemsControl>
+
+                            <Separator/>
+
+                            <HeaderedItemsControl Header="Infra Red">
+                                <Button Content="On" Command="{Binding Commands[InfraRedOn]}"/>
+                                <Button Content="Off" Command="{Binding Commands[InfraRedOff]}"/>
+                            </HeaderedItemsControl>
+                        </ToolBar>
+
+                    </StackPanel>
+                </Border>
+
+                <Border core:Property.IsVisible="{Binding PluginIsColor}">
+                    <StackPanel Style="{StaticResource DataPanel}">
+                        <TextBlock Text="Brightness"/>
+                        <Slider 
+                            Style="{StaticResource SliderColorSetter}"
+                            Value="{Binding Brightness,Delay=500}" />
+                        
+                        <TextBlock Text="Contrast"/>
+                        <Slider
+                            Style="{StaticResource SliderColorSetter}"
+                            Value="{Binding Contrast, Delay=500}"/>
+                        
+                        <TextBlock Text="Hue"/>
+                        <Slider 
+                            Style="{StaticResource SliderColorSetter}"
+                            Value="{Binding Hue,Delay=500}" />
+
+                        <TextBlock Text="Saturation"/>
+                        <Slider
+                            Style="{StaticResource SliderColorSetter}"
+                            Value="{Binding Saturation, Delay=500}"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Additional settings not supported -->
                 <TextBlock 
                     Margin="0,6"
                     Text="This plugin does not support additional settings"
-                    core:Property.IsCollapsed="{Binding PluginIsSettings}"/>
+                    core:Property.IsVisible="{Binding PluginIsNone}"/>
 
-
+                <!-- Error -->
                 <TextBlock
                     Style="{StaticResource TextBlockError}"
                     Text="{Binding ErrorText}" 

@@ -14,6 +14,10 @@ namespace Restless.App.Camera
         #region Private
         private ICameraPlugin plugin;
         private string errorText;
+        private int brightness;
+        private int contrast;
+        private int hue;
+        private int saturation;
         #endregion
 
         /************************************************************************/
@@ -34,6 +38,8 @@ namespace Restless.App.Camera
             {
                 plugin = value;
                 OnPropertyChanged(nameof(PluginIsSettings));
+                OnPropertyChanged(nameof(PluginIsColor));
+                OnPropertyChanged(nameof(PluginIsNone));
             }
         }
 
@@ -43,6 +49,75 @@ namespace Restless.App.Camera
         public bool PluginIsSettings
         {
             get => plugin is ICameraSettings;
+        }
+
+        /// <summary>
+        /// Gets a boolean value that indicates if the plugin supports ICameraColor.
+        /// </summary>
+        public bool PluginIsColor
+        {
+            get => plugin is ICameraColor;
+        }
+
+        /// <summary>
+        /// Gets a boolean value that indicates if the plugin does not support additional configuration.
+        /// </summary>
+        public bool PluginIsNone
+        {
+            get => !PluginIsSettings && !PluginIsColor;
+        }
+
+        /// <summary>
+        /// Gets or sets the brightness.
+        /// </summary>
+        public int Brightness
+        {
+            get => brightness;
+            set 
+            { 
+                SetProperty(ref brightness, value);
+                if (Plugin is ICameraColor color) color.Brightness = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the contrast.
+        /// </summary>
+        public int Contrast
+        {
+            get => contrast;
+            set 
+            {
+                SetProperty(ref contrast, value);
+                if (Plugin is ICameraColor color) color.Contrast = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the hue.
+        /// </summary>
+        public int Hue
+        {
+            get => hue;
+            set 
+            { 
+                SetProperty(ref hue, value);
+                if (Plugin is ICameraColor color) color.Hue = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the saturation.
+        /// </summary>
+        public int Saturation
+        {
+            get => saturation;
+            set 
+            {
+                SetProperty(ref saturation, value);
+                if (Plugin is ICameraColor color) color.Saturation = value;
+            }
         }
 
         /// <summary>
@@ -81,6 +156,17 @@ namespace Restless.App.Camera
             Camera = camera ?? throw new ArgumentNullException(nameof(camera));
             DisplayName = Camera.Name;
             Commands.Add("ChangeStatusBanner", RelayCommand.Create(RunChangeStatusBannerCommand));
+            Commands.Add("FlipOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetFlip(true)));
+            Commands.Add("FlipOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetFlip(false)));
+
+            Commands.Add("MirrorOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(true)));
+            Commands.Add("MirrorOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(false)));
+
+            Commands.Add("InfraRedOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetInfraRed(true)));
+            Commands.Add("InfraRedOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetInfraRed(false)));
+
+            Brightness = Contrast = Hue = Saturation = 50;
+
             Camera.PropertyChanged += CameraPropertyChanged;
             CreatePlugin();
         }
@@ -125,6 +211,11 @@ namespace Restless.App.Camera
                 if (Camera.PluginId != PluginTable.Defs.Values.NullPluginId)
                 {
                     Plugin = PluginFactory.Create(Camera);
+                    Plugin.PluginException += PluginPluginException;
+                    if (Plugin is ICameraColor color)
+                    {
+                        color.ColorValuesInitialized += ColorValuesInitialized;
+                    }
                 }
             }
             catch (Exception ex)
@@ -133,11 +224,32 @@ namespace Restless.App.Camera
             }
         }
 
+        private void PluginPluginException(object sender, PluginException e)
+        {
+            ErrorText = e.Message;
+        }
+
+        private void ColorValuesInitialized(object sender, EventArgs e)
+        {
+            if (sender is ICameraColor color)
+            {
+                Brightness = color.Brightness;
+                Contrast = color.Contrast;
+                Hue = color.Hue;
+                Saturation = color.Saturation;
+            }
+        }
+
         private void DestroyPlugin()
         {
             if (Plugin != null)
             {
                 Plugin.StopVideoAsync();
+                Plugin.PluginException -= PluginPluginException;
+                if (Plugin is ICameraColor color)
+                {
+                    color.ColorValuesInitialized -= ColorValuesInitialized;
+                }
                 Plugin = null;
             }
         }

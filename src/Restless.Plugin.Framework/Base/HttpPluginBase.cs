@@ -120,18 +120,19 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Protected methods
-        protected async Task PerformClientRequest(string requestUri)
+        protected async Task<string> PerformClientRequest(string requestUri)
         {
             try
             {
                 HttpResponseMessage response = await Client.GetAsync(requestUri);
                 response.EnsureSuccessStatusCode();
-                string body = await response.Content.ReadAsStringAsync();
+                return await response.Content.ReadAsStringAsync();
                 //OnHttpResponse(response);
             }
             catch (Exception ex)
             {
                 OnPluginException(new PluginException(nameof(PerformClientRequest), requestUri, ex));
+                return null;
             }
         }
         #endregion

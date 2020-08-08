@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="Resources/Dictionary/Other.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/TextBlock.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/ToolBar.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Slider.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
