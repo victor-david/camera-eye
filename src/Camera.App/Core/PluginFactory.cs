@@ -32,7 +32,12 @@ namespace Restless.App.Camera.Core
                 throw new InvalidPluginException($"The plugin configured for the camera [{camera.PluginName}, Id: {camera.PluginGuid} cannot be found.");
             }
 
-            return  creator.Create(new ConnectionParameters(camera.IpAddress, camera.Port, camera.UserId, camera.Password));
+            ICameraPlugin plugin = creator.Create(new ConnectionParameters(camera.IpAddress, camera.Port, camera.UserId, camera.Password));
+            if (plugin is ICameraMotion motion)
+            {
+                motion.MotionSpeed = (int)camera.MotionSpeed;
+            }
+            return plugin;
         }
     }
 }

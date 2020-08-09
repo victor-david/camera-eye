@@ -6,17 +6,8 @@
     public interface ICameraMotion
     {
         /// <summary>
-        /// Gets the minimum supported motion speed.
-        /// </summary>
-        int MinSpeed { get; }
-
-        /// <summary>
-        /// Gets the maximum supported motion speed.
-        /// </summary>
-        int MaxSpeed { get; }
-
-        /// <summary>
         /// Gets or sets the speed for camera motion.
+        /// Implementors need to accept 0-100 and adjust for the particulars of the camera accordingly.
         /// </summary>
         int MotionSpeed { get; set; }
 

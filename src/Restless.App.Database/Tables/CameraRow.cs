@@ -98,6 +98,16 @@ namespace Restless.App.Database.Tables
         }
 
         /// <summary>
+        /// Gets or sets the established motion speed for the camera.
+        /// Clamped between 1-100 inclusive.
+        /// </summary>
+        public long MotionSpeed
+        {
+            get => GetInt64(Columns.MotionSpeed);
+            set => SetValue(Columns.MotionSpeed, Math.Min(Math.Max(value, 1), 100));
+        }
+
+        /// <summary>
         /// Gets or sets the user id.
         /// </summary>
         public string Note

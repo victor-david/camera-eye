@@ -3,6 +3,7 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Restless.Plugin.Amcrest
@@ -70,8 +71,10 @@ namespace Restless.Plugin.Amcrest
                 { CameraMotion.Up, new Tuple<string, string>(StartAction, "Up") },
                 { CameraMotion.Down, new Tuple<string, string>(StartAction, "Down") },
             };
-            // Supports 1 - 8
-            MotionSpeed = 5;
+
+            // Motion supports speed of 1 - 8 
+            // MotionSpeed is treated as a percentage, gets translated.
+            MotionSpeed = 50;
             VideoStreamIndex = 0;
 
             colorValueMap = new Dictionary<ConfigItem, int>()
@@ -113,22 +116,12 @@ namespace Restless.Plugin.Amcrest
 
         #region ICameraMotion
         /// <summary>
-        /// Gets the minimum supported motion speed.
-        /// </summary>
-        public int MinSpeed => 1;
-
-        /// <summary>
-        /// Gets the maximum supported motion speed.
-        /// </summary>
-        public int MaxSpeed => 8;
-
-        /// <summary>
         /// Gets or sets the motion speed. Clamped between <see cref="MinSpeed"/> and <see cref="MaxSpeed"/>.
         /// </summary>
         public int MotionSpeed
         {
             get => motionSpeed;
-            set => motionSpeed = Math.Min(Math.Max(MinSpeed, value), MaxSpeed);
+            set => motionSpeed = GetTranslatedMotionSpeed(value);
         }
 
         public async void Move(CameraMotion motion)
@@ -219,6 +212,17 @@ namespace Restless.Plugin.Amcrest
         /************************************************************************/
 
         #region Private methods
+        /// <summary>
+        /// Gets the translated motion speed.
+        /// </summary>
+        /// <param name="value">The value from the client. Can be 1-100</param>
+        /// <returns>The translated speed, in this case 1-8</returns>
+        private int GetTranslatedMotionSpeed(int value)
+        {
+            value = Math.Min(Math.Max(value, 1), 100);
+            double newValue = Math.Round((value / 100.0) * 8.0, 0);
+            return Math.Max((int)newValue, 1);
+        }
 
         private async void SetColorValue(ConfigItem item, int value)
         {

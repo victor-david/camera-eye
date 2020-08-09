@@ -43,6 +43,7 @@ namespace Restless.Plugin.Foscam
         private readonly Dictionary<CameraMotion, int> motionMap;
         private readonly Dictionary<ConfigItem, string> configMap;
         private int videoStreamIndex;
+        // supports 0 (fast) to 15 (slow)
         private int motionSpeed;
         // 0 = normal, 1 = flip, 2 = mirror, 3 = both
         private int flipMirrorValue;
@@ -96,22 +97,12 @@ namespace Restless.Plugin.Foscam
 
         #region ICameraMotion
         /// <summary>
-        /// Gets the minimum supported motion speed.
-        /// </summary>
-        public int MinSpeed => 0;
-
-        /// <summary>
-        /// Gets the maximum supported motion speed.
-        /// </summary>
-        public int MaxSpeed => 15;
-
-        /// <summary>
-        /// Gets or sets the motion speed. Clamped between <see cref="MinSpeed"/> and <see cref="MaxSpeed"/>.
+        /// Gets or sets the motion speed. (currently not used)
         /// </summary>
         public int MotionSpeed
         {
             get => motionSpeed;
-            set => motionSpeed = Math.Min(Math.Max(MinSpeed, value), MaxSpeed);
+            set => motionSpeed = value;
         }
 
         public async void Move(CameraMotion motion)

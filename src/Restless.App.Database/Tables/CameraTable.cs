@@ -75,6 +75,11 @@ namespace Restless.App.Database.Tables
                 public const string WallColumn = "wallcol";
 
                 /// <summary>
+                /// Holds the configured motion speed. 1-100
+                /// </summary>
+                public const string MotionSpeed = "motionspeed";
+
+                /// <summary>
                 /// Hold a user defined note.
                 /// </summary>
                 public const string Note = "note";
@@ -143,6 +148,7 @@ namespace Restless.App.Database.Tables
                 row[Defs.Columns.Flags] = (long)CameraFlags.StatusTop;
                 row[Defs.Columns.WallRow] = 0;
                 row[Defs.Columns.WallColumn] = 0;
+                row[Defs.Columns.MotionSpeed] = 50;
             });
             return new CameraRow(newRow);
         }
@@ -208,6 +214,7 @@ namespace Restless.App.Database.Tables
                 { Defs.Columns.Flags, ColumnType.Integer, false, false, 0 },
                 { Defs.Columns.WallRow, ColumnType.Integer, false, false, 0 },
                 { Defs.Columns.WallColumn, ColumnType.Integer, false, false, 0 },
+                { Defs.Columns.MotionSpeed, ColumnType.Integer, false, false, 50 },
                 { Defs.Columns.Note, ColumnType.Text, false, true },
                 { Defs.Columns.UserId, ColumnType.Text, false, true },
                 { Defs.Columns.Password, ColumnType.Text, false, true },

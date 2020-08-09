@@ -38,10 +38,19 @@ namespace Restless.App.Camera
             set
             {
                 plugin = value;
+                OnPropertyChanged(nameof(PluginIsMotion));
                 OnPropertyChanged(nameof(PluginIsSettings));
                 OnPropertyChanged(nameof(PluginIsColor));
                 OnPropertyChanged(nameof(PluginIsNone));
             }
+        }
+
+        /// <summary>
+        /// Gets a boolean value that indicates if the plugin supports ICameraMotion.
+        /// </summary>
+        public bool PluginIsMotion
+        {
+            get => plugin is ICameraMotion;
         }
 
         /// <summary>
@@ -65,7 +74,21 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginIsNone
         {
-            get => !PluginIsSettings && !PluginIsColor;
+            get => !PluginIsMotion && !PluginIsSettings && !PluginIsColor;
+        }
+
+        /// <summary>
+        /// Gets or sets the motion speed.
+        /// </summary>
+        public int MotionSpeed
+        {
+            get => (int)Camera.MotionSpeed;
+            set
+            {
+                Camera.MotionSpeed = value;
+                if (Plugin is ICameraMotion motion) motion.MotionSpeed = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>

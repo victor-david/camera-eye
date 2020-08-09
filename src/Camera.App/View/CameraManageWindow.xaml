@@ -95,29 +95,40 @@
 
                     </StackPanel>
                 </Border>
-
+                
+                <!-- Colors (brightness, contrast, etc.) -->
                 <Border core:Property.IsVisible="{Binding PluginIsColor}">
                     <StackPanel Style="{StaticResource DataPanel}">
                         <TextBlock Text="Brightness"/>
                         <Slider 
-                            Style="{StaticResource SliderColorSetter}"
+                            Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding Brightness,Delay=500}" />
                         
                         <TextBlock Text="Contrast"/>
                         <Slider
-                            Style="{StaticResource SliderColorSetter}"
+                            Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding Contrast, Delay=500}"/>
                         
                         <TextBlock Text="Hue"/>
                         <Slider 
-                            Style="{StaticResource SliderColorSetter}"
+                            Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding Hue,Delay=500}" />
 
                         <TextBlock Text="Saturation"/>
                         <Slider
-                            Style="{StaticResource SliderColorSetter}"
+                            Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding Saturation, Delay=500}"/>
 
+                    </StackPanel>
+                </Border>
+
+                <!-- Motion speed -->
+                <Border core:Property.IsVisible="{Binding PluginIsMotion}">
+                    <StackPanel Style="{StaticResource DataPanel}">
+                        <TextBlock Text="Motion Speed"/>
+                        <Slider
+                            Style="{StaticResource SliderZeroOneHundredSetter}"
+                            Value="{Binding MotionSpeed, Mode=TwoWay}"/>
                     </StackPanel>
                 </Border>
 

@@ -34,9 +34,9 @@
         <Setter Property="Template" Value="{StaticResource SliderTemplate}"/>
     </Style>
 
-    <Style TargetType="Slider" x:Key="SliderColorSetter" BasedOn="{StaticResource {x:Type Slider}}">
+    <Style TargetType="Slider" x:Key="SliderZeroOneHundredSetter" BasedOn="{StaticResource {x:Type Slider}}">
         <Setter Property="Minimum" Value="0"/>
         <Setter Property="Maximum" Value="100"/>
     </Style>
-
+    
 </ResourceDictionary>
