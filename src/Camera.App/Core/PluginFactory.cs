@@ -23,13 +23,13 @@ namespace Restless.App.Camera.Core
 
             if (camera.PluginId == PluginTable.Defs.Values.NullPluginId)
             {
-                throw new InvalidPluginException("The selected camera does not have an associated plugin.");
+                throw new InvalidPluginException($"[{camera.Name}] does not have an associated plugin");
             }
 
             ICameraPluginCreator creator = CompositionManager.Instance.GetCameraPluginCreator(camera.PluginGuid);
             if (creator == null)
             {
-                throw new InvalidPluginException($"The plugin configured for the camera [{camera.PluginName}, Id: {camera.PluginGuid} cannot be found.");
+                throw new InvalidPluginException($"The plugin configured for [{camera.Name}] [{camera.PluginName}, Id: {camera.PluginGuid}] cannot be found");
             }
 
             ICameraPlugin plugin = creator.Create(new ConnectionParameters(camera.IpAddress, camera.Port, camera.UserId, camera.Password));

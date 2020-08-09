@@ -31,7 +31,7 @@ namespace Restless.App.Database.Tables
         public string Name
         {
             get => GetString(Columns.Name);
-            set => SetValue(Columns.Name, value);
+            set => SetValue(Columns.Name, !string.IsNullOrEmpty(value) ? value : "(no name)");
         }
 
         /// <summary>
