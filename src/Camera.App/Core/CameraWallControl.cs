@@ -9,9 +9,9 @@ using System.Windows.Media;
 namespace Restless.App.Camera.Core
 {
     /// <summary>
-    /// Interaction logic for CameraWallControl.xaml
+    /// Represents the control that holds the various cameras on the camera wall.
     /// </summary>
-    public partial class CameraWallControl : Grid
+    public class CameraWallControl : Grid
     {
         #region Private
         private int rows;
