@@ -26,6 +26,9 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Public methods
+        /// <summary>
+        /// Starts video processing.
+        /// </summary>
         public async void StartProcessing()
         {
             try
@@ -44,12 +47,15 @@ namespace Restless.Plugin.Framework
             }
         }
 
-        public async Task StopProcessing()
+        /// <summary>
+        /// Stops video processing.
+        /// </summary>
+        public async Task StopProcessingAsync()
         {
             isReading = false;
             while (!isStreamClosed)
             {
-                await Task.Delay(25);
+                await Task.Delay(25).ConfigureAwait(false);
             }
         }
         #endregion

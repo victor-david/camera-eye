@@ -87,6 +87,9 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Public methods
+        /// <summary>
+        /// Starts the video.
+        /// </summary>
         public virtual async void StartVideo()
         {
             string requestUri = string.Empty;
@@ -104,16 +107,14 @@ namespace Restless.Plugin.Framework
             {
                 OnPluginException(new PluginException(nameof(StartVideo), requestUri, ex));
             }
-
         }
 
         /// <summary>
         /// Stops the video.
         /// </summary>
-        /// <returns>Task</returns>
         public virtual async Task StopVideoAsync()
         {
-            if (reader != null) await reader.StopProcessing();
+            if (reader != null) await reader.StopProcessingAsync();
         }
         #endregion
 
