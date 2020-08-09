@@ -79,7 +79,7 @@ namespace Restless.App.Database.Core
         }
 
         /// <summary>
-        /// Attaches the main finance database
+        /// Attaches the main database.
         /// </summary>
         /// <param name="databaseName">The database name</param>
         public void AttachCameraDatabase(string databaseName)
