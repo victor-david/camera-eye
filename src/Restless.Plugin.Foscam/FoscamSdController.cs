@@ -129,12 +129,9 @@ namespace Restless.Plugin.Foscam
         /// <summary>
         /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
-        /// <param name="completed">A method to call when the values have been retrieved</param>
-        public async void InitializeCameraValues(Action completed)
+        public async Task InitializeCameraValuesAsync()
         {
-            if (completed == null) throw new ArgumentNullException(nameof(completed));
-            await InitializeCameraValues();
-            completed();
+            await InitializeCameraValuesAsyncPrivate();
         }
         #endregion
 
@@ -177,7 +174,7 @@ namespace Restless.Plugin.Foscam
 
         #region Private methods
 
-        private async Task InitializeCameraValues()
+        private async Task InitializeCameraValuesAsyncPrivate()
         {
             string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/get_camera_params.cgi";
             string body = await PerformClientGetAsync(uri);

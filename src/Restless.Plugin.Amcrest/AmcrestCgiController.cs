@@ -186,12 +186,9 @@ namespace Restless.Plugin.Amcrest
         /// <summary>
         /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
-        /// <param name="completed">A method to call when the values have been retrieved</param>
-        public async void InitializeCameraValues(Action completed)
+        public async Task InitializeCameraValuesAsync()
         {
-            if (completed == null) throw new ArgumentNullException(nameof(completed));
-            await InitializeCameraValues();
-            completed();
+            await InitializeCameraValuesAsyncPrivate();
         }
         #endregion
 
@@ -234,7 +231,7 @@ namespace Restless.Plugin.Amcrest
             }
         }
 
-        private async Task InitializeCameraValues()
+        private async Task InitializeCameraValuesAsyncPrivate()
         {
             string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigGetControlPath}VideoColor";
             string body = await PerformClientGetAsync(uri);

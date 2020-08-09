@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Restless.Camera.Contracts
 {
@@ -10,7 +10,6 @@ namespace Restless.Camera.Contracts
         /// <summary>
         /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
-        /// <param name="completed">A method to call when the values have been retrieved.</param>
-        void InitializeCameraValues(Action completed);
+        Task InitializeCameraValuesAsync();
     }
 }

@@ -6,6 +6,7 @@ using Restless.Tools.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Restless.App.Camera
 {
@@ -165,13 +166,20 @@ namespace Restless.App.Camera
             Brightness = Contrast = Hue = Saturation = 50;
 
             Camera.PropertyChanged += CameraPropertyChanged;
-            CreatePlugin();
         }
         #endregion
 
         /************************************************************************/
 
         #region Protected methods
+        /// <summary>
+        /// Called when the view model is activated.
+        /// </summary>
+        protected override void OnActivated()
+        {
+            CreatePlugin();
+        }
+
         /// <summary>
         /// Called when the view model is closing, that is when <see cref="ViewModelBase.SignalClosing"/> is called.
         /// </summary>
@@ -186,7 +194,7 @@ namespace Restless.App.Camera
 
         #region Private methods
 
-        private void CameraPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void CameraPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == CameraTable.Defs.Columns.Name)
             {
@@ -195,12 +203,12 @@ namespace Restless.App.Camera
 
             if (e.PropertyName == CameraTable.Defs.Columns.PluginId)
             {
-                DestroyPlugin();
+                await DestroyPlugin();
                 CreatePlugin();
             }
         }
 
-        private void CreatePlugin()
+        private async void CreatePlugin()
         {
             try
             {
@@ -211,16 +219,14 @@ namespace Restless.App.Camera
                     Plugin.PluginException += PluginPluginException;
                     if (Plugin is ICameraInitialization init)
                     {
-                        init.InitializeCameraValues(() =>
+                        await init.InitializeCameraValuesAsync();
+                        if (Plugin is ICameraColor color)
                         {
-                            if (Plugin is ICameraColor color)
-                            {
-                                Brightness = color.Brightness;
-                                Contrast = color.Contrast;
-                                Hue = color.Hue;
-                                Saturation = color.Saturation;
-                            }
-                        });
+                            Brightness = color.Brightness;
+                            Contrast = color.Contrast;
+                            Hue = color.Hue;
+                            Saturation = color.Saturation;
+                        }
                     }
                 }
             }
@@ -235,11 +241,11 @@ namespace Restless.App.Camera
             ErrorText = e.Message;
         }
 
-        private void DestroyPlugin()
+        private async Task DestroyPlugin()
         {
             if (Plugin != null)
             {
-                Plugin.StopVideoAsync();
+                await Plugin.StopVideoAsync();
                 Plugin.PluginException -= PluginPluginException;
                 Plugin = null;
             }
