@@ -4,7 +4,7 @@
     /// Defines properties and methods that a camera plugin must implement
     /// if it can modify video settings such as flip and mirror.
     /// </summary>
-    public interface ICameraSettings
+    public interface ICameraSettings : ICameraInitialization
     {
         /// <summary>
         /// Sets video flip

@@ -3,6 +3,7 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 
 namespace Restless.Plugin.Foscam
 {
@@ -32,16 +33,19 @@ namespace Restless.Plugin.Foscam
         }
     }
 
-    public class FoscamSdController : HttpPluginBase, ICameraPlugin, ICameraMotion, ICameraReset
+    public class FoscamSdController : HttpPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraReset
     {
         #region Private
         //private const string CameraParmsCgi = "get_camera_params.cgi";
-        private const string MotionControlCgi = "decoder_control.cgi?command={0}";
-        //private const string CameraControlCgi = "camera_control.cgi?param={0}&value={1}";
+        private const string MotionControlPath = "decoder_control.cgi?command=";
+        private const string CameraControlPath = "camera_control.cgi?";
         private const string BasePathToVideoStream = "videostream.cgi";
         private readonly Dictionary<CameraMotion, int> motionMap;
+        private readonly Dictionary<ConfigItem, string> configMap;
         private int videoStreamIndex;
         private int motionSpeed;
+        // 0 = normal, 1 = flip, 2 = mirror, 3 = both
+        private int flipMirrorValue;
         #endregion
 
         /************************************************************************/
@@ -64,6 +68,14 @@ namespace Restless.Plugin.Foscam
                 { CameraMotion.PatrolHorizontal, 28 },
             };
             VideoStreamIndex = 0;
+
+            configMap = new Dictionary<ConfigItem, string>()
+            {
+                { ConfigItem.FlipOn, "param=5&value=" },
+                { ConfigItem.FlipOff, "param=5&value=" },
+                { ConfigItem.MirrorOn, "param=5&value=" },
+                { ConfigItem.MirrorOff, "param=5&value=" },
+            };
         }
         #endregion
 
@@ -113,6 +125,43 @@ namespace Restless.Plugin.Foscam
 
         /************************************************************************/
 
+        #region ICameraInitialization
+        /// <summary>
+        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
+        /// </summary>
+        /// <param name="completed">A method to call when the values have been retrieved</param>
+        public async void InitializeCameraValues(Action completed)
+        {
+            if (completed == null) throw new ArgumentNullException(nameof(completed));
+            await InitializeCameraValues();
+            completed();
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region ICameraSettings
+        /// <summary>
+        /// Sets video flip.
+        /// </summary>
+        /// <param name="value">true to flip video; otherwise, false.</param>
+        public virtual async void SetFlip(bool value)
+        {
+            ConfigItem op = value ? ConfigItem.FlipOn : ConfigItem.FlipOff;
+            await PerformClientGetAsync(GetConfigurationFlipMirrorUri(op));
+        }
+
+        /// <summary>
+        /// Sets video mirror.
+        /// </summary>
+        /// <param name="value">true to mirror video; otherwise false.</param>
+        public virtual async void SetMirror(bool value)
+        {
+            ConfigItem op = value ? ConfigItem.MirrorOn : ConfigItem.MirrorOff;
+            await PerformClientGetAsync(GetConfigurationFlipMirrorUri(op));
+        }
+        #endregion
+
         #region ICameraReset
         public void Reset()
         {
@@ -127,9 +176,64 @@ namespace Restless.Plugin.Foscam
         /************************************************************************/
 
         #region Private methods
+
+        private async Task InitializeCameraValues()
+        {
+            string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/get_camera_params.cgi";
+            string body = await PerformClientGetAsync(uri);
+
+            if (!string.IsNullOrEmpty(body))
+            {
+                string[] lines = body.Split(';');
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split('=');
+                    if (parts.Length == 2)
+                    {
+                        if (parts[0].EndsWith("brightness"))
+                        {
+                            // TODO
+                        }
+
+                        if (parts[0].EndsWith("contrast"))
+                        {
+                            // TODO
+                        }
+
+                        if (parts[0].EndsWith("flip"))
+                        {
+                            flipMirrorValue = GetIntegerValue(parts[1], 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        private int GetIntegerValue(string input, int defaultValue)
+        {
+            if (int.TryParse(input, out int result)) return result;
+            return defaultValue;
+        }
+
+        private string GetConfigurationFlipMirrorUri(ConfigItem op)
+        {
+            // 1 = flip, 2 = mirror, 3 = both
+            if (op == ConfigItem.FlipOn) flipMirrorValue |= 1;
+            if (op == ConfigItem.FlipOff) flipMirrorValue &= ~1;
+            if (op == ConfigItem.MirrorOn) flipMirrorValue |= 2;
+            if (op == ConfigItem.MirrorOff) flipMirrorValue &= ~2;
+
+            return  $"{GetConfigurationUri(op)}{flipMirrorValue}";
+        }
+
+        private string GetConfigurationUri(ConfigItem item)
+        {
+            return $"{GetDeviceRoot(TransportProtocol.Http)}/{CameraControlPath}{configMap[item]}";
+        }
+
         private string GetCameraMotionUri(CameraMotion motion)
         {
-            return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlCgi, motionMap[motion])}";
+            return $"{GetDeviceRoot(TransportProtocol.Http)}/{MotionControlPath}{motionMap[motion]}";
         }
         #endregion
     }

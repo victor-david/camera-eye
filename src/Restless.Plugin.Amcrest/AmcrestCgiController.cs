@@ -178,7 +178,11 @@ namespace Restless.Plugin.Amcrest
             get => colorValueMap[ConfigItem.Saturation];
             set => SetColorValue(ConfigItem.Saturation, value);
         }
+        #endregion
 
+        /************************************************************************/
+
+        #region ICameraInitialization
         /// <summary>
         /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
         /// </summary>
@@ -186,7 +190,7 @@ namespace Restless.Plugin.Amcrest
         public async void InitializeCameraValues(Action completed)
         {
             if (completed == null) throw new ArgumentNullException(nameof(completed));
-            await InitializeColorValues();
+            await InitializeCameraValues();
             completed();
         }
         #endregion
@@ -230,7 +234,7 @@ namespace Restless.Plugin.Amcrest
             }
         }
 
-        private async Task InitializeColorValues()
+        private async Task InitializeCameraValues()
         {
             string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigGetControlPath}VideoColor";
             string body = await PerformClientGetAsync(uri);

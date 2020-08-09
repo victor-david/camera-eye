@@ -6,7 +6,7 @@ namespace Restless.Camera.Contracts
     /// Defines properties and methods that a camera plugin must implement
     /// if it can modify video color parameters such as brightness and contrast
     /// </summary>
-    public interface ICameraColor
+    public interface ICameraColor : ICameraInitialization
     {
         /// <summary>
         /// Gets or sets the brightness.
@@ -27,11 +27,5 @@ namespace Restless.Camera.Contracts
         /// Gets or sets the saturation.
         /// </summary>
         int Saturation { get; set; }
-
-        /// <summary>
-        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
-        /// </summary>
-        /// <param name="completed">A method to call when the values have been retrieved.</param>
-        void InitializeCameraValues(Action completed);
     }
 }

@@ -209,14 +209,17 @@ namespace Restless.App.Camera
                 {
                     Plugin = PluginFactory.Create(Camera);
                     Plugin.PluginException += PluginPluginException;
-                    if (Plugin is ICameraColor color)
+                    if (Plugin is ICameraInitialization init)
                     {
-                        color.InitializeCameraValues(() =>
+                        init.InitializeCameraValues(() =>
                         {
-                            Brightness = color.Brightness;
-                            Contrast = color.Contrast;
-                            Hue = color.Hue;
-                            Saturation = color.Saturation;
+                            if (Plugin is ICameraColor color)
+                            {
+                                Brightness = color.Brightness;
+                                Contrast = color.Contrast;
+                                Hue = color.Hue;
+                                Saturation = color.Saturation;
+                            }
                         });
                     }
                 }
