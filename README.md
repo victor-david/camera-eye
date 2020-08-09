@@ -2,6 +2,18 @@
 
 **Camera Eye** is a .NetCore WPF Windows application for viewing and manipulating IP cameras. It uses a plugin framework to support various cameras.
 
+### Features
+- Arrange various cameras on the video wall.
+- Change the number of slots on the wall.
+- Pan and tilt the camera*.
+- Pan and zoom the video image digitally.
+- Flip and mirror the camera output*.
+- Change the video brightness, contrast, hue, and saturation*.
+- Establish a banner over the video (top, bottom, or off) that displays camera name, current time, and frame count.
+
+For features marked with an asterick to be enabled, both the camera and its associated plugin need to support them.
+A plugin implements one required interface and zero or more optional interfaces, depending on its target camera.
+
 ### Projects
 The solution consists of several projects:
 
