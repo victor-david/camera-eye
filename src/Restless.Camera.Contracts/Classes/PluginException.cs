@@ -9,15 +9,12 @@ namespace Restless.Camera.Contracts
     {
         #region Properties
         /// <summary>
-        /// Gets the name of the method where the exception occurred.
+        /// Gets the message of this exception.
         /// </summary>
-        public string Method
-        {
-            get;
-        }
+        public override string Message => $"{RequestUri}{Environment.NewLine}{InnerException.Message}";
 
         /// <summary>
-        /// Gets the request uri associated with the exception
+        /// Gets the request uri associated with the exception.
         /// </summary>
         public string RequestUri
         {
@@ -31,12 +28,10 @@ namespace Restless.Camera.Contracts
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginException"/> class
         /// </summary>
-        /// <param name="method">The name of the method where the exception occured.</param>
         /// <param name="requestUri">The request uri associated with the exception.</param>
-        /// <param name="original">The original exception</param>
-        public PluginException(string method, string requestUri, Exception original) : base(original?.Message, original)
+        /// <param name="original">The original exception. Becomes the inner exception of this</param>
+        public PluginException(string requestUri, Exception original) : base(original.Message, original)
         {
-            Method = method;
             RequestUri = requestUri;
         }
         #endregion
@@ -50,7 +45,7 @@ namespace Restless.Camera.Contracts
         /// <returns>A string</returns>
         public override string ToString()
         {
-            return $"{nameof(PluginException)}: {Method} {RequestUri} {Message}";
+            return $"{nameof(PluginException)}: {Message}";
         }
         #endregion
     }

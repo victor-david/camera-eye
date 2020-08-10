@@ -105,7 +105,7 @@ namespace Restless.Plugin.Framework
             }
             catch (Exception ex)
             {
-                OnPluginException(new PluginException(nameof(StartVideo), requestUri, ex));
+                OnPluginException(new PluginException(requestUri, ex));
             }
         }
 
@@ -137,7 +137,7 @@ namespace Restless.Plugin.Framework
             }
             catch (Exception ex)
             {
-                OnPluginException(new PluginException(nameof(PerformClientGetAsync), requestUri, ex));
+                OnPluginException(new PluginException(requestUri, ex));
                 return null;
             }
         }
