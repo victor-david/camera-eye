@@ -31,7 +31,7 @@ namespace Restless.App.Database.Tables
         public string Name
         {
             get => GetString(Columns.Name);
-            set => SetValue(Columns.Name, !string.IsNullOrEmpty(value) ? value : "(no name)");
+            set => SetValue(Columns.Name, !string.IsNullOrWhiteSpace(value) ? value : "(no name)");
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Restless.App.Database.Tables
         public string Description
         {
             get => GetString(Columns.Description);
-            set => SetValue(Columns.Description, value);
+            set => SetValue(Columns.Description, !string.IsNullOrWhiteSpace(value) ? value : "(no description)");
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Restless.App.Database.Tables
         public string IpAddress
         {
             get => GetString(Columns.IpAddress);
-            set => SetValue(Columns.IpAddress, value);
+            set => SetValue(Columns.IpAddress, !string.IsNullOrWhiteSpace(value) ? value : "127.0.0.1");
         }
 
         /// <summary>
