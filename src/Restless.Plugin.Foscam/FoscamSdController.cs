@@ -33,7 +33,7 @@ namespace Restless.Plugin.Foscam
         }
     }
 
-    public class FoscamSdController : HttpPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraReset
+    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraReset
     {
         #region Private
         //private const string CameraParmsCgi = "get_camera_params.cgi";

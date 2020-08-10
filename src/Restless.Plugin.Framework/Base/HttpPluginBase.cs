@@ -1,5 +1,4 @@
 ﻿using Restless.Camera.Contracts;
-using Restless.Camera.Contracts.RawFrames.Video;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -16,12 +15,6 @@ namespace Restless.Plugin.Framework
     /// </remarks>
     public abstract class HttpPluginBase : PluginBase
     {
-        #region Private
-        private MultiPartReader reader;
-        #endregion
-
-        /************************************************************************/
-
         #region Properties
         /// <summary>
         /// Gets the http client instance.
@@ -46,7 +39,7 @@ namespace Restless.Plugin.Framework
 
             Client = new HttpClient(new HttpTimeoutHandler()
             {
-                DefaultTimeout = TimeSpan.FromSeconds(Math.Max(Math.Min(parms.Timeout, 60), 5)),
+                DefaultTimeout = TimeSpan.FromMilliseconds(Parms.Timeout),
                 InnerHandler = clientHandler
             })
             {
@@ -86,40 +79,6 @@ namespace Restless.Plugin.Framework
 
         /************************************************************************/
 
-        #region Public methods
-        /// <summary>
-        /// Starts the video.
-        /// </summary>
-        public virtual async void StartVideo()
-        {
-            string requestUri = string.Empty;
-            try 
-            {
-                if (this is ICameraPlugin video)
-                {
-                    requestUri = $"{GetDeviceRoot(TransportProtocol.Http)}/{VideoStreams[VideoStreamIndex].Path}";
-                    reader = new MultiPartReader(new MultiPartStream(await Client.GetStreamAsync(requestUri).ConfigureAwait(false)));
-                    reader.PartReady += MultiPartReady; 
-                    reader.StartProcessing();
-                }
-            }
-            catch (Exception ex)
-            {
-                OnPluginException(new PluginException(requestUri, ex));
-            }
-        }
-
-        /// <summary>
-        /// Stops the video.
-        /// </summary>
-        public virtual async Task StopVideoAsync()
-        {
-            if (reader != null) await reader.StopProcessingAsync();
-        }
-        #endregion
-
-        /************************************************************************/
-
         #region Protected methods
         /// <summary>
         /// Performs a client request using GET.
@@ -132,23 +91,14 @@ namespace Restless.Plugin.Framework
             {
                 HttpResponseMessage response = await Client.GetAsync(requestUri);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
                 //OnHttpResponse(response);
+                return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
                 OnPluginException(new PluginException(requestUri, ex));
                 return null;
             }
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Private methods
-        private void MultiPartReady(object sender, byte[] data)
-        {
-            OnVideoFrameReceived(new RawJpegFrame(DateTime.Now, new ArraySegment<byte>(data)));
         }
         #endregion
     }

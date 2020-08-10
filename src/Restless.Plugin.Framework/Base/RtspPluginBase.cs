@@ -2,24 +2,25 @@
 using RtspClientSharp;
 using System;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
-using RtspRawVideo = RtspClientSharp.RawFrames.Video;
 using ContractsRawVideo = Restless.Camera.Contracts.RawFrames.Video;
+using RtspRawVideo = RtspClientSharp.RawFrames.Video;
 
 namespace Restless.Plugin.Framework
 {
     /// <summary>
-    /// EXtends <see cref="HttpPluginBase"/> to provide support for plugins that use Rtsp. This class must be inherited.
+    /// Extends <see cref="MjpegPluginBase"/> to provide support for plugins that use Rtsp. This class must be inherited.
     /// </summary>
     /// <remarks>
-    /// This class provides a base class for camera plugins that use Rtsp and Http. 
+    /// This class provides a base class for camera plugins that use Rtsp and Mjpeg video. 
     /// </remarks>
-    public abstract class RtspPluginBase : HttpPluginBase
+    public abstract class RtspPluginBase : MjpegPluginBase
     {
-        #region Properties
-        private CancellationTokenSource rtspTokenSource;
-        private CancellationToken rtspToken;
+        #region Private
+        private CancellationTokenSource tokenSource;
+        private CancellationToken token;
         #endregion
 
         /************************************************************************/
@@ -37,7 +38,9 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Public methods
-
+        /// <summary>
+        /// Starts the video.
+        /// </summary>
         public override void StartVideo()
         {
             /* Only two choices, but using switch in case of future expansion */
@@ -52,13 +55,13 @@ namespace Restless.Plugin.Framework
             }
         }
 
-        public override Task StopVideoAsync()
+        /// <summary>
+        /// Stops the video.
+        /// </summary>
+        /// <returns>A Task that represents the work.</returns>
+        public override async Task StopVideoAsync()
         {
-            if (rtspTokenSource != null)
-            {
-                rtspTokenSource.Cancel();
-            }
-            return base.StopVideoAsync();
+            await Task.Run(() => tokenSource?.Cancel());
         }
         #endregion
 
@@ -67,35 +70,60 @@ namespace Restless.Plugin.Framework
         #region Private methods
         private async void StartVideoRtsp()
         {
+            int tryCount = 0;
             string requestUri = string.Empty;
-            try
+
+            while (tryCount < Parms.ConnectionAttempts)
             {
-                rtspTokenSource = new CancellationTokenSource();
-                rtspToken = rtspTokenSource.Token;
-                
-                requestUri = $"{GetDeviceRoot(TransportProtocol.Rtsp)}/{VideoStreams[VideoStreamIndex].Path}";
-
-                var serverUri = new Uri(requestUri);
-                var credentials = new NetworkCredential(Parms.UserId, Parms.Password);
-                var connectionParms = new RtspClientSharp.ConnectionParameters(serverUri, credentials)
+                try
                 {
-                    RtpTransport = RtpTransportProtocol.TCP,
-                    ConnectTimeout = TimeSpan.FromSeconds(10),
-                };
+                    tokenSource = new CancellationTokenSource();
+                    token = tokenSource.Token;
 
-                using (var rtspClient = new RtspClient(connectionParms))
-                {
-                    rtspClient.FrameReceived += RtspFrameRecieved;
-                    await rtspClient.ConnectAsync(rtspToken);
-                    await rtspClient.ReceiveAsync(rtspToken);
+                    requestUri = $"{GetDeviceRoot(TransportProtocol.Rtsp)}/{VideoStreams[VideoStreamIndex].Path}";
+
+                    /* if retrying, wait before another attempt */
+                    if (tryCount > 0)
+                    {
+                        await Task.Delay(Parms.RetryWaitTime, token);
+                    }
+
+                    var serverUri = new Uri(requestUri);
+                    var credentials = new NetworkCredential(Parms.UserId, Parms.Password);
+                    var connectionParms = new RtspClientSharp.ConnectionParameters(serverUri, credentials)
+                    {
+                        RtpTransport = RtpTransportProtocol.TCP,
+                        ConnectTimeout = TimeSpan.FromMilliseconds(Parms.Timeout),
+                    };
+
+                    using (var rtspClient = new RtspClient(connectionParms))
+                    {
+                        rtspClient.FrameReceived += RtspFrameRecieved;
+                        await rtspClient.ConnectAsync(token).ConfigureAwait(false);
+                        /* Once connected, reset the try count. If there's a network problem
+                         * while receiving, we get another full set of retries
+                         */
+                        tryCount = 0;
+                        await rtspClient.ReceiveAsync(token).ConfigureAwait(false);
+                    }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (Exception ex)
-            {
-                OnPluginException(new PluginException(requestUri, ex));
+                catch (OperationCanceledException)
+                {
+                    /* when canceled, no more attempts */
+                    tryCount = Parms.ConnectionAttempts;
+                }
+
+                catch (InvalidCredentialException ex)
+                {
+                    /* bad credentials, no more attempts */
+                    OnPluginException(new PluginException(requestUri, ex));
+                    tryCount = Parms.ConnectionAttempts;
+                }
+                catch (Exception ex)
+                {
+                    OnPluginException(new PluginException(requestUri, ex));
+                    tryCount++;
+                }
             }
         }
 

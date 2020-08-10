@@ -30,7 +30,7 @@ namespace Restless.Plugin.Axis
         }
     }
 
-    public class AxisBasicController : HttpPluginBase, ICameraPlugin
+    public class AxisBasicController : MjpegPluginBase, ICameraPlugin
     {
         #region Public properties
         #endregion
