@@ -120,7 +120,7 @@
     </Style>
 
     <Style TargetType="Border" x:Key="BorderStreamError">
-        <Setter Property="Height" Value="48"/>
+        <Setter Property="MinHeight" Value="56"/>
         <Setter Property="Background" Value="#C0FF0000"/>
         <Setter Property="BorderBrush" Value="#C0000000"/>
         <Setter Property="BorderThickness" Value="0,1"/>
@@ -135,6 +135,7 @@
                 <Setter Property="Foreground" Value="White"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
         </Style.Resources>
     </Style>
