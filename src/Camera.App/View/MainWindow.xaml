@@ -15,6 +15,7 @@
         <core:WallGridLayout x:Key="LayoutOneByOne">OneByOne</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutOneByTwo">OneByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutTwoByOne">TwoByOne</core:WallGridLayout>
+        <core:WallGridLayout x:Key="LayoutThreeByOne">ThreeByOne</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutTwoByTwo">TwoByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutThreeByTwo">ThreeByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutThreeByThree">ThreeByThree</core:WallGridLayout>
@@ -61,19 +62,24 @@
                     IsChecked="{Binding IsGridLayoutChecked[2]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutTwoByOne}"/>
+                <MenuItem 
+                    Header="3x1 (three slots, stacked vertically)" 
+                    IsChecked="{Binding IsGridLayoutChecked[3]}"
+                    Command="{Binding Commands[ChangeGridLayout]}"
+                    CommandParameter="{StaticResource LayoutThreeByOne}"/>
                 <MenuItem
                     Header="2x2 (four slots)"
-                    IsChecked="{Binding IsGridLayoutChecked[3]}"
+                    IsChecked="{Binding IsGridLayoutChecked[4]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutTwoByTwo}"/>
                 <MenuItem
                     Header="3x2 (six slots)"
-                    IsChecked="{Binding IsGridLayoutChecked[4]}"
+                    IsChecked="{Binding IsGridLayoutChecked[5]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutThreeByTwo}"/>
                 <MenuItem
                     Header="3x3 (nine slots)"
-                    IsChecked="{Binding IsGridLayoutChecked[5]}"
+                    IsChecked="{Binding IsGridLayoutChecked[6]}"
                     Command="{Binding Commands[ChangeGridLayout]}"
                     CommandParameter="{StaticResource LayoutThreeByThree}"/>
             </MenuItem>

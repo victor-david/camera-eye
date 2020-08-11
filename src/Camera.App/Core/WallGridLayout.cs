@@ -22,6 +22,10 @@
         /// </summary>
         TwoByOne = 21,
         /// <summary>
+        /// Three rows, one column. Three slots total, cameras stacked one atop another.
+        /// </summary>
+        ThreeByOne = 31,
+        /// <summary>
         /// Two rows, two columns. Four slots total.
         /// </summary>
         TwoByTwo = 22,
@@ -52,6 +56,7 @@
                 WallGridLayout.OneByOne => 1,
                 WallGridLayout.OneByTwo => 1,
                 WallGridLayout.TwoByOne => 2,
+                WallGridLayout.ThreeByOne => 3,
                 WallGridLayout.TwoByTwo => 2,
                 WallGridLayout.ThreeByTwo => 3,
                 WallGridLayout.ThreeByThree => 3,
@@ -71,6 +76,7 @@
                 WallGridLayout.OneByOne => 1,
                 WallGridLayout.OneByTwo => 2,
                 WallGridLayout.TwoByOne => 1,
+                WallGridLayout.ThreeByOne => 1,
                 WallGridLayout.TwoByTwo => 2,
                 WallGridLayout.ThreeByTwo => 2,
                 WallGridLayout.ThreeByThree => 3,

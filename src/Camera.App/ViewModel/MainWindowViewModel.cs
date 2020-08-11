@@ -125,7 +125,7 @@ namespace Restless.App.Camera
 
             CameraList.LiveSortingProperties.Add(nameof(CameraRow.Name));
 
-            IsGridLayoutChecked = new bool[] { false, false, false, false, false, false };
+            IsGridLayoutChecked = new bool[] { false, false, false, false, false, false, false };
 
             /* grid layout => index into IsGridSizeChecked */
             gridLayoutMap = new Dictionary<WallGridLayout, int>()
@@ -133,9 +133,10 @@ namespace Restless.App.Camera
                 { WallGridLayout.OneByOne, 0 },
                 { WallGridLayout.OneByTwo, 1 },
                 { WallGridLayout.TwoByOne, 2 },
-                { WallGridLayout.TwoByTwo, 3 },
-                { WallGridLayout.ThreeByTwo, 4 },
-                { WallGridLayout.ThreeByThree, 5 }
+                { WallGridLayout.ThreeByOne, 3 },
+                { WallGridLayout.TwoByTwo, 4 },
+                { WallGridLayout.ThreeByTwo, 5 },
+                { WallGridLayout.ThreeByThree, 6 }
             };
 
             UpdateGridLayoutChecked(Config.GridLayout);

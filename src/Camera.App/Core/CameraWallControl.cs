@@ -56,10 +56,7 @@ namespace Restless.App.Camera.Core
 
         private static void OnGridLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CameraWallControl control)
-            {
-                control.InitializeGrid();
-            }
+            (d as CameraWallControl)?.InitializeGrid();
         }
         #endregion
 
