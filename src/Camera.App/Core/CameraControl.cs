@@ -579,7 +579,7 @@ namespace Restless.App.Camera.Core
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (controllerStatus == ControllerStatus.Showing || controllerStatus == ControllerStatus.Hiding)
+            if (!IsPluginMotion || controllerStatus == ControllerStatus.Showing || controllerStatus == ControllerStatus.Hiding)
             {
                 return;
             }
