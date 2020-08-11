@@ -83,10 +83,10 @@ namespace Restless.Plugin.Framework
                 clientStream = await httpClient.GetStreamAsync(uri).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 
-                using (var mpStream = new MultiPartStream(clientStream))
+                using (var mjpegStream = new MjpegStreamReader(clientStream))
                 {
-                    mpStream.FrameReceived += MpStreamFrameReceived;
-                    await mpStream.ReceiveAsync(token).ConfigureAwait(false);
+                    mjpegStream.FrameReceived += MpStreamFrameReceived;
+                    await mjpegStream.ReceiveAsync(token).ConfigureAwait(false);
                 }
             }
             catch (HttpRequestException ex) when (ex.Message.Contains("401"))

@@ -11,7 +11,7 @@ namespace Restless.Plugin.Framework
     /// <summary>
     /// Represents a reader for a MJPEG stream
     /// </summary>
-    public sealed class MultiPartStream : IDisposable
+    public sealed class MjpegStreamReader : IDisposable
     {
         #region Private
         // Specs say that the body of each part and it's header are separated by two CRLFs
@@ -25,7 +25,7 @@ namespace Restless.Plugin.Framework
         /************************************************************************/
 
         #region Constructor
-        public MultiPartStream(Stream stream)
+        public MjpegStreamReader(Stream stream)
         {
             reader = new BinaryReader(new BufferedStream(stream));
         }
