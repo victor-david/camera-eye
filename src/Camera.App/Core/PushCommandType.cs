@@ -17,5 +17,9 @@
         /// Update camera's status banner.
         /// </summary>
         UpdateStatusBanner,
+        /// <summary>
+        /// Show the camera's location on the wall.
+        /// </summary>
+        ShowCameraLocation,
     }
 }

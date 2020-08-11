@@ -113,6 +113,7 @@ namespace Restless.App.Camera
             Commands.Add("ManageCamera", RelayCommand.Create(RunManageCameraCommand, (p) => SelectedCamera != null));
             Commands.Add("RemoveCamera", RelayCommand.Create(RunRemoveCameraFromWallCommand, (p) => SelectedCamera != null));
             Commands.Add("DeleteCamera", RelayCommand.Create(RunDeleteCameraCommand, (p) => SelectedCamera != null));
+            Commands.Add("CameraSelection", RelayCommand.Create(RunCameraSelectionChangedCommand));
 
             cameraList = new List<CameraRow>(DatabaseController.Instance.GetTable<CameraTable>().EnumerateAll());
 
@@ -177,6 +178,14 @@ namespace Restless.App.Camera
             }
         }
 
+        private void RunCameraSelectionChangedCommand(object parm)
+        {
+            if (parm is CameraRow camera)
+            {
+                PushCommand = PushCommand.Create(PushCommandType.ShowCameraLocation, camera.Id);
+            }
+
+        }
         private void RunAddCameraCommand(object parm)
         {
             CameraRow newRow = DatabaseController.Instance.GetTable<CameraTable>().Add();

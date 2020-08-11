@@ -107,7 +107,7 @@
                     Style="{StaticResource ListBoxCameraList}" 
                     ItemsSource="{Binding CameraList}"
                     SelectedItem="{Binding SelectedCamera}"
-                    >
+                    SelectionChangedCommand="{Binding Commands[CameraSelection]}">
                     <core:CameraListControl.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Manage camera" Command="{Binding Commands[ManageCamera]}"/>

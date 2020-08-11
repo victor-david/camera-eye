@@ -30,6 +30,9 @@ namespace Restless.App.Camera.Core
         /************************************************************************/
 
         #region Properties
+        /// <summary>
+        /// Gets the drag cursor.
+        /// </summary>
         public Window DragCursor
         {
             get;
@@ -37,26 +40,54 @@ namespace Restless.App.Camera.Core
         }
 
         /// <summary>
-        /// Gets or sets the dra cursor brush.
+        /// Gets or sets the drag cursor border brush.
         /// </summary>
-        public Brush DragCursorBrush
+        public Brush DragCursorBorderBrush
         {
-            get => (Brush)GetValue(DragCursorBrushProperty);
-            set => SetValue(DragCursorBrushProperty, value);
+            get => (Brush)GetValue(DragCursorBorderBrushProperty);
+            set => SetValue(DragCursorBorderBrushProperty, value);
         }
 
         /// <summary>
-        /// Identifies the <see cref="DragCursorBrush"/> dependency property.
+        /// Identifies the <see cref="DragCursorBorderBrush"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty DragCursorBrushProperty = DependencyProperty.Register
+        public static readonly DependencyProperty DragCursorBorderBrushProperty = DependencyProperty.Register
             (
-                nameof(DragCursorBrush), typeof(Brush), typeof(CameraListControl), new PropertyMetadata(Brushes.DarkBlue)
+                nameof(DragCursorBorderBrush), typeof(Brush), typeof(CameraListControl), new PropertyMetadata(Brushes.DarkBlue)
+            );
+
+        /// <summary>
+        /// Gets or sets a command to execute when the selection is changed.
+        /// The selected item is passed as the parameter to the command.
+        /// </summary>
+        public ICommand SelectionChangedCommand
+        {
+            get => (ICommand)GetValue(SelectionChangedCommandProperty);
+            set => SetValue(SelectionChangedCommandProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="SelectionChangedCommand"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty SelectionChangedCommandProperty = DependencyProperty.Register
+            (
+                nameof(SelectionChangedCommand), typeof(ICommand), typeof(CameraListControl), new PropertyMetadata(null)
             );
         #endregion
 
         /************************************************************************/
 
-        #region Protected methods (drag / drop)
+        #region Protected methods
+
+        protected override void OnSelectionChanged(SelectionChangedEventArgs e)
+        {
+            base.OnSelectionChanged(e);
+            if (e.AddedItems.Count > 0)
+            {
+                SelectionChangedCommand?.Execute(e.AddedItems[0]);
+            }
+        }
+
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
@@ -120,7 +151,6 @@ namespace Restless.App.Camera.Core
         {
             return new Window()
             {
-                Background = DragCursorBrush,
                 WindowStyle = WindowStyle.None,
                 AllowsTransparency = true,
                 Topmost = true,
@@ -129,7 +159,7 @@ namespace Restless.App.Camera.Core
                 Height = 32,
                 Content = new Border()
                 {
-                    BorderBrush = Brushes.LightGray,
+                    BorderBrush = DragCursorBorderBrush,
                     BorderThickness = new Thickness(1.0),
                     Background = Application.Current.FindResource(SystemColors.HighlightBrushKey) as Brush,
                     Child = new TextBlock() 

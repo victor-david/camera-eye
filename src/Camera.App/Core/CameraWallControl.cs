@@ -86,10 +86,7 @@ namespace Restless.App.Camera.Core
 
         private static void OnIsActivatedForDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CameraWallControl control)
-            {
-                control.ChangeVisualForDropActivationState((bool)e.NewValue);
-            }
+            (d as CameraWallControl)?.ChangeVisualForDropActivationState((bool)e.NewValue);
         }
         #endregion
 
@@ -192,7 +189,7 @@ namespace Restless.App.Camera.Core
             {
                 if (GetCameraHost(camera.WallRow, camera.WallColumn) is CameraHostBorder host)
                 {
-                    AddCameraToWall(host, camera);
+                    AddCameraToWall(host, camera, false);
                 }
             }
             Loaded -= CameraWallControlLoaded;
@@ -238,15 +235,19 @@ namespace Restless.App.Camera.Core
 
                 /* ready to place a camera control in the host */
                 camera.SetWallProperties(dropCell.Item1, dropCell.Item2);
-                AddCameraToWall(host, camera);
+                AddCameraToWall(host, camera, true);
             }
         }
 
-        private void AddCameraToWall(CameraHostBorder host, CameraRow camera)
+        private void AddCameraToWall(CameraHostBorder host, CameraRow camera, bool show)
         {
             CameraControl cameraControl = new CameraControl() { Camera = camera };
             host.CameraControl = cameraControl;
             host.CameraControl.IsVideoRunning = true;
+            if (show)
+            {
+                ShowCameraLocation(camera.Id);
+            }
         }
 
         /// <summary>
@@ -316,6 +317,7 @@ namespace Restless.App.Camera.Core
                 host.CameraControl.IsVideoRunning = false;
                 host.CameraControl.Camera.RemoveWallProperties();
                 host.CameraControl = null;
+                ShowCameraLocation(id);
             }
         }
 
@@ -335,6 +337,19 @@ namespace Restless.App.Camera.Core
             return VerticalAlignment.Center;
         }
 
+        private void ShowCameraLocation(long id)
+        {
+            foreach (var child in Children.OfType<CameraHostBorder>())
+            {
+                child.BorderBrush = Brushes.DarkGray;
+            }
+
+            if (GetCameraHost(id) is CameraHostBorder host)
+            {
+                host.BorderBrush = Brushes.Red;
+            }
+        }
+
         private void ExecutePushCommand(PushCommand command)
         {
             switch (command.CommandType)
@@ -344,6 +359,9 @@ namespace Restless.App.Camera.Core
                     break;
                 case PushCommandType.UpdateStatusBanner:
                     UpdateStatusBanner(command.Id);
+                    break;
+                case PushCommandType.ShowCameraLocation:
+                    ShowCameraLocation(command.Id);
                     break;
             }
         }
