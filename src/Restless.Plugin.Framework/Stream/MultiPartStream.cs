@@ -1,11 +1,17 @@
-﻿using System.IO;
+﻿using Restless.Camera.Contracts.RawFrames.Video;
+using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Restless.Plugin.Framework
 {
-    public class MultiPartStream
+    /// <summary>
+    /// Represents a reader for a MJPEG stream
+    /// </summary>
+    public sealed class MultiPartStream : IDisposable
     {
         #region Private
         // Specs say that the body of each part and it's header are separated by two CRLFs
@@ -13,6 +19,7 @@ namespace Restless.Plugin.Framework
         private readonly byte[] headerBytes = new byte[100];
         private readonly Regex contentRegex = new Regex(@"Content-Length:\s?(?<length>[0-9]+)\r\n", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private readonly BinaryReader reader;
+        private bool isDisposed;
         #endregion
 
         /************************************************************************/
@@ -26,8 +33,66 @@ namespace Restless.Plugin.Framework
 
         /************************************************************************/
 
+        #region Events
+        /// <summary>
+        /// Occurs when a new frame is received.
+        /// </summary>
+        public event EventHandler<RawJpegFrame> FrameReceived;
+        #endregion
+
+        /************************************************************************/
+
         #region Public methods
-        public Task<byte[]> NextPartAsync()
+        /// <summary>
+        /// Asynchonously begins receiving data.
+        /// </summary>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>The task</returns>
+        public async Task ReceiveAsync(CancellationToken token)
+        {
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+                byte[] data = await GetNextPartAsync().ConfigureAwait(false);
+                if (data != null)
+                {
+                    FrameReceived?.Invoke(this, new RawJpegFrame(DateTime.Now, new ArraySegment<byte>(data)));
+                }
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region IDisposable
+        /// <summary>
+        /// Dispoases.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (isDisposed) return;
+
+            if (disposing)
+            {
+                // free managed resources
+                reader?.Dispose();
+            }
+
+            isDisposed = true;
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods
+
+        private Task<byte[]> GetNextPartAsync()
         {
             return Task.Run(() =>
             {
@@ -42,23 +107,11 @@ namespace Restless.Plugin.Framework
                 }
                 catch
                 {
-                    return null; 
+                    return null;
                 }
             });
         }
 
-        /// <summary>
-        /// Closes the underlying binary reader.
-        /// </summary>
-        public void Close()
-        {
-            reader.Dispose();
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Private methods
         private string ReadContentHeaderSection(BinaryReader stream)
         {
             // headers and content in multi part are separated by two \r\n

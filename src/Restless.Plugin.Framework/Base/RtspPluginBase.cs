@@ -43,15 +43,18 @@ namespace Restless.Plugin.Framework
         /// </summary>
         public override void StartVideo()
         {
-            /* Only two choices, but using switch in case of future expansion */
-            switch (VideoStreams[VideoStreamIndex].Protocol)
+            if (this is ICameraPlugin)
             {
-                case TransportProtocol.Rtsp:
-                    StartVideoRtsp();
-                    break;
-                case TransportProtocol.Http:
-                    base.StartVideo();
-                    break;
+                /* Only two choices, but using switch in case of future expansion */
+                switch (VideoStreams[VideoStreamIndex].Protocol)
+                {
+                    case TransportProtocol.Rtsp:
+                        StartVideoRtsp();
+                        break;
+                    case TransportProtocol.Http:
+                        base.StartVideoMjpeg();
+                        break;
+                }
             }
         }
 
