@@ -66,6 +66,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="Column0" Width="18"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition x:Name="Column2" Width="48"/>
                 </Grid.ColumnDefinitions>
 
                 <Border 
@@ -83,6 +84,13 @@
                     VerticalAlignment="Center"
                     ContentSource="Header"
                     RecognizesAccessKey="True"/>
+
+                <ContentPresenter
+                    Grid.Column="2"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    ContentSource="InputGestureText"/>
 
                 <Popup
                     x:Name="Popup"
@@ -102,6 +110,7 @@
         <ControlTemplate.Triggers>
             <Trigger Property="Role" Value="TopLevelHeader">
                 <Setter TargetName="Column0" Property="Width" Value="0"/>
+                <Setter TargetName="Column2" Property="Width" Value="0"/>
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
                 <Setter TargetName="BorderCheck" Property="Visibility" Value="Visible"/>

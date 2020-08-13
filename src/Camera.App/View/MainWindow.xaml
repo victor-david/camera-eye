@@ -20,6 +20,9 @@
         <core:WallGridLayout x:Key="LayoutThreeByTwo">ThreeByTwo</core:WallGridLayout>
         <core:WallGridLayout x:Key="LayoutThreeByThree">ThreeByThree</core:WallGridLayout>
     </core:AppWindow.Resources>
+    <core:AppWindow.InputBindings>
+        <KeyBinding Key="F4" Command="{Binding Commands[ToggleCameraList]}"/>
+    </core:AppWindow.InputBindings>
     <core:AppWindow.Menu>
         <Menu>
             <MenuItem Header="File">
@@ -31,6 +34,7 @@
             <MenuItem Header="View">
                 <MenuItem
                     Header="Camera list"
+                    InputGestureText="F4"
                     IsChecked="{Binding IsCameraListVisible,Mode=OneWay}"
                     Command="{Binding Commands[ToggleCameraList]}"/>
 
