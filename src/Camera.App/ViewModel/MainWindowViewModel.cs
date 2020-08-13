@@ -13,7 +13,7 @@ namespace Restless.App.Camera
     public class MainWindowViewModel : WindowViewModel
     {
         #region Private
-        private const int MaxCamera = 9;
+        private const int MaxCamera = 20;
         private readonly List<CameraRow> cameraList;
         private readonly Dictionary<WallGridLayout, int> gridLayoutMap;
         private PushCommand pushCommand;
