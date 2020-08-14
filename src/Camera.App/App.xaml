@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/Dictionary/Brush.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Border.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Button.xaml"/>
+                <ResourceDictionary Source="Resources/Dictionary/Box.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/DataGrid.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Headered.xaml"/>
                 <ResourceDictionary Source="Resources/Dictionary/Image.xaml"/>
