@@ -47,32 +47,6 @@ namespace Restless.App.Camera.Core
             }
 
             /// <summary>
-            /// Provides static default values for the camera window.
-            /// </summary>
-            public static class CameraWindow
-            {
-                /// <summary>
-                /// Gets the default width for the camera window.
-                /// </summary>
-                public const int Width = 800;
-
-                /// <summary>
-                /// Gets the default height for the camera window.
-                /// </summary>
-                public const int Height = 600;
-
-                /// <summary>
-                /// Gets the minimum width for the camera window.
-                /// </summary>
-                public const int MinWidth = 600;
-
-                /// <summary>
-                /// Gets the minimum height for the camera window.
-                /// </summary>
-                public const int MinHeight = 320;
-            }
-
-            /// <summary>
             /// Provides static default values for the camera edit window.
             /// </summary>
             public static class CameraManageWindow
@@ -80,7 +54,7 @@ namespace Restless.App.Camera.Core
                 /// <summary>
                 /// Gets the default width for the camera manage window.
                 /// </summary>
-                public const int Width = 756;
+                public const int Width = 916;
 
                 /// <summary>
                 /// Gets the default height for the camera manage window.
@@ -90,12 +64,12 @@ namespace Restless.App.Camera.Core
                 /// <summary>
                 /// Gets the minimum width for the camera manage window.
                 /// </summary>
-                public const int MinWidth = 680;
+                public const int MinWidth = 720;
 
                 /// <summary>
                 /// Gets the minimum height for the camera manage window.
                 /// </summary>
-                public const int MinHeight = 468;
+                public const int MinHeight = 498;
             }
         }
         #endregion
