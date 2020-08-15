@@ -6,6 +6,7 @@
 - Change the number of slots on the video wall to suit your need.
 - Drag a camera from the camera list and drop it into the slot you want.
 - Pan and tilt the camera*.
+- Set, clear, and go to preset positions*.
 - Pan and zoom the video image digitally.
 - Flip and mirror the camera output*.
 - Change the video brightness, contrast, hue, and saturation*.
@@ -28,7 +29,8 @@ the plugin provides), and classes that are used by the plugins to perform their 
 derive from these classes, but it can be helpful as they provide some common functionality such as an Http client and Rtsp handling.
 5. Restless.Plugin.Foscam - A plugin that handles older Foscam SD cameras. It implements **ICameraMotion** to provide the ability to pan and tilt the camera.
 6. Restless.Plugin.Axis - A plugin that handles Axis cameras. It (currently) provides only the video stream, no ability to move the camera.
-7. Restless.Plugin.Amcrest - A plugin that handles newer Amcrest cameras. It implements **ICameraMotion** to provide the ability to pan and tilt the camera.
+7. Restless.Plugin.Amcrest - A plugin that handles newer Amcrest cameras. It implements **ICameraMotion** to provide the ability to pan and tilt the camera, 
+**ICameraPreset** to provide the ability to set, clear, and go to prest camera positions, and other interfaces to provide access to other camera settings.
 
 ### How to Build
 
