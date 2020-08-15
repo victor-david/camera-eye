@@ -3,7 +3,6 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Restless.Plugin.Amcrest
@@ -124,6 +123,10 @@ namespace Restless.Plugin.Amcrest
             set => motionSpeed = GetTranslatedMotionSpeed(value);
         }
 
+        /// <summary>
+        /// Moves the camera according to the specified motion.
+        /// </summary>
+        /// <param name="motion">The motion.</param>
         public async void Move(CameraMotion motion)
         {
             if (motionMap.ContainsKey(motion))
@@ -142,12 +145,12 @@ namespace Restless.Plugin.Amcrest
         public int MaxPreset => 25;
 
         /// <summary>
-        /// Moves the camera to the specified preset position. Value is between <see cref="PresetMin"/> and <see cref="PresetMax"/>, inclusive.
+        /// Moves the camera to the specified preset position. Value is between 1 and <see cref="PresetMax"/>, inclusive.
         /// </summary>
         /// <param name="preset">The preset.</param>
         public async void MoveToPreset(int preset)
         {
-            string uri = GetMotionControlUri(StartAction, "GotoPreset", 0, preset); 
+            string uri = GetCameraMotionUri(StartAction, "GotoPreset", 0, preset); 
             await PerformClientGetAsync(uri);
         }
 
@@ -157,7 +160,7 @@ namespace Restless.Plugin.Amcrest
         /// <param name="preset">The preset number to set.</param>
         public async void SetPreset(int preset)
         {
-            string uri = GetMotionControlUri(StartAction, "SetPreset", 0, preset);
+            string uri = GetCameraMotionUri(StartAction, "SetPreset", 0, preset);
             await PerformClientGetAsync(uri);
         }
 
@@ -167,7 +170,7 @@ namespace Restless.Plugin.Amcrest
         /// <param name="preset">The preset number.</param>
         public async void ClearPreset(int preset)
         {
-            string uri = GetMotionControlUri(StartAction, "ClearPreset", 0, preset);
+            string uri = GetCameraMotionUri(StartAction, "ClearPreset", 0, preset);
             await PerformClientGetAsync(uri);
         }
         #endregion
@@ -326,11 +329,10 @@ namespace Restless.Plugin.Amcrest
 
         private string GetCameraMotionUri(CameraMotion motion)
         {
-            return GetMotionControlUri(motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed);
-            // return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlPath, motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed)}";
+            return GetCameraMotionUri(motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed);
         }
 
-        private string GetMotionControlUri(string action, string code, int arg1, int arg2)
+        private string GetCameraMotionUri(string action, string code, int arg1, int arg2)
         {
             // MotionControlPath = "cgi-bin/ptz.cgi?action={0}&channel=1&code={1}&arg1={2}&arg2={3}&arg3=0";
             return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlPath, action, code, arg1, arg2)}";

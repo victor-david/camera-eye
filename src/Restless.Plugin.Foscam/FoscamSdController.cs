@@ -33,7 +33,7 @@ namespace Restless.Plugin.Foscam
         }
     }
 
-    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraReset
+    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraPreset, ICameraReset
     {
         #region Private
         //private const string CameraParmsCgi = "get_camera_params.cgi";
@@ -105,12 +105,56 @@ namespace Restless.Plugin.Foscam
             set => motionSpeed = value;
         }
 
+        /// <summary>
+        /// Moves the camera according to the specified motion.
+        /// </summary>
+        /// <param name="motion">The motion.</param>
         public async void Move(CameraMotion motion)
         {
             if (motionMap.ContainsKey(motion))
             {
                 await PerformClientGetAsync(GetCameraMotionUri(motion));
             }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region ICameraPreset
+        /// <summary>
+        /// Gets the maximum value to be used for establishing or moving to a preset.
+        /// </summary>
+        public int MaxPreset => 32;
+
+        /// <summary>
+        /// Moves the camera to the specified preset position. Value is between 1 and <see cref="PresetMax"/>, inclusive.
+        /// </summary>
+        /// <param name="preset">The preset.</param>
+        public async void MoveToPreset(int preset)
+        {
+            int code = 31 + ((preset - 1) * 2);
+            string uri = GetCameraMotionUri(code);
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Sets the specified preset.
+        /// </summary>
+        /// <param name="preset">The preset number to set.</param>
+        public async void SetPreset(int preset)
+        {
+            int code = 30 + ((preset - 1) * 2);
+            string uri = GetCameraMotionUri(code);
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Clears the specified preset.
+        /// </summary>
+        /// <param name="preset">The preset number.</param>
+        public void ClearPreset(int preset)
+        {
+            // Foscam doesn't seem to have a way to clear the preset.
         }
         #endregion
 
@@ -221,7 +265,13 @@ namespace Restless.Plugin.Foscam
 
         private string GetCameraMotionUri(CameraMotion motion)
         {
-            return $"{GetDeviceRoot(TransportProtocol.Http)}/{MotionControlPath}{motionMap[motion]}";
+            return GetCameraMotionUri(motionMap[motion]);
+        }
+
+        private string GetCameraMotionUri(int code)
+        {
+            // MotionControlPath = "decoder_control.cgi?command=";
+            return $"{GetDeviceRoot(TransportProtocol.Http)}/{MotionControlPath}{code}";
         }
         #endregion
     }
