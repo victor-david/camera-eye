@@ -33,7 +33,7 @@ namespace Restless.Plugin.Foscam
         }
     }
 
-    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraPreset, ICameraReset
+    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraPreset, ICameraReboot
     {
         #region Private
         //private const string CameraParmsCgi = "get_camera_params.cgi";
@@ -194,11 +194,12 @@ namespace Restless.Plugin.Foscam
         }
         #endregion
 
-        #region ICameraReset
-        public void Reset()
-        {
-        }
+        /************************************************************************/
 
+        #region ICameraReboot
+        /// <summary>
+        /// Reboots the camera
+        /// </summary>
         public async void Reboot()
         {
             await PerformClientGetAsync($"{GetDeviceRoot(TransportProtocol.Http)}/reboot.cgi");

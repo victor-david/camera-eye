@@ -2,15 +2,10 @@
 {
     /// <summary>
     /// Defines properties and methods that a camera plugin must implement
-    /// if it can perform reset and reboot operatopns.
+    /// if it can perform a reboot operation.
     /// </summary>
-    public interface ICameraReset
+    public interface ICameraReboot
     {
-        /// <summary>
-        /// Resets the camera settings to defaults.
-        /// </summary>
-        void Reset();
-
         /// <summary>
         /// Reboots the camera.
         /// </summary>
