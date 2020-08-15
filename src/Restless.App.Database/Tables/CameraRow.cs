@@ -108,6 +108,16 @@ namespace Restless.App.Database.Tables
         }
 
         /// <summary>
+        /// Gets or sets the maximum number of presets to use for the camera.
+        /// Clamped between 1-12 inclusive.
+        /// </summary>
+        public long MaxPreset
+        {
+            get => GetInt64(Columns.MaxPreset);
+            set => SetValue(Columns.MaxPreset, Math.Min(Math.Max(value, 1), 12));
+        }
+
+        /// <summary>
         /// Gets or sets the user id.
         /// </summary>
         public string Note

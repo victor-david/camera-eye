@@ -34,13 +34,13 @@ namespace Restless.Plugin.Amcrest
         }
     }
 
-    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor
+    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor, ICameraPreset
     {
         #region Private
         // start / stop
         private const string StartAction = "start";
         private const string StopAction = "stop";
-        private const string MotionControlPath = "cgi-bin/ptz.cgi?action={0}&channel=1&code={1}&arg1=0&arg2={2}&arg3=0";
+        private const string MotionControlPath = "cgi-bin/ptz.cgi?action={0}&channel=1&code={1}&arg1={2}&arg2={3}&arg3=0";
         private const string ConfigGetControlPath = "cgi-bin/configManager.cgi?action=getConfig&name=";
         private const string ConfigSetControlPath = "cgi-bin/configManager.cgi?action=setConfig&";
         private const string RtspVideoStreamPath0 = "cam/realmonitor?channel=1&subtype=0";
@@ -130,6 +130,45 @@ namespace Restless.Plugin.Amcrest
             {
                 await PerformClientGetAsync(GetCameraMotionUri(motion));
             }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region ICameraPreset
+        /// <summary>
+        /// Gets the maximum value to be used for establishing or moving to a preset.
+        /// </summary>
+        public int MaxPreset => 25;
+
+        /// <summary>
+        /// Moves the camera to the specified preset position. Value is between <see cref="PresetMin"/> and <see cref="PresetMax"/>, inclusive.
+        /// </summary>
+        /// <param name="preset">The preset.</param>
+        public async void MoveToPreset(int preset)
+        {
+            string uri = GetMotionControlUri(StartAction, "GotoPreset", 0, preset); 
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Sets the specified preset.
+        /// </summary>
+        /// <param name="preset">The preset number to set.</param>
+        public async void SetPreset(int preset)
+        {
+            string uri = GetMotionControlUri(StartAction, "SetPreset", 0, preset);
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Clears the specified preset.
+        /// </summary>
+        /// <param name="preset">The preset number.</param>
+        public async void ClearPreset(int preset)
+        {
+            string uri = GetMotionControlUri(StartAction, "ClearPreset", 0, preset);
+            await PerformClientGetAsync(uri);
         }
         #endregion
 
@@ -287,7 +326,14 @@ namespace Restless.Plugin.Amcrest
 
         private string GetCameraMotionUri(CameraMotion motion)
         {
-            return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlPath, motionMap[motion].Item1, motionMap[motion].Item2, MotionSpeed)}";
+            return GetMotionControlUri(motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed);
+            // return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlPath, motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed)}";
+        }
+
+        private string GetMotionControlUri(string action, string code, int arg1, int arg2)
+        {
+            // MotionControlPath = "cgi-bin/ptz.cgi?action={0}&channel=1&code={1}&arg1={2}&arg2={3}&arg3=0";
+            return $"{GetDeviceRoot(TransportProtocol.Http)}/{string.Format(MotionControlPath, action, code, arg1, arg2)}";
         }
         #endregion
     }

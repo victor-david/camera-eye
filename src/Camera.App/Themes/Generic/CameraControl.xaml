@@ -105,6 +105,18 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="ListBox" x:Key="ControllerListBox">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="Blue" />
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="MinWidth" Value="48"/>
+        <Setter Property="MaxHeight" Value="64"/>
+        <Setter Property="Margin" Value="0,0,6,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
     <Style TargetType="Border" x:Key="BorderStreamStatus">
         <Setter Property="Height" Value="22"/>
         <Setter Property="Background" Value="#A0FFFFFF"/>
@@ -190,64 +202,109 @@
                 <Border 
                     x:Name="PART_Controller"
                     Height="0"
-                    Width="75"
+                    Width="{TemplateBinding ControllerWidth}"
                     Opacity="0.75"
                     Cursor="Arrow"
                     Background="{TemplateBinding ControlsBackground}" 
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom">
+                    <Grid core:Property.ColumnWidths="Auto,*">
+                        <!-- Motion controls-->
+                        <Grid
+                            x:Name="MotionControl"
+                            Margin="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            core:Property.ColumnWidths="Auto,Auto,Auto"
+                            core:Property.RowHeights="Auto,Auto,Auto">
 
-                    <!-- Motion controls-->
-                    <Grid
-                        x:Name="MotionControl"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        core:Property.ColumnWidths="Auto,Auto,Auto"
-                        core:Property.RowHeights="Auto,Auto,Auto">
+                            <!-- Left -->
+                            <core:ReleaseButton 
+                                Grid.Row="1"
+                                PressedDirection="Left"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionLeft}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                                Content="{StaticResource IconArrowLeft}"/>
 
-                        <!-- Left -->
-                        <core:ReleaseButton 
-                            Grid.Row="1"
-                            PressedDirection="Left"
-                            MouseDownCommand="{TemplateBinding MotionCommand}"
-                            MouseDownCommandParameter="{StaticResource CameraMotionLeft}"
-                            MouseUpCommand="{TemplateBinding MotionCommand}"
-                            MouseUpCommandParameter="{StaticResource CameraMotionStop}"
-                            Content="{StaticResource IconArrowLeft}"/>
+                            <!-- Right -->
+                            <core:ReleaseButton 
+                                Grid.Row="1" Grid.Column="2"
+                                PressedDirection="Right"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionRight}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                                Content="{StaticResource IconArrowRight}"/>
 
-                        <!-- Right -->
-                        <core:ReleaseButton 
-                            Grid.Row="1" Grid.Column="2"
-                            PressedDirection="Right"
-                            MouseDownCommand="{TemplateBinding MotionCommand}"
-                            MouseDownCommandParameter="{StaticResource CameraMotionRight}"
-                            MouseUpCommand="{TemplateBinding MotionCommand}"
-                            MouseUpCommandParameter="{StaticResource CameraMotionStop}"
-                            Content="{StaticResource IconArrowRight}"/>
+                            <!-- Up -->
+                            <core:ReleaseButton
+                                Grid.Column="1"
+                                PressedDirection="Up"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionUp}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"
+                                Content="{StaticResource IconArrowUp}"/>
 
-                        <!-- Up -->
-                        <core:ReleaseButton
+                            <!-- Down -->
+                            <core:ReleaseButton
+                                Grid.Row="2" Grid.Column="1"
+                                PressedDirection="Down"
+                                MouseDownCommand="{TemplateBinding MotionCommand}"
+                                MouseDownCommandParameter="{StaticResource CameraMotionDown}"
+                                MouseUpCommand="{TemplateBinding MotionCommand}"
+                                MouseUpCommandParameter="{StaticResource CameraMotionStop}"                        
+                                Content="{StaticResource IconArrowDown}"/>
+                        </Grid>
+                        
+                        <!-- Preset controls-->
+                        <Grid 
+                            x:Name="PresetControl"
                             Grid.Column="1"
-                            PressedDirection="Up"
-                            MouseDownCommand="{TemplateBinding MotionCommand}"
-                            MouseDownCommandParameter="{StaticResource CameraMotionUp}"
-                            MouseUpCommand="{TemplateBinding MotionCommand}"
-                            MouseUpCommandParameter="{StaticResource CameraMotionStop}"
-                        Content="{StaticResource IconArrowUp}"/>
+                            Margin="24,8,6,0"
+                            VerticalAlignment="Top"
+                            core:Property.RowHeights="Auto,Auto"
+                            core:Property.ColumnWidths="Auto,Auto,Auto,Auto">
+                            
+                            <TextBlock
+                                Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                Text="Presets"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                            <ListBox
+                                Grid.RowSpan="2"
+                                Style="{StaticResource ControllerListBox}"
+                                ItemsSource="{TemplateBinding PresetList}"
+                                SelectedItem="{Binding SelectedPreset, RelativeSource={RelativeSource AncestorType=core:CameraControl}}"/>
 
-                        <!-- Down -->
-                        <core:ReleaseButton
-                            Grid.Row="2" Grid.Column="1"
-                            PressedDirection="Down"
-                            MouseDownCommand="{TemplateBinding MotionCommand}"
-                            MouseDownCommandParameter="{StaticResource CameraMotionDown}"
-                            MouseUpCommand="{TemplateBinding MotionCommand}"
-                            MouseUpCommandParameter="{StaticResource CameraMotionStop}"                        
-                        Content="{StaticResource IconArrowDown}"/>
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ControllerButton}"
+                                Command="{TemplateBinding GoPresetCommand}"
+                                Content="Go"/>
 
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Style="{StaticResource ControllerButton}"
+                                Command="{TemplateBinding SetPresetCommand}"
+                                Content="Set"/>
+
+                            <Button
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Style="{StaticResource ControllerButton}"
+                                Command="{TemplateBinding ClearPresetCommand}"
+                                Content="Clear"/>
+
+                        </Grid>
                     </Grid>
-                       
+
                 </Border>
             </Grid>
         </Border>
@@ -259,6 +316,9 @@
             </Trigger>
             <Trigger Property="IsPluginMotion" Value="False">
                 <Setter TargetName="MotionControl" Property="Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="IsPluginPreset" Value="False">
+                <Setter TargetName="PresetControl" Property="Visibility" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="StatusAlignment" Value="Center">
                 <Setter TargetName="StatusBanner" Property="Visibility" Value="Collapsed"/>

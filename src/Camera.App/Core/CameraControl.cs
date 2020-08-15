@@ -4,6 +4,8 @@ using Restless.Camera.Contracts;
 using Restless.Camera.Contracts.RawFrames.Video;
 using Restless.Tools.Mvvm;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -31,11 +33,10 @@ namespace Restless.App.Camera.Core
         private Controls.Border errorControl;
         private Controls.Border controllerControl;
 
-        /* width is set in xaml. height in xaml is zero, gets animated up when mouse within activation zone */
-        private const double ControllerWidth = 75.0; 
+        /* height in xaml is zero, gets animated up when mouse within activation zone */
         private const double ControllerHeight = 75.0;
-        private const double ControllerActivationX = ControllerWidth + 10.0;
         private const double ControllerActivationY = ControllerHeight + 10.0;
+        private bool isControllerEnabled;
 
         private double imageScaledWidth;
         private bool isMouseDown;
@@ -135,7 +136,7 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
-        #region Plugin
+        #region Plugin (general / motion)
         private ICameraPlugin Plugin { get; set; }
         private bool IsMouseCameraMotionAvailable;
 
@@ -232,11 +233,128 @@ namespace Restless.App.Camera.Core
 
         private static void OnIsVideoRunningChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CameraControl control)
-            {
-                control.StartStopVideo();
-            }
+            (d as CameraControl)?.StartStopVideo();
         }
+        #endregion
+
+        /************************************************************************/
+
+        #region Plugin (preset)
+        /// <summary>
+        /// Gets a boolean value that specifies whether the plugin supports ICameraPreset
+        /// </summary>
+        public bool IsPluginPreset
+        {
+            get => (bool)GetValue(IsPluginPresetProperty);
+            private set => SetValue(IsPluginPresetPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey IsPluginPresetPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(IsPluginPreset), typeof(bool), typeof(CameraControl), new PropertyMetadata(false)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="IsPluginPreset"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsPluginPresetProperty = IsPluginPresetPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets an IEnumerable of of int for the presets
+        /// </summary>
+        public IEnumerable<int> PresetList
+        {
+            get => (IEnumerable<int>)GetValue(PresetListProperty);
+            private set => SetValue(PresetListPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey PresetListPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(PresetList), typeof(IEnumerable<int>), typeof(CameraControl), new PropertyMetadata(null)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="PresetList"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty PresetListProperty = PresetListPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets or sets the selected preset
+        /// </summary>
+        public int SelectedPreset
+        {
+            get => (int)GetValue(SelectedPresetProperty);
+            set => SetValue(SelectedPresetProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="SelectedPreset"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty SelectedPresetProperty = DependencyProperty.Register
+            (
+                nameof(SelectedPreset), typeof(int), typeof(CameraControl), new FrameworkPropertyMetadata()
+                {
+                    DefaultValue = 1,
+                    BindsTwoWayByDefault = true,
+                }
+            );
+
+        /// <summary>
+        /// Gets the command to go to a preset.
+        /// </summary>
+        public ICommand GoPresetCommand
+        {
+            get => (ICommand)GetValue(GoPresetCommandProperty);
+            private set => SetValue(GoPresetCommandPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey GoPresetCommandPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(GoPresetCommand), typeof(ICommand), typeof(CameraControl), new PropertyMetadata(null)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="GoPresetCommand"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty GoPresetCommandProperty = GoPresetCommandPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets the command to set a preset.
+        /// </summary>
+        public ICommand SetPresetCommand
+        {
+            get => (ICommand)GetValue(SetPresetCommandProperty);
+            private set => SetValue(SetPresetCommandPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey SetPresetCommandPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(SetPresetCommand), typeof(ICommand), typeof(CameraControl), new PropertyMetadata(null)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="SetPresetCommand"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty SetPresetCommandProperty = SetPresetCommandPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets the command to clear a preset.
+        /// </summary>
+        public ICommand ClearPresetCommand
+        {
+            get => (ICommand)GetValue(ClearPresetCommandProperty);
+            private set => SetValue(ClearPresetCommandPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey ClearPresetCommandPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(ClearPresetCommand), typeof(ICommand), typeof(CameraControl), new PropertyMetadata(null)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="ClearPresetCommand"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ClearPresetCommandProperty = ClearPresetCommandPropertyKey.DependencyProperty;
         #endregion
 
         /************************************************************************/
@@ -478,7 +596,7 @@ namespace Restless.App.Camera.Core
         /// <summary>
         /// Gets or sets the background for the camera controls.
         /// </summary>
-        public System.Windows.Media.Brush ControlsBackground
+        public Brush ControlsBackground
         {
             get => (System.Windows.Media.Brush)GetValue(ControlsBackgroundProperty);
             set => SetValue(ControlsBackgroundProperty, value);
@@ -510,6 +628,25 @@ namespace Restless.App.Camera.Core
         /// Identifies the <see cref="FullScreenCommand"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty FullScreenCommandProperty = FullScreenCommandPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets the width of the popup controller area.
+        /// </summary>
+        public double ControllerWidth
+        {
+            get => (double)GetValue(ControllerWidthProperty);
+            private set => SetValue(ControllerWidthPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey ControllerWidthPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(ControllerWidth), typeof(double), typeof(CameraControl), new PropertyMetadata(0.0)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="ControllerWidth"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty ControllerWidthProperty = ControllerWidthPropertyKey.DependencyProperty;
         #endregion
 
         /************************************************************************/
@@ -579,21 +716,21 @@ namespace Restless.App.Camera.Core
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (!IsPluginMotion || controllerStatus == ControllerStatus.Showing || controllerStatus == ControllerStatus.Hiding)
+            if (!isControllerEnabled || controllerStatus == ControllerStatus.Showing || controllerStatus == ControllerStatus.Hiding)
             {
                 return;
             }
 
             Point point = e.GetPosition(this);
 
-            if (controllerStatus == ControllerStatus.Hidden && point.Y > ActualHeight - ControllerActivationY &&  point.X < ControllerActivationX)
+            if (controllerStatus == ControllerStatus.Hidden && point.Y > ActualHeight - ControllerActivationY &&  point.X < ControllerWidth + 10.0)
             {
                 controllerStatus = ControllerStatus.Showing;
                 ShowController.Begin();
                 return;
             }
 
-            if (controllerStatus == ControllerStatus.Shown && (point.Y < ActualHeight - ControllerActivationY ||  point.X > ControllerActivationX))
+            if (controllerStatus == ControllerStatus.Shown && (point.Y < ActualHeight - ControllerActivationY ||  point.X > ControllerWidth + 10.0))
             {
                 controllerStatus = ControllerStatus.Hiding;
                 HideController.Begin();
@@ -783,11 +920,26 @@ namespace Restless.App.Camera.Core
                 /* throws if no plugin or plugin missing */
                 Plugin = PluginFactory.Create(Camera);
 
+                ControllerWidth = 0.0;
+
                 IsPluginMotion = Plugin is ICameraMotion;
                 if (IsPluginMotion)
                 {
                     MotionCommand = RelayCommand.Create(RunMotionCommand);
+                    ControllerWidth = 75.0;
                 }
+
+                if (Plugin is ICameraPreset preset)
+                {
+                    IsPluginPreset = true;
+                    GoPresetCommand = RelayCommand.Create(RunGoPresetCommand);
+                    SetPresetCommand = RelayCommand.Create(RunSetPresetCommand);
+                    ClearPresetCommand = RelayCommand.Create(RunClearPresetCommand);
+                    ControllerWidth += 256;
+                    PresetList = Enumerable.Range(1, Math.Min((int)Camera.MaxPreset, preset.MaxPreset));
+                }
+
+                isControllerEnabled = IsPluginMotion || IsPluginPreset;
 
                 StatusAlignment = GetStatusAlignment();
 
@@ -893,6 +1045,21 @@ namespace Restless.App.Camera.Core
             {
                 (Plugin as ICameraMotion)?.Move(motion);
             }
+        }
+
+        private void RunGoPresetCommand(object parm)
+        {
+            (Plugin as ICameraPreset)?.MoveToPreset(SelectedPreset);
+        }
+
+        private void RunSetPresetCommand(object parm)
+        {
+            (Plugin as ICameraPreset)?.SetPreset(SelectedPreset);
+        }
+
+        private void RunClearPresetCommand(object parm)
+        {
+            (Plugin as ICameraPreset)?.ClearPreset(SelectedPreset);
         }
 
         private void RunFullScreenCommand(object parm)

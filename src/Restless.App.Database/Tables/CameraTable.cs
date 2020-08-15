@@ -80,6 +80,11 @@ namespace Restless.App.Database.Tables
                 public const string MotionSpeed = "motionspeed";
 
                 /// <summary>
+                /// Holds the configured maximum number of presets. 1-12
+                /// </summary>
+                public const string MaxPreset = "maxpreset";
+
+                /// <summary>
                 /// Hold a user defined note.
                 /// </summary>
                 public const string Note = "note";
@@ -149,6 +154,7 @@ namespace Restless.App.Database.Tables
                 row[Defs.Columns.WallRow] = 0;
                 row[Defs.Columns.WallColumn] = 0;
                 row[Defs.Columns.MotionSpeed] = 50;
+                row[Defs.Columns.MaxPreset] = 3;
             });
             return new CameraRow(newRow);
         }
@@ -215,6 +221,7 @@ namespace Restless.App.Database.Tables
                 { Defs.Columns.WallRow, ColumnType.Integer, false, false, 0 },
                 { Defs.Columns.WallColumn, ColumnType.Integer, false, false, 0 },
                 { Defs.Columns.MotionSpeed, ColumnType.Integer, false, false, 50 },
+                { Defs.Columns.MaxPreset, ColumnType.Integer, false, false, 3 },
                 { Defs.Columns.Note, ColumnType.Text, false, true },
                 { Defs.Columns.UserId, ColumnType.Text, false, true },
                 { Defs.Columns.Password, ColumnType.Text, false, true },
