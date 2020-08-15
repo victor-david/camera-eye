@@ -6,6 +6,7 @@ using Restless.Tools.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Restless.App.Camera
@@ -163,6 +164,23 @@ namespace Restless.App.Camera
         public bool HaveError
         {
             get => !string.IsNullOrEmpty(ErrorText);
+        }
+
+        /// <summary>
+        /// Gets an IEnumerable of of int for the presets
+        /// </summary>
+        public IEnumerable<int> PresetList
+        {
+            get => Enumerable.Range(1, CameraRow.MaxMaxPreset);
+        }
+
+        /// <summary>
+        /// Gets or sets the selected max preset value.
+        /// </summary>
+        public int SelectedMaxPreset
+        {
+            get => (int)Camera.MaxPreset;
+            set => Camera.MaxPreset = value;
         }
 
         /// <summary>

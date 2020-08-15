@@ -29,6 +29,10 @@
             <Style TargetType="HeaderedItemsControl" BasedOn="{StaticResource MenuButtonGroup}">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
             </Style>
+            <Style TargetType="ListBox">
+                <Setter Property="Margin" Value="0,2,4,4"/>
+                <Setter Property="BorderBrush" Value="LightGray"/>
+            </Style>
         </Style.Resources>
     </Style>
 

@@ -9,7 +9,7 @@
     Icon="{StaticResource ImageApp}"
     Title="{Binding DisplayName}" Height="450" Width="800">
 
-    <Grid core:Property.ColumnWidths="360,*">
+    <Grid core:Property.ColumnWidths="*,*">
         <!-- Camera detail -->
         <HeaderedContentControl Header="Detail">
             <DockPanel Margin="4" Style="{StaticResource DataPanel}">
@@ -49,15 +49,30 @@
                     <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
                 </HeaderedItemsControl>
 
-                <!-- Notes -->
-                <TextBlock Text="Notes"/>
-                <TextBox
-                    Height="Auto"
-                    VerticalContentAlignment="Top"
-                    AcceptsReturn="True"
-                    TextWrapping="Wrap"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    Text="{Binding Camera.Note}"/>
+                <Grid core:Property.RowHeights="Auto,*" core:Property.ColumnWidths="*, 80">
+
+                    <!-- Notes -->
+                    <TextBlock Text="Notes"/>
+                    <TextBox
+                        Grid.Row="1"
+                        Height="Auto"
+                        VerticalContentAlignment="Top"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        Text="{Binding Camera.Note}"/>
+
+                    <TextBlock Grid.Column="1" Text="Max Preset"/>
+
+                    <ListBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        ItemsSource="{Binding PresetList}"
+                        SelectedItem="{Binding SelectedMaxPreset}"
+                        />
+
+
+                </Grid>
 
             </DockPanel>
         </HeaderedContentControl>

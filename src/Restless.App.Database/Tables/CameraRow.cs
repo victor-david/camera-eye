@@ -14,6 +14,15 @@ namespace Restless.App.Database.Tables
     /// </summary>
     public class CameraRow : RowObjectBase<CameraTable>, INotifyPropertyChanged
     {
+        #region Public fields
+        /// <summary>
+        /// Gets the maximum allowed value for <see cref="MaxPreset"/>.
+        /// </summary>
+        public const int MaxMaxPreset = 10;
+        #endregion
+
+        /************************************************************************/
+
         #region Properties
         /// <summary>
         /// Gets the id (primary key)
@@ -109,12 +118,12 @@ namespace Restless.App.Database.Tables
 
         /// <summary>
         /// Gets or sets the maximum number of presets to use for the camera.
-        /// Clamped between 1-12 inclusive.
+        /// Clamped between 1-<see cref="MaxMaxPreset"/> inclusive.
         /// </summary>
         public long MaxPreset
         {
             get => GetInt64(Columns.MaxPreset);
-            set => SetValue(Columns.MaxPreset, Math.Min(Math.Max(value, 1), 12));
+            set => SetValue(Columns.MaxPreset, Math.Min(Math.Max(value, 1), MaxMaxPreset));
         }
 
         /// <summary>
