@@ -14,20 +14,29 @@ namespace Restless.Plugin.Framework
     public sealed class MjpegStreamReader : IDisposable
     {
         #region Private
-        // Specs say that the body of each part and it's header are separated by two CRLFs
-        private readonly byte[] separatorBytes = Encoding.UTF8.GetBytes("\r\n\r\n");
-        private readonly byte[] headerBytes = new byte[100];
+        private const byte CarriageReturn = 13;
+        private const byte LineFeed = 10;
+        private const int SeparatorLength = 4;
+        private readonly byte[] separatorBytes = new byte[SeparatorLength] { CarriageReturn, LineFeed, CarriageReturn, LineFeed };
+        private const int HeadBufferSize = 100;
+        private const int MaxBufferOffset = HeadBufferSize - SeparatorLength;
+        private readonly byte[] header = new byte[HeadBufferSize];
         private readonly Regex contentRegex = new Regex(@"Content-Length:\s?(?<length>[0-9]+)\r\n", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly BinaryReader reader;
+        private readonly BufferedStream reader;
         private bool isDisposed;
         #endregion
 
         /************************************************************************/
 
         #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MjpegStreamReader"/> class.
+        /// </summary>
+        /// <param name="stream">The underlying stream.</param>
         public MjpegStreamReader(Stream stream)
         {
-            reader = new BinaryReader(new BufferedStream(stream));
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            reader = new BufferedStream(stream);
         }
         #endregion
 
@@ -47,16 +56,16 @@ namespace Restless.Plugin.Framework
         /// Asynchonously begins receiving data.
         /// </summary>
         /// <param name="token">Cancellation token</param>
-        /// <returns>The task</returns>
+        /// <returns>A task that represents the asynchronous receive operation.</returns>
         public async Task ReceiveAsync(CancellationToken token)
         {
             while (true)
             {
                 token.ThrowIfCancellationRequested();
-                byte[] data = await GetNextPartAsync().ConfigureAwait(false);
+                ArraySegment<byte> data = await GetNextPartAsync(token).ConfigureAwait(false);
                 if (data != null)
                 {
-                    FrameReceived?.Invoke(this, new RawJpegFrame(DateTime.Now, new ArraySegment<byte>(data)));
+                    FrameReceived?.Invoke(this, new RawJpegFrame(DateTime.Now, data));
                 }
             }
         }
@@ -66,7 +75,7 @@ namespace Restless.Plugin.Framework
 
         #region IDisposable
         /// <summary>
-        /// Dispoases.
+        /// Disposes of the stream.
         /// </summary>
         public void Dispose()
         {
@@ -80,7 +89,6 @@ namespace Restless.Plugin.Framework
 
             if (disposing)
             {
-                // free managed resources
                 reader?.Dispose();
             }
 
@@ -92,65 +100,63 @@ namespace Restless.Plugin.Framework
 
         #region Private methods
 
-        private Task<byte[]> GetNextPartAsync()
+        private async Task<ArraySegment<byte>> GetNextPartAsync(CancellationToken token)
         {
-            return Task.Run(() =>
+            try
             {
-                try
-                {
-                    // every part has it's own headers
-                    string headerSection = ReadContentHeaderSection(reader);
-                    // let's parse the header section for the content-length
-                    int length = GetPartLength(headerSection);
-                    // now let's get the image
-                    return reader.ReadBytes(length);
-                }
-                catch
-                {
-                    return null;
-                }
-            });
-        }
+                int length = await GetContentLengthAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (length == 0) return null;
 
-        private string ReadContentHeaderSection(BinaryReader stream)
-        {
-            // headers and content in multi part are separated by two \r\n
-            bool found;
-
-            int count = 4;
-            stream.Read(headerBytes, 0, 4);
-            for (int i = 0; i < headerBytes.Length; i++)
-            {
-                found = SeparatorBytesExistsInArray(i, headerBytes);
-                if (!found)
-                {
-                    headerBytes[count] = stream.ReadByte();
-                    count++;
-                }
-                else
-                    break;
+                byte[] result = new byte[length];
+                await ReadBufferedBytesAsync(result, 0, length, token).ConfigureAwait(false);
+                return new ArraySegment<byte>(result);
             }
-            return Encoding.UTF8.GetString(headerBytes, 0, count);
-        }
-
-        private int GetPartLength(string headerSection)
-        {
-            Match m = contentRegex.Match(headerSection);
-            return int.Parse(m.Groups["length"].Value);
-        }
-
-        private bool SeparatorBytesExistsInArray(int position, byte[] array)
-        {
-            bool result = false;
-            for (int i = position, j = 0; j < separatorBytes.Length; i++, j++)
+            catch
             {
-                result = array[i] == separatorBytes[j];
-                if (!result)
+                return null;
+            }
+        }
+
+        private async Task<int> GetContentLengthAsync(CancellationToken token)
+        {
+            await ReadBufferedBytesAsync(header, 0, 4, token).ConfigureAwait(false);
+
+            int offset = 4;
+
+            for (int k = 0; k < MaxBufferOffset; k++)
+            {
+                if (HaveSeparatorBytes(k)) break;
+                await ReadBufferedBytesAsync(header, offset, 1, token).ConfigureAwait(false);
+                offset++;
+            }
+
+            string headerStr = Encoding.UTF8.GetString(header, 0, offset);
+            Match m = contentRegex.Match(headerStr);
+            return int.TryParse(m.Groups["length"].Value, out int result) ? result : 0;
+        }
+
+        private async Task<int> ReadBufferedBytesAsync(byte[] buffer, int offset, int count, CancellationToken token)
+        {
+            int bytesRead = 0;
+            while (bytesRead < count)
+            {
+                bytesRead += await reader.ReadAsync(buffer, offset + bytesRead, count - bytesRead, token).ConfigureAwait(false);
+                if (bytesRead < count)
                 {
-                    break;
+                    await Task.Delay(10, token).ConfigureAwait(false);
                 }
             }
-            return result;
+            return bytesRead;
+        }
+
+        private bool HaveSeparatorBytes(int pos)
+        {
+            for (int i = pos, j = 0; j < SeparatorLength; i++, j++)
+            {
+                if (header[i] != separatorBytes[j]) return false;
+            }
+            return true;
         }
         #endregion
     }
