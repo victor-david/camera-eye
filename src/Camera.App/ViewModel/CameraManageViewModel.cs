@@ -42,6 +42,7 @@ namespace Restless.App.Camera
                 OnPropertyChanged(nameof(PluginIsMotion));
                 OnPropertyChanged(nameof(PluginIsSettings));
                 OnPropertyChanged(nameof(PluginIsColor));
+                OnPropertyChanged(nameof(PluginIsReboot));
                 OnPropertyChanged(nameof(PluginIsNone));
             }
         }
@@ -71,11 +72,19 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
+        /// Gets a boolean value that indicates if the plugin supports ICameraReboot.
+        /// </summary>
+        public bool PluginIsReboot
+        {
+            get => plugin is ICameraReboot;
+        }
+
+        /// <summary>
         /// Gets a boolean value that indicates if the plugin does not support additional configuration.
         /// </summary>
         public bool PluginIsNone
         {
-            get => !PluginIsMotion && !PluginIsSettings && !PluginIsColor;
+            get => !PluginIsMotion && !PluginIsSettings && !PluginIsColor && !PluginIsReboot;
         }
 
         /// <summary>
@@ -203,6 +212,7 @@ namespace Restless.App.Camera
 
             Commands.Add("MirrorOn", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(true)));
             Commands.Add("MirrorOff", RelayCommand.Create((p) => (plugin as ICameraSettings)?.SetMirror(false)));
+            Commands.Add("Reboot", RelayCommand.Create(RunRebootCommand));
 
             Brightness = Contrast = Hue = Saturation = 50;
 
@@ -291,6 +301,13 @@ namespace Restless.App.Camera
                 Plugin = null;
             }
         }
+
+
+        private void RunRebootCommand(object parm)
+        {
+            (plugin as ICameraReboot)?.Reboot();
+        }
+
 
         private void RunChangeStatusBannerCommand(object parm)
         {

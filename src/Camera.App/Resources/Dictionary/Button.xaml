@@ -24,7 +24,7 @@
         </Border>
     </ControlTemplate>
 
-    <Style TargetType="Button" x:Key="FlatButtonStyle">
+    <Style TargetType="Button" x:Key="FlatButton">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -33,6 +33,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Padding" Value="3"/>
         <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Foreground" Value="DarkBlue"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template" Value="{StaticResource FlatButtonTemplate}" />
         <Style.Triggers>
@@ -46,7 +47,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="Button" x:Key="HeaderButton" BasedOn="{StaticResource FlatButtonStyle}">
+    <Style TargetType="Button" x:Key="HeaderButton" BasedOn="{StaticResource FlatButton}">
         <Setter Property="Height" Value="14"/>
         <Setter Property="Width" Value="14"/>
         <Setter Property="Padding" Value="0"/>

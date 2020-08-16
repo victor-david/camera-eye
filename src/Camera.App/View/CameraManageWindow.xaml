@@ -90,7 +90,7 @@
 
                 <!-- Plugin settings -->
                 <Border core:Property.IsVisible="{Binding PluginIsSettings}">
-                    <StackPanel Style="{StaticResource DataPanel}">
+                    <StackPanel>
 
                         <ToolBar Margin="0,4">
                         
@@ -113,7 +113,7 @@
                 
                 <!-- Colors (brightness, contrast, etc.) -->
                 <Border core:Property.IsVisible="{Binding PluginIsColor}">
-                    <StackPanel Style="{StaticResource DataPanel}">
+                    <StackPanel>
                         <TextBlock Text="Brightness"/>
                         <Slider 
                             Style="{StaticResource SliderZeroOneHundredSetter}"
@@ -139,11 +139,19 @@
 
                 <!-- Motion speed -->
                 <Border core:Property.IsVisible="{Binding PluginIsMotion}">
-                    <StackPanel Style="{StaticResource DataPanel}">
+                    <StackPanel>
                         <TextBlock Text="Motion Speed"/>
                         <Slider
                             Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding MotionSpeed, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Border>
+                
+                <!-- Reboot -->
+                <Border core:Property.IsVisible="{Binding PluginIsReboot}">
+                    <StackPanel>
+                        <TextBlock Text="This plugin supports reboot."/>
+                        <Button Content="Reboot Now" Command="{Binding Commands[Reboot]}"/>
                     </StackPanel>
                 </Border>
 

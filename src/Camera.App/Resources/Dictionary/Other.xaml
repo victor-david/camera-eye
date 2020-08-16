@@ -33,6 +33,12 @@
                 <Setter Property="Margin" Value="0,2,4,4"/>
                 <Setter Property="BorderBrush" Value="LightGray"/>
             </Style>
+            <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Width" Value="82"/>
+                <Setter Property="Margin" Value="2,4"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
         </Style.Resources>
     </Style>
 
