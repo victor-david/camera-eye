@@ -33,7 +33,7 @@ namespace Restless.Plugin.Amcrest
         }
     }
 
-    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor, ICameraPreset
+    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor, ICameraPreset, ICameraReboot
     {
         #region Private
         // start / stop
@@ -248,6 +248,18 @@ namespace Restless.Plugin.Amcrest
         {
             ConfigItem item = value ? ConfigItem.MirrorOn : ConfigItem.MirrorOff;
             await PerformClientGetAsync(GetConfigurationUri(item));
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region ICameraReboot
+        /// <summary>
+        /// Reboots the camera.
+        /// </summary>
+        public async void Reboot()
+        {
+            await PerformClientGetAsync($"{GetDeviceRoot(TransportProtocol.Http)}/cgi-bin/magicBox.cgi?action=reboot");
         }
         #endregion
 
