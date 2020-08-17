@@ -49,12 +49,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Resources\Dictionary\TextBlock.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="call $(ProjectDir)PostBuild.cmd $(ProjectDir) $(TargetDir) $(PlatformName) $(ConfigurationName)" />
   </Target>
