@@ -2,14 +2,22 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dbcore="clr-namespace:Restless.App.Database.Core;assembly=Restless.App.Database"
-    xmlns:contracts="clr-namespace:Restless.Camera.Contracts;assembly=Restless.Camera.Contracts">
+    xmlns:contracts="clr-namespace:Restless.Camera.Contracts;assembly=Restless.Camera.Contracts"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <dbcore:CameraFlags x:Key="CameraFlagNone">None</dbcore:CameraFlags>
     <dbcore:CameraFlags x:Key="CameraFlagStatusTop">StatusTop</dbcore:CameraFlags>
     <dbcore:CameraFlags x:Key="CameraFlagStatusBottom">StatusBottom</dbcore:CameraFlags>
-    
+
+    <contracts:Rotation x:Key="RotateZero">RotateZero</contracts:Rotation>
+    <contracts:Rotation x:Key="Rotate90">Rotate90</contracts:Rotation>
+    <contracts:Rotation x:Key="Rotate270">Rotate270</contracts:Rotation>
+
     <contracts:FrameRate x:Key="FrameRateLow">Low</contracts:FrameRate>
     <contracts:FrameRate x:Key="FrameRateMedium">Medium</contracts:FrameRate>
     <contracts:FrameRate x:Key="FrameRateHigh">High</contracts:FrameRate>
+
+    <sys:Boolean x:Key="BooleanTrue">True</sys:Boolean>
+    <sys:Boolean x:Key="BooleanFalse">False</sys:Boolean>
     
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Restless.Plugin.Amcrest
@@ -33,7 +34,7 @@ namespace Restless.Plugin.Amcrest
         }
     }
 
-    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor, ICameraPreset, ICameraReboot
+    public class AmcrestCgiController : RtspPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraPreset, ICameraReboot
     {
         #region Private
         // start / stop
@@ -90,10 +91,8 @@ namespace Restless.Plugin.Amcrest
                 { SettingItem.Contrast, "VideoColor[0][0].Contrast=" },
                 { SettingItem.Hue, "VideoColor[0][0].Hue=" },
                 { SettingItem.Saturation, "VideoColor[0][0].Saturation=" },
-                { SettingItem.FlipOn, "VideoInOptions[0].Flip=true" },
-                { SettingItem.FlipOff, "VideoInOptions[0].Flip=false" },
-                { SettingItem.MirrorOn, "VideoInOptions[0].Mirror=true" },
-                { SettingItem.MirrorOff, "VideoInOptions[0].Mirror=false" },
+                { SettingItem.Flip, "VideoInOptions[0].Flip=" },
+                { SettingItem.Mirror, "VideoInOptions[0].Mirror=" },
             };
         }
         #endregion
@@ -177,46 +176,6 @@ namespace Restless.Plugin.Amcrest
 
         /************************************************************************/
 
-        #region ICameraColor
-        /// <summary>
-        /// Gets or sets the brightness.
-        /// </summary>
-        public int Brightness 
-        {
-            get => colorValueMap[SettingItem.Brightness];
-            set => SetColorValue(SettingItem.Brightness, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the contrast.
-        /// </summary>
-        public int Contrast
-        { 
-            get => colorValueMap[SettingItem.Contrast];
-            set => SetColorValue(SettingItem.Contrast, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the hue.
-        /// </summary>
-        public int Hue 
-        {
-            get => colorValueMap[SettingItem.Hue];
-            set => SetColorValue(SettingItem.Hue, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the saturation.
-        /// </summary>
-        public int Saturation
-        {
-            get => colorValueMap[SettingItem.Saturation];
-            set => SetColorValue(SettingItem.Saturation, value);
-        }
-        #endregion
-
-        /************************************************************************/
-
         #region ICameraInitialization
         /// <summary>
         /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
@@ -231,23 +190,73 @@ namespace Restless.Plugin.Amcrest
 
         #region ICameraSettings
         /// <summary>
-        /// Sets video flip
+        /// Gets a bitwise combination value that describes which setting items are supported.
         /// </summary>
-        /// <param name="value">true to flip video; otherwise, false.</param>
-        public virtual async void SetFlip(bool value)
+        public SettingItem Supported => SettingItem.Brightness | SettingItem.Contrast | SettingItem.Hue | SettingItem.Saturation | SettingItem.Flip | SettingItem.Mirror;
+
+        /// <summary>
+        /// Gets or sets the brightness.
+        /// </summary>
+        public int Brightness
         {
-            SettingItem item = value ? SettingItem.FlipOn : SettingItem.FlipOff;
-            await PerformClientGetAsync(GetConfigurationUri(item));
+            get => colorValueMap[SettingItem.Brightness];
+            set => SetColorValue(SettingItem.Brightness, value);
         }
 
         /// <summary>
-        /// Sets video mirror.
+        /// Gets or sets the contrast.
+        /// </summary>
+        public int Contrast
+        {
+            get => colorValueMap[SettingItem.Contrast];
+            set => SetColorValue(SettingItem.Contrast, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the hue.
+        /// </summary>
+        public int Hue
+        {
+            get => colorValueMap[SettingItem.Hue];
+            set => SetColorValue(SettingItem.Hue, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the saturation.
+        /// </summary>
+        public int Saturation
+        {
+            get => colorValueMap[SettingItem.Saturation];
+            set => SetColorValue(SettingItem.Saturation, value);
+        }
+
+        /// <summary>
+        /// Sets whether or not the video is flipped.
+        /// </summary>
+        /// <param name="value">true to flip video; otherwise, false.</param>
+        public async void SetIsFlipped(bool value)
+        {
+            string uri = GetConfigurationUri(SettingItem.Flip, value.ToString().ToLower());
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Sets whether or not the video is mirrored.
         /// </summary>
         /// <param name="value">true to mirror video; otherwise false.</param>
-        public virtual async void SetMirror(bool value)
+        public async void SetIsMirrored(bool value)
         {
-            SettingItem item = value ? SettingItem.MirrorOn : SettingItem.MirrorOff;
-            await PerformClientGetAsync(GetConfigurationUri(item));
+            string uri = GetConfigurationUri(SettingItem.Mirror, value.ToString().ToLower());
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Sets the rotation of the video.
+        /// </summary>
+        /// <param name="value">The rotation.</param>
+        public void SetRotation(Rotation value)
+        {
+            throw new NotSupportedException();
         }
         #endregion
 
@@ -282,7 +291,7 @@ namespace Restless.Plugin.Amcrest
         {
             if (colorValueMap[item] != value)
             {
-                string uri = $"{GetConfigurationUri(item)}{value}";
+                string uri = GetConfigurationUri(item, value);
                 await PerformClientGetAsync(uri);
                 colorValueMap[item] = value;
             }
@@ -330,12 +339,12 @@ namespace Restless.Plugin.Amcrest
             return defaultValue;
         }
 
-        private string GetConfigurationUri(SettingItem item)
+        private string GetConfigurationUri(SettingItem item, object value)
         {
             string mapData = string.Empty;
             if (configMap.ContainsKey(item)) mapData = configMap[item];
 
-            return $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigSetControlPath}{mapData}";
+            return $"{GetDeviceRoot(TransportProtocol.Http)}/{ConfigSetControlPath}{mapData}{value}";
         }
 
         private string GetCameraMotionUri(CameraMotion motion)

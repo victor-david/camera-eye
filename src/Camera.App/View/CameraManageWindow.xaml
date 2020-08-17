@@ -89,51 +89,65 @@
                     SelectedValue="{Binding Camera.PluginId,Mode=TwoWay}"/>
 
                 <!-- Plugin settings -->
-                <Border core:Property.IsVisible="{Binding PluginIsSettings}">
+                <Border Margin="0,4" core:Property.IsVisible="{Binding PluginIsSettings}">
                     <StackPanel>
 
-                        <ToolBar Margin="0,4">
+                        <!-- Flip / mirror  / rotation-->
+                        <ToolBar Margin="0,4" core:Property.IsVisible="{Binding PluginSupportsOrientation}">
                         
-                            <HeaderedItemsControl Header="Flip">
-                                <Button Content="On" Command="{Binding Commands[FlipOn]}"/>
-                                <Button Content="Off" Command="{Binding Commands[FlipOff]}"/>
+                            <HeaderedItemsControl Header="Flip" core:Property.IsVisible="{Binding PluginSupportsFlip}">
+                                <Button Content="Off" Command="{Binding Commands[FlipVideo]}" CommandParameter="{StaticResource BooleanFalse}"/>
+                                <Button Content="On" Command="{Binding Commands[FlipVideo]}" CommandParameter="{StaticResource BooleanTrue}"/>
                             </HeaderedItemsControl>
 
-                            <Separator/>
+                            <Separator core:Property.IsVisible="{Binding PluginSupportsFlip}"/>
+                                                        
+                            <HeaderedItemsControl Header="Mirror" core:Property.IsVisible="{Binding PluginSupportsMirror}">
+                                <Button Content="Off" Command="{Binding Commands[MirrorVideo]}" CommandParameter="{StaticResource BooleanFalse}"/>
+                                <Button Content="On" Command="{Binding Commands[MirrorVideo]}" CommandParameter="{StaticResource BooleanTrue}"/>
+                            </HeaderedItemsControl>
 
-                            <HeaderedItemsControl Header="Mirror">
-                                <Button Content="On" Command="{Binding Commands[MirrorOn]}"/>
-                                <Button Content="Off" Command="{Binding Commands[MirrorOff]}"/>
+                            <Separator core:Property.IsVisible="{Binding PluginSupportsMirror}"/>
+
+                            <HeaderedItemsControl Header="Rotation" core:Property.IsVisible="{Binding PluginSupportsRotation}">
+                                <Button Content="Off" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource RotateZero}"/>
+                                <Button Content="90" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource Rotate90}"/>
+                                <Button Content="270" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource Rotate270}"/>
                             </HeaderedItemsControl>
 
                         </ToolBar>
-
-                    </StackPanel>
-                </Border>
-                
-                <!-- Colors (brightness, contrast, etc.) -->
-                <Border core:Property.IsVisible="{Binding PluginIsColor}">
-                    <StackPanel>
-                        <TextBlock Text="Brightness"/>
-                        <Slider 
-                            Style="{StaticResource SliderZeroOneHundredSetter}"
-                            Value="{Binding Brightness,Delay=500}" />
                         
-                        <TextBlock Text="Contrast"/>
-                        <Slider
-                            Style="{StaticResource SliderZeroOneHundredSetter}"
-                            Value="{Binding Contrast, Delay=500}"/>
+                        <!-- Brightness -->
+                        <StackPanel core:Property.IsVisible="{Binding PluginSupportsBrightness}">
+                            <TextBlock Text="Brightness"/>
+                            <Slider 
+                                Style="{StaticResource SliderZeroOneHundredSetter}"
+                                Value="{Binding Brightness,Delay=500}" />
+                        </StackPanel>
                         
-                        <TextBlock Text="Hue"/>
-                        <Slider 
-                            Style="{StaticResource SliderZeroOneHundredSetter}"
-                            Value="{Binding Hue,Delay=500}" />
-
-                        <TextBlock Text="Saturation"/>
-                        <Slider
-                            Style="{StaticResource SliderZeroOneHundredSetter}"
-                            Value="{Binding Saturation, Delay=500}"/>
-
+                        <!-- Contrast -->
+                        <StackPanel core:Property.IsVisible="{Binding PluginSupportsContrast}">
+                            <TextBlock Text="Contrast"/>
+                            <Slider
+                                Style="{StaticResource SliderZeroOneHundredSetter}"
+                                Value="{Binding Contrast, Delay=500}"/>
+                        </StackPanel>
+                        
+                        <!-- Hue -->
+                        <StackPanel core:Property.IsVisible="{Binding PluginSupportsHue}">
+                            <TextBlock Text="Hue"/>
+                            <Slider 
+                                Style="{StaticResource SliderZeroOneHundredSetter}"
+                                Value="{Binding Hue,Delay=500}" />
+                        </StackPanel>
+                        
+                        <!-- Saturation -->
+                        <StackPanel core:Property.IsVisible="{Binding PluginSupportsSaturation}">
+                            <TextBlock Text="Saturation"/>
+                            <Slider
+                                Style="{StaticResource SliderZeroOneHundredSetter}"
+                                Value="{Binding Saturation, Delay=500}"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 

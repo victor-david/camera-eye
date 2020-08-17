@@ -33,7 +33,7 @@ namespace Restless.Plugin.Foscam
         }
     }
 
-    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraColor, ICameraPreset, ICameraReboot
+    public class FoscamSdController : MjpegPluginBase, ICameraPlugin, ICameraMotion, ICameraSettings, ICameraPreset, ICameraReboot
     {
         #region Private
         //private const string CameraParmsCgi = "get_camera_params.cgi";
@@ -90,10 +90,8 @@ namespace Restless.Plugin.Foscam
             {
                 { SettingItem.Brightness, "param=1&value=" },
                 { SettingItem.Contrast, "param=2&value=" },
-                { SettingItem.FlipOn, "param=5&value=" },
-                { SettingItem.FlipOff, "param=5&value=" },
-                { SettingItem.MirrorOn, "param=5&value=" },
-                { SettingItem.MirrorOff, "param=5&value=" },
+                { SettingItem.Flip, "param=5&value=" },
+                { SettingItem.Mirror, "param=5&value=" },
             };
         }
         #endregion
@@ -178,7 +176,24 @@ namespace Restless.Plugin.Foscam
 
         /************************************************************************/
 
-        #region ICameraColor
+        #region ICameraInitialization
+        /// <summary>
+        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
+        /// </summary>
+        public async Task InitializeCameraValuesAsync()
+        {
+            await InitializeCameraValuesAsyncPrivate();
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region ICameraSettings
+        /// <summary>
+        /// Gets a bitwise combination value that describes which setting items are supported.
+        /// </summary>
+        public SettingItem Supported => SettingItem.Brightness | SettingItem.Contrast | SettingItem.Flip | SettingItem.Mirror;
+
         /// <summary>
         /// Gets or sets the brightness.
         /// </summary>
@@ -198,57 +213,52 @@ namespace Restless.Plugin.Foscam
         }
 
         /// <summary>
-        /// Gets the hue.
+        /// Hue. Not supported.
         /// </summary>
         public int Hue
         {
-            get => colorValueMap[SettingItem.Hue];
-            set { }
+            get => throw new NotSupportedException(nameof(Hue));
+            set => throw new NotSupportedException(nameof(Hue));
         }
 
         /// <summary>
-        /// Gets or sets the saturation.
+        /// Saturation. Not supported.
         /// </summary>
         public int Saturation
         {
-            get => colorValueMap[SettingItem.Saturation];
-            set { }
+            get => throw new NotSupportedException(nameof(Saturation));
+            set => throw new NotSupportedException(nameof(Saturation));
         }
-        #endregion
 
-        /************************************************************************/
-
-        #region ICameraInitialization
         /// <summary>
-        /// Initializes the camera values (brightenss, contrast, etc) by obtaining them from the camera.
-        /// </summary>
-        public async Task InitializeCameraValuesAsync()
-        {
-            await InitializeCameraValuesAsyncPrivate();
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region ICameraSettings
-        /// <summary>
-        /// Sets video flip.
+        /// Sets whether or not the video is flipped.
         /// </summary>
         /// <param name="value">true to flip video; otherwise, false.</param>
-        public virtual async void SetFlip(bool value)
+        public async void SetIsFlipped(bool value)
         {
-            SettingItem op = value ? SettingItem.FlipOn : SettingItem.FlipOff;
-            await PerformClientGetAsync(GetConfigurationFlipMirrorUri(op));
+            flipMirrorValue = (value) ? flipMirrorValue | 1 : flipMirrorValue & ~1;
+            string uri = GetConfigurationUri(SettingItem.Flip, flipMirrorValue);
+            await PerformClientGetAsync(uri);
         }
 
         /// <summary>
-        /// Sets video mirror.
+        /// Sets whether or not the video is mirrored.
         /// </summary>
         /// <param name="value">true to mirror video; otherwise false.</param>
-        public virtual async void SetMirror(bool value)
+        public async void SetIsMirrored(bool value)
         {
-            SettingItem op = value ? SettingItem.MirrorOn : SettingItem.MirrorOff;
-            await PerformClientGetAsync(GetConfigurationFlipMirrorUri(op));
+            flipMirrorValue = (value) ? flipMirrorValue | 2 : flipMirrorValue & ~2;
+            string uri = GetConfigurationUri(SettingItem.Mirror, flipMirrorValue);
+            await PerformClientGetAsync(uri);
+        }
+
+        /// <summary>
+        /// Sets the rotation of the video. Not supported.
+        /// </summary>
+        /// <param name="value">The rotation.</param>
+        public void SetRotation(Rotation value)
+        {
+            throw new NotSupportedException();
         }
         #endregion
 
@@ -327,15 +337,15 @@ namespace Restless.Plugin.Foscam
             return (int)(colorMaxMap[item] * pc);
         }
 
-        private string GetConfigurationFlipMirrorUri(SettingItem op)
-        {
-            // 1 = flip, 2 = mirror, 3 = both
-            if (op == SettingItem.FlipOn) flipMirrorValue |= 1;
-            if (op == SettingItem.FlipOff) flipMirrorValue &= ~1;
-            if (op == SettingItem.MirrorOn) flipMirrorValue |= 2;
-            if (op == SettingItem.MirrorOff) flipMirrorValue &= ~2;
-            return  GetConfigurationUri(op, flipMirrorValue);
-        }
+        //private string GetConfigurationFlipMirrorUri(SettingItem op, bool value)
+        //{
+        //    // 1 = flip, 2 = mirror, 3 = both
+        //    if (op == SettingItem.FlipOn) flipMirrorValue |= 1;
+        //    if (op == SettingItem.FlipOff) flipMirrorValue &= ~1;
+        //    if (op == SettingItem.MirrorOn) flipMirrorValue |= 2;
+        //    if (op == SettingItem.MirrorOff) flipMirrorValue &= ~2;
+        //    return GetConfigurationUri(op, flipMirrorValue);
+        //}
 
         private string GetConfigurationUri(SettingItem item, int value)
         {
