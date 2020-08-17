@@ -28,7 +28,7 @@
                     <TextBlock Text="Ip Address"/>
                     <TextBlock Grid.Column="1" Text="Port"/>
                     <TextBox Grid.Row="1" Text="{Binding Camera.IpAddress}"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Port}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Port}" MaxLength="5"/>
                 </Grid>
 
                 <!-- User / password -->

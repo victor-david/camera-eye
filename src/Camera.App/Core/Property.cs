@@ -189,21 +189,6 @@ namespace Restless.App.Camera.Core
         }
         #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /************************************************************************/
 
         #region RolloverBrush
