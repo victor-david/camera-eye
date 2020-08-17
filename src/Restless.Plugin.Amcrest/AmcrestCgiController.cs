@@ -86,10 +86,10 @@ namespace Restless.Plugin.Amcrest
 
             configMap = new Dictionary<ConfigItem, string>()
             {
-                { ConfigItem.Brightness, "VideoColor[0][0].Brightness={0}" },
-                { ConfigItem.Contrast, "VideoColor[0][0].Contrast={0}" },
-                { ConfigItem.Hue, "VideoColor[0][0].Hue={0}" },
-                { ConfigItem.Saturation, "VideoColor[0][0].Saturation={0}" },
+                { ConfigItem.Brightness, "VideoColor[0][0].Brightness=" },
+                { ConfigItem.Contrast, "VideoColor[0][0].Contrast=" },
+                { ConfigItem.Hue, "VideoColor[0][0].Hue=" },
+                { ConfigItem.Saturation, "VideoColor[0][0].Saturation=" },
                 { ConfigItem.FlipOn, "VideoInOptions[0].Flip=true" },
                 { ConfigItem.FlipOff, "VideoInOptions[0].Flip=false" },
                 { ConfigItem.MirrorOn, "VideoInOptions[0].Mirror=true" },
@@ -282,8 +282,7 @@ namespace Restless.Plugin.Amcrest
         {
             if (colorValueMap[item] != value)
             {
-                string uri = GetConfigurationUri(item);
-                uri = string.Format(uri, value);
+                string uri = $"{GetConfigurationUri(item)}{value}";
                 await PerformClientGetAsync(uri);
                 colorValueMap[item] = value;
             }
