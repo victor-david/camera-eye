@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides a helper enumeration of configuration ietms that a plugin may use to map operations to commands.
     /// </summary>
-    public enum ConfigItem
+    public enum SettingItem
     {
         /// <summary>
         /// Brightness.
