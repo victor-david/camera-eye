@@ -52,13 +52,10 @@ namespace Restless.App.Camera.Core
             {
                 var window = new CameraManageWindow()
                 {
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     DataContext = new CameraManageViewModel(camera),
-                    Width = Config.Default.CameraManageWindow.Width,
-                    Height = Config.Default.CameraManageWindow.Height,
-                    MinWidth = Config.Default.CameraManageWindow.MinWidth,
-                    MinHeight = Config.Default.CameraManageWindow.MinHeight,
                 };
+
+                Config.Instance.RestoreManageWindow(window);
 
                 (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
 

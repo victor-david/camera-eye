@@ -96,7 +96,7 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
-        #region Window settings
+        #region Window settings (Main)
         /// <summary>
         /// Gets or sets the width of the main window
         /// </summary>
@@ -192,6 +192,101 @@ namespace Restless.App.Camera.Core
                 {
                     window.Left = MainWindowLeft;
                     window.Top = MainWindowTop;
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                }
+            }
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Window settings (Manage)
+        /// <summary>
+        /// Gets or sets the width of the camera manage window
+        /// </summary>
+        public int ManageWindowWidth
+        {
+            get => GetItem(Default.CameraManageWindow.Width);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the camera manage window
+        /// </summary>
+        public int ManageWindowHeight
+        {
+            get => GetItem(Default.CameraManageWindow.Height);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the state of the camera manage window
+        /// </summary>
+        public WindowState ManageWindowState
+        {
+            get => (WindowState)GetItem((int)WindowState.Normal);
+            set => SetItem((int)value);
+        }
+
+        /// <summary>
+        /// Gets or sets the left cooridinate of the camera manage window.
+        /// </summary>
+        public int ManageWindowLeft
+        {
+            get => GetItem(int.MaxValue);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the top cooridinate of the camera manage window.
+        /// </summary>
+        public int ManageWindowTop
+        {
+            get => GetItem(int.MaxValue);
+            set => SetItem(value);
+        }
+
+        /// <summary>
+        /// Saves the camera manage window for later restoral.
+        /// </summary>
+        /// <param name="window">The window.</param>
+        public void SaveManageWindow(Window window)
+        {
+            if (window != null)
+            {
+                if (window.WindowState != WindowState.Maximized)
+                {
+                    ManageWindowWidth = (int)window.Width;
+                    ManageWindowHeight = (int)window.Height;
+                }
+
+                /* don't save state as minimized. if closed as minmized, will restore as normal */
+                ManageWindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
+                ManageWindowLeft = (int)window.Left;
+                ManageWindowTop = (int)window.Top;
+            }
+        }
+
+        /// <summary>
+        /// Restores the camera manage window to its saved size and position.
+        /// </summary>
+        /// <param name="window">The window.</param>
+        public void RestoreManageWindow(Window window)
+        {
+            if (window != null)
+            {
+                window.MinWidth = Default.CameraManageWindow.MinWidth;
+                window.MinHeight = Default.CameraManageWindow.MinHeight;
+                window.WindowState = ManageWindowState;
+                window.Width = ManageWindowWidth;
+                window.Height = ManageWindowHeight;
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+                /* default values are int.MaxValue which will only be present on first run. */
+                if (ManageWindowLeft != int.MaxValue && ManageWindowTop != int.MaxValue)
+                {
+                    window.Left = ManageWindowLeft;
+                    window.Top = ManageWindowTop;
                     window.WindowStartupLocation = WindowStartupLocation.Manual;
                 }
             }
