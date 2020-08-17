@@ -75,7 +75,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsBrightness
         {
-            get => PluginSupportsSettings(SettingItem.Brightness);
+            get => PluginSupportsSettings(CameraSetting.Brightness);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsContrast
         {
-            get => PluginSupportsSettings(SettingItem.Contrast);
+            get => PluginSupportsSettings(CameraSetting.Contrast);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsHue
         {
-            get => PluginSupportsSettings(SettingItem.Hue);
+            get => PluginSupportsSettings(CameraSetting.Hue);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsSaturation
         {
-            get => PluginSupportsSettings(SettingItem.Saturation);
+            get => PluginSupportsSettings(CameraSetting.Saturation);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsFlip
         {
-            get => PluginSupportsSettings(SettingItem.Flip);
+            get => PluginSupportsSettings(CameraSetting.Flip);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsMirror
         {
-            get => PluginSupportsSettings(SettingItem.Mirror);
+            get => PluginSupportsSettings(CameraSetting.Mirror);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Restless.App.Camera
         /// </summary>
         public bool PluginSupportsRotation
         {
-            get => PluginSupportsSettings(SettingItem.Rotation);
+            get => PluginSupportsSettings(CameraSetting.Rotation);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Restless.App.Camera
             set 
             { 
                 SetProperty(ref brightness, value);
-                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(SettingItem.Brightness))
+                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(CameraSetting.Brightness))
                 {
                     settings.Brightness = value;
                 }
@@ -189,7 +189,7 @@ namespace Restless.App.Camera
             set 
             {
                 SetProperty(ref contrast, value);
-                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(SettingItem.Contrast))
+                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(CameraSetting.Contrast))
                 {
                     settings.Contrast = value;
                 }
@@ -205,7 +205,7 @@ namespace Restless.App.Camera
             set 
             { 
                 SetProperty(ref hue, value);
-                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(SettingItem.Hue))
+                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(CameraSetting.Hue))
                 {
                     settings.Hue = value;
                 }
@@ -221,7 +221,7 @@ namespace Restless.App.Camera
             set 
             {
                 SetProperty(ref saturation, value);
-                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(SettingItem.Saturation))
+                if (Plugin is ICameraSettings settings && settings.Supported.HasFlag(CameraSetting.Saturation))
                 {
                     settings.Saturation = value;
                 }
@@ -346,10 +346,10 @@ namespace Restless.App.Camera
                         await init.InitializeCameraValuesAsync();
                         if (Plugin is ICameraSettings settings)
                         {
-                            if (settings.Supported.HasFlag(SettingItem.Brightness)) Brightness = settings.Brightness;
-                            if (settings.Supported.HasFlag(SettingItem.Contrast)) Contrast = settings.Contrast;
-                            if (settings.Supported.HasFlag(SettingItem.Hue)) Hue = settings.Hue;
-                            if (settings.Supported.HasFlag(SettingItem.Saturation)) Saturation = settings.Saturation;
+                            if (settings.Supported.HasFlag(CameraSetting.Brightness)) Brightness = settings.Brightness;
+                            if (settings.Supported.HasFlag(CameraSetting.Contrast)) Contrast = settings.Contrast;
+                            if (settings.Supported.HasFlag(CameraSetting.Hue)) Hue = settings.Hue;
+                            if (settings.Supported.HasFlag(CameraSetting.Saturation)) Saturation = settings.Saturation;
                         }
                     }
                 }
@@ -375,14 +375,14 @@ namespace Restless.App.Camera
             }
         }
 
-        private bool PluginSupportsSettings(SettingItem item)
+        private bool PluginSupportsSettings(CameraSetting item)
         {
             return plugin is ICameraSettings settings && settings.Supported.HasFlag(item);
         }
 
         private void RunFlipVideoCommand(object parm)
         {
-            if (PluginSupportsSettings(SettingItem.Flip) && parm is bool value)
+            if (PluginSupportsSettings(CameraSetting.Flip) && parm is bool value)
             {
                 RunPluginMethod((plugin as ICameraSettings).SetIsFlipped, value);
             }
@@ -390,7 +390,7 @@ namespace Restless.App.Camera
 
         private void RunMirrorVideoCommand(object parm)
         {
-            if (PluginSupportsSettings(SettingItem.Mirror) && parm is bool value)
+            if (PluginSupportsSettings(CameraSetting.Mirror) && parm is bool value)
             {
                 RunPluginMethod((plugin as ICameraSettings).SetIsMirrored, value);
             }
@@ -398,7 +398,7 @@ namespace Restless.App.Camera
 
         private void RunRotateVideoCommand(object parm)
         {
-            if (PluginSupportsSettings(SettingItem.Rotation) && parm is Rotation value)
+            if (PluginSupportsSettings(CameraSetting.Rotation) && parm is Rotation value)
             {
                 RunPluginMethod((plugin as ICameraSettings).SetRotation, value);
             }

@@ -9,7 +9,7 @@
         /// <summary>
         /// Gets a bitwise combination value that describes which setting items are supported.
         /// </summary>
-        SettingItem Supported { get; }
+        CameraSetting Supported { get; }
 
         /// <summary>
         /// Gets or sets the brightness.

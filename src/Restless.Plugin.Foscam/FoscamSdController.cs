@@ -41,9 +41,9 @@ namespace Restless.Plugin.Foscam
         private const string CameraControlPath = "camera_control.cgi?";
         private const string BasePathToVideoStream = "videostream.cgi";
         private readonly Dictionary<CameraMotion, int> motionMap;
-        private readonly Dictionary<SettingItem, string> configMap;
-        private readonly Dictionary<SettingItem, int> colorValueMap;
-        private readonly Dictionary<SettingItem, int> colorMaxMap;
+        private readonly Dictionary<CameraSetting, string> configMap;
+        private readonly Dictionary<CameraSetting, int> colorValueMap;
+        private readonly Dictionary<CameraSetting, int> colorMaxMap;
         private int videoStreamIndex;
         // supports 0 (fast) to 15 (slow)
         private int motionSpeed;
@@ -72,26 +72,26 @@ namespace Restless.Plugin.Foscam
             };
             VideoStreamIndex = 0;
 
-            colorValueMap = new Dictionary<SettingItem, int>()
+            colorValueMap = new Dictionary<CameraSetting, int>()
             {
-                { SettingItem.Brightness, 50 },
-                { SettingItem.Contrast, 50 },
-                { SettingItem.Hue, 50 },
-                { SettingItem.Saturation, 50 },
+                { CameraSetting.Brightness, 50 },
+                { CameraSetting.Contrast, 50 },
+                { CameraSetting.Hue, 50 },
+                { CameraSetting.Saturation, 50 },
             };
 
-            colorMaxMap = new Dictionary<SettingItem, int>()
+            colorMaxMap = new Dictionary<CameraSetting, int>()
             {
-                { SettingItem.Brightness, 255 },
-                { SettingItem.Contrast, 6 },
+                { CameraSetting.Brightness, 255 },
+                { CameraSetting.Contrast, 6 },
             };
 
-            configMap = new Dictionary<SettingItem, string>()
+            configMap = new Dictionary<CameraSetting, string>()
             {
-                { SettingItem.Brightness, "param=1&value=" },
-                { SettingItem.Contrast, "param=2&value=" },
-                { SettingItem.Flip, "param=5&value=" },
-                { SettingItem.Mirror, "param=5&value=" },
+                { CameraSetting.Brightness, "param=1&value=" },
+                { CameraSetting.Contrast, "param=2&value=" },
+                { CameraSetting.Flip, "param=5&value=" },
+                { CameraSetting.Mirror, "param=5&value=" },
             };
         }
         #endregion
@@ -192,15 +192,15 @@ namespace Restless.Plugin.Foscam
         /// <summary>
         /// Gets a bitwise combination value that describes which setting items are supported.
         /// </summary>
-        public SettingItem Supported => SettingItem.Brightness | SettingItem.Contrast | SettingItem.Flip | SettingItem.Mirror;
+        public CameraSetting Supported => CameraSetting.Brightness | CameraSetting.Contrast | CameraSetting.Flip | CameraSetting.Mirror;
 
         /// <summary>
         /// Gets or sets the brightness.
         /// </summary>
         public int Brightness
         {
-            get => colorValueMap[SettingItem.Brightness];
-            set => SetColorValue(SettingItem.Brightness, value);
+            get => colorValueMap[CameraSetting.Brightness];
+            set => SetColorValue(CameraSetting.Brightness, value);
         }
 
         /// <summary>
@@ -208,8 +208,8 @@ namespace Restless.Plugin.Foscam
         /// </summary>
         public int Contrast
         {
-            get => colorValueMap[SettingItem.Contrast];
-            set => SetColorValue(SettingItem.Contrast, value);
+            get => colorValueMap[CameraSetting.Contrast];
+            set => SetColorValue(CameraSetting.Contrast, value);
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Restless.Plugin.Foscam
         public async void SetIsFlipped(bool value)
         {
             flipMirrorValue = (value) ? flipMirrorValue | 1 : flipMirrorValue & ~1;
-            string uri = GetConfigurationUri(SettingItem.Flip, flipMirrorValue);
+            string uri = GetConfigurationUri(CameraSetting.Flip, flipMirrorValue);
             await PerformClientGetAsync(uri);
         }
 
@@ -248,7 +248,7 @@ namespace Restless.Plugin.Foscam
         public async void SetIsMirrored(bool value)
         {
             flipMirrorValue = (value) ? flipMirrorValue | 2 : flipMirrorValue & ~2;
-            string uri = GetConfigurationUri(SettingItem.Mirror, flipMirrorValue);
+            string uri = GetConfigurationUri(CameraSetting.Mirror, flipMirrorValue);
             await PerformClientGetAsync(uri);
         }
 
@@ -277,7 +277,7 @@ namespace Restless.Plugin.Foscam
         /************************************************************************/
 
         #region Private methods
-        private async void SetColorValue(SettingItem item, int value)
+        private async void SetColorValue(CameraSetting item, int value)
         {
             if (colorValueMap[item] != value)
             {
@@ -301,12 +301,12 @@ namespace Restless.Plugin.Foscam
                     {
                         if (parts[0].EndsWith("brightness"))
                         {
-                            colorValueMap[SettingItem.Brightness] = ToScaleZeroHundredColorValue(SettingItem.Brightness, GetIntegerValue(parts[1], 128));
+                            colorValueMap[CameraSetting.Brightness] = ToScaleZeroHundredColorValue(CameraSetting.Brightness, GetIntegerValue(parts[1], 128));
                         }
 
                         if (parts[0].EndsWith("contrast"))
                         {
-                            colorValueMap[SettingItem.Contrast] = ToScaleZeroHundredColorValue(SettingItem.Contrast, GetIntegerValue(parts[1], 4));
+                            colorValueMap[CameraSetting.Contrast] = ToScaleZeroHundredColorValue(CameraSetting.Contrast, GetIntegerValue(parts[1], 4));
                         }
 
                         if (parts[0].EndsWith("flip"))
@@ -325,13 +325,13 @@ namespace Restless.Plugin.Foscam
         }
 
 
-        private int ToScaleZeroHundredColorValue(SettingItem item, int nativeValue)
+        private int ToScaleZeroHundredColorValue(CameraSetting item, int nativeValue)
         {
             double pc = nativeValue / (double)colorMaxMap[item];
             return (int)(pc * 100.0);
         }
 
-        private int ToNativeColorValue(SettingItem item, int scaleValue)
+        private int ToNativeColorValue(CameraSetting item, int scaleValue)
         {
             double pc = scaleValue / 100.0;
             return (int)(colorMaxMap[item] * pc);
@@ -347,7 +347,7 @@ namespace Restless.Plugin.Foscam
         //    return GetConfigurationUri(op, flipMirrorValue);
         //}
 
-        private string GetConfigurationUri(SettingItem item, int value)
+        private string GetConfigurationUri(CameraSetting item, int value)
         {
             return $"{GetDeviceRoot(TransportProtocol.Http)}/{CameraControlPath}{configMap[item]}{value}";
         }

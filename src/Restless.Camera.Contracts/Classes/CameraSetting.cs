@@ -6,7 +6,7 @@ namespace Restless.Camera.Contracts
     /// Provides an enumeration of items that may be supported via <see cref="ICameraSettings"/>.
     /// </summary>
     [Flags]
-    public enum SettingItem
+    public enum CameraSetting
     {
         /// <summary>
         /// None
