@@ -35,7 +35,7 @@ namespace Restless.App.Camera.Core
             ICameraPlugin plugin = creator.Create(new ConnectionParameters(camera.IpAddress, camera.Port, camera.UserId, camera.Password));
             if (plugin is ICameraMotion motion)
             {
-                motion.MotionSpeed = (int)camera.MotionSpeed;
+                motion.SetMotionSpeedAsync((int)camera.MotionSpeed);
             }
             return plugin;
         }

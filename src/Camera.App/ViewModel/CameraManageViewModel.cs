@@ -156,12 +156,7 @@ namespace Restless.App.Camera
         public int MotionSpeed
         {
             get => (int)Camera.MotionSpeed;
-            set
-            {
-                Camera.MotionSpeed = value;
-                if (Plugin is ICameraMotion motion) motion.MotionSpeed = value;
-                OnPropertyChanged();
-            }
+            set => SetMotionSpeed(value);
         }
 
         /// <summary>
@@ -329,6 +324,20 @@ namespace Restless.App.Camera
             {
                 await DestroyPlugin();
                 CreatePlugin();
+            }
+        }
+
+        private async void SetMotionSpeed(int value)
+        {
+            if (Plugin is ICameraMotion motion)
+            {
+                int temp = (int)Camera.MotionSpeed;
+                Camera.MotionSpeed = value;
+                if (!await motion.SetMotionSpeedAsync(value))
+                {
+                    Camera.MotionSpeed = temp;
+                }
+                OnPropertyChanged(nameof(MotionSpeed));
             }
         }
 

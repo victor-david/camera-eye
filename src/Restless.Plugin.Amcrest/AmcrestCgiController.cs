@@ -49,7 +49,6 @@ namespace Restless.Plugin.Amcrest
         private readonly Dictionary<CameraSetting, string> configMap;
         private readonly Dictionary<CameraSetting, int> colorValueMap;
         private int videoStreamIndex;
-        private int motionSpeed;
         private int translatedMotionSpeed;
         #endregion
 
@@ -73,7 +72,7 @@ namespace Restless.Plugin.Amcrest
             };
 
             // Motion supports speed of 1 - 8 
-            // MotionSpeed is treated as a percentage, gets translated.
+            // Incoming motion speed is treated as a percentage, gets translated.
             MotionSpeed = 50;
             VideoStreamIndex = 0;
 
@@ -114,12 +113,28 @@ namespace Restless.Plugin.Amcrest
 
         #region ICameraMotion
         /// <summary>
-        /// Gets or sets the motion speed.
+        /// Gets the motion speed.
         /// </summary>
-        public int MotionSpeed
+        public int MotionSpeed { get; private set; }
+
+        /// <summary>
+        /// Sets the motion speed.
+        /// </summary>
+        /// <param name="value">The value (0-100)</param>
+        /// <returns>true if speed set successfully; otherwise, false.</returns>
+        /// <remarks>
+        /// This plugin uses the speed in subsequent urls that move the camera.
+        /// Therefore, it doesn't need to communicate with the camera to set the speed,
+        /// just calculate a value. This method only returns false if the incoming speed
+        /// is the same as the current speed.
+        /// </remarks>
+        public async Task<bool> SetMotionSpeedAsync(int value)
         {
-            get => motionSpeed;
-            set => SetMotionSpeed(value);
+            if (MotionSpeed != value)
+            {
+                return await SetMotionSpeed(value);
+            }
+            return false;
         }
 
         /// <summary>
@@ -284,12 +299,16 @@ namespace Restless.Plugin.Amcrest
         /// which is used when moving the camera. Motion speed is not saved in the camera; it's
         /// a parameter in the url that moves the camera.
         /// </remarks>
-        private void SetMotionSpeed(int value)
+        private async Task<bool> SetMotionSpeed(int value)
         {
-            motionSpeed = value;
-            value = Math.Min(Math.Max(value, 1), 100);
-            double newValue = Math.Round((value / 100.0) * 8.0, 0);
-            translatedMotionSpeed = Math.Max((int)newValue, 1);
+            await Task.Run(() =>
+            {
+                MotionSpeed = value;
+                value = Math.Min(Math.Max(value, 1), 100);
+                double newValue = Math.Round((value / 100.0) * 8.0, 0);
+                translatedMotionSpeed = Math.Max((int)newValue, 1);
+            });
+            return true;
         }
 
         private async void SetColorValue(CameraSetting item, int value)
