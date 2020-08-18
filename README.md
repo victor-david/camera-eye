@@ -1,4 +1,4 @@
-## Camera Eye
+# ![App Icon](screens/app.icon.png) Camera Eye
 
 **Camera Eye** is a .Net Core 3.1 WPF Windows application for viewing and manipulating multiple IP cameras. It uses a plugin framework to support various cameras.
 
