@@ -108,12 +108,12 @@ namespace Restless.App.Database.Tables
 
         /// <summary>
         /// Gets or sets the established motion speed for the camera.
-        /// Clamped between 1-100 inclusive.
+        /// Clamped between 0-100 inclusive.
         /// </summary>
         public long MotionSpeed
         {
             get => GetInt64(Columns.MotionSpeed);
-            set => SetValue(Columns.MotionSpeed, Math.Min(Math.Max(value, 1), 100));
+            set => SetValue(Columns.MotionSpeed, Math.Min(Math.Max(value, 0), 100));
         }
 
         /// <summary>
