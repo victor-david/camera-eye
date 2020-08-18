@@ -18,6 +18,9 @@ For features marked with an asterick to be enabled, both the camera and its asso
 A plugin implements one required interface and zero or more optional interfaces, depending on its target camera
 and its intended use.
 
+### Screenshots
+See the [screenshot dir](/screens)
+
 ### Projects
 The solution consists of several projects:
 
