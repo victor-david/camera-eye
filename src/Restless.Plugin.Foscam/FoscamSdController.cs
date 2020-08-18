@@ -45,8 +45,6 @@ namespace Restless.Plugin.Foscam
         private readonly Dictionary<CameraSetting, int> colorValueMap;
         private readonly Dictionary<CameraSetting, int> colorMaxMap;
         private int videoStreamIndex;
-        // supports 0 (fast) to 15 (slow)
-        private int motionSpeed;
         // 0 = normal, 1 = flip, 2 = mirror, 3 = both
         private int flipMirrorValue;
         #endregion
@@ -71,6 +69,7 @@ namespace Restless.Plugin.Foscam
                 { CameraMotion.PatrolHorizontal, 28 },
             };
             VideoStreamIndex = 0;
+            MotionSpeed = 50;
 
             colorValueMap = new Dictionary<CameraSetting, int>()
             {
@@ -113,12 +112,26 @@ namespace Restless.Plugin.Foscam
 
         #region ICameraMotion
         /// <summary>
-        /// Gets or sets the motion speed. (currently not used)
+        /// Gets or sets the motion speed.
         /// </summary>
-        public int MotionSpeed
+        public int MotionSpeed { get; private set; }
+
+        /// <summary>
+        /// Sets the motion speed.
+        /// </summary>
+        /// <param name="value">The value (0-100)</param>
+        /// <returns>true if speed set successfully; otherwise, false.</returns>
+        /// <remarks>
+        /// This plugin needs to set the speed within the camera and might not be able to do so
+        /// due to authentication or network problem.
+        /// </remarks>
+        public async Task<bool> SetMotionSpeedAsync(int value)
         {
-            get => motionSpeed;
-            set => motionSpeed = value;
+            if (value != MotionSpeed)
+            {
+                return await SetMotionSpeed(value);
+            }
+            return false;
         }
 
         /// <summary>
@@ -277,6 +290,32 @@ namespace Restless.Plugin.Foscam
         /************************************************************************/
 
         #region Private methods
+        /// <summary>
+        /// Sets the motion speed
+        /// </summary>
+        /// <param name="value">The value from the client. 0-100</param>
+        /// <remarks>
+        /// This method attempts to set the translated motion speed (0-30) within the camera.
+        /// If successful, it sets the current motion speed to the incoming value. Otherwise,
+        /// the current motion speed is not changed. This method is only called when the
+        /// incoming value is different than the current value. See <see cref="SetMotionSpeed(int)"/> above.
+        /// </remarks>
+        private async Task<bool> SetMotionSpeed(int value)
+        {
+            int clamped = Math.Min(Math.Max(value, 0), 100);
+            int newValue = (int)Math.Round((clamped / 100.0) * 30.0, 0);
+            // must be multiple of 2. And its inverted; lower value = faster)
+            newValue = 30 - ((newValue % 2 != 0) ? newValue + 1 : newValue);
+            string uri = $"{GetDeviceRoot(TransportProtocol.Http)}/set_misc.cgi?ptz_patrol_rate={newValue}";
+            string body = await PerformClientGetAsync(uri);
+            if (!string.IsNullOrEmpty(body))
+            {
+                MotionSpeed = value;
+                return true;
+            }
+            return false;
+        }
+
         private async void SetColorValue(CameraSetting item, int value)
         {
             if (colorValueMap[item] != value)
@@ -324,7 +363,6 @@ namespace Restless.Plugin.Foscam
             return defaultValue;
         }
 
-
         private int ToScaleZeroHundredColorValue(CameraSetting item, int nativeValue)
         {
             double pc = nativeValue / (double)colorMaxMap[item];
@@ -336,16 +374,6 @@ namespace Restless.Plugin.Foscam
             double pc = scaleValue / 100.0;
             return (int)(colorMaxMap[item] * pc);
         }
-
-        //private string GetConfigurationFlipMirrorUri(SettingItem op, bool value)
-        //{
-        //    // 1 = flip, 2 = mirror, 3 = both
-        //    if (op == SettingItem.FlipOn) flipMirrorValue |= 1;
-        //    if (op == SettingItem.FlipOff) flipMirrorValue &= ~1;
-        //    if (op == SettingItem.MirrorOn) flipMirrorValue |= 2;
-        //    if (op == SettingItem.MirrorOff) flipMirrorValue &= ~2;
-        //    return GetConfigurationUri(op, flipMirrorValue);
-        //}
 
         private string GetConfigurationUri(CameraSetting item, int value)
         {
