@@ -3,7 +3,6 @@ using Restless.Plugin.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Restless.Plugin.Amcrest
@@ -51,6 +50,7 @@ namespace Restless.Plugin.Amcrest
         private readonly Dictionary<CameraSetting, int> colorValueMap;
         private int videoStreamIndex;
         private int motionSpeed;
+        private int translatedMotionSpeed;
         #endregion
 
         /************************************************************************/
@@ -114,12 +114,12 @@ namespace Restless.Plugin.Amcrest
 
         #region ICameraMotion
         /// <summary>
-        /// Gets or sets the motion speed. Clamped between <see cref="MinSpeed"/> and <see cref="MaxSpeed"/>.
+        /// Gets or sets the motion speed.
         /// </summary>
         public int MotionSpeed
         {
             get => motionSpeed;
-            set => motionSpeed = GetTranslatedMotionSpeed(value);
+            set => SetMotionSpeed(value);
         }
 
         /// <summary>
@@ -276,15 +276,20 @@ namespace Restless.Plugin.Amcrest
 
         #region Private methods
         /// <summary>
-        /// Gets the translated motion speed.
+        /// Sets the motion speed. 
         /// </summary>
-        /// <param name="value">The value from the client. Can be 1-100</param>
-        /// <returns>The translated speed, in this case 1-8</returns>
-        private int GetTranslatedMotionSpeed(int value)
+        /// <param name="value">The value from the client. 0-100</param>
+        /// <remarks>
+        /// This method saves the client speed (0-100) and calculates translatedMotionSpeed (1-8)
+        /// which is used when moving the camera. Motion speed is not saved in the camera; it's
+        /// a parameter in the url that moves the camera.
+        /// </remarks>
+        private void SetMotionSpeed(int value)
         {
+            motionSpeed = value;
             value = Math.Min(Math.Max(value, 1), 100);
             double newValue = Math.Round((value / 100.0) * 8.0, 0);
-            return Math.Max((int)newValue, 1);
+            translatedMotionSpeed = Math.Max((int)newValue, 1);
         }
 
         private async void SetColorValue(CameraSetting item, int value)
@@ -349,7 +354,7 @@ namespace Restless.Plugin.Amcrest
 
         private string GetCameraMotionUri(CameraMotion motion)
         {
-            return GetCameraMotionUri(motionMap[motion].Item1, motionMap[motion].Item2, 0, MotionSpeed);
+            return GetCameraMotionUri(motionMap[motion].Item1, motionMap[motion].Item2, 0, translatedMotionSpeed);
         }
 
         private string GetCameraMotionUri(string action, string code, int arg1, int arg2)
