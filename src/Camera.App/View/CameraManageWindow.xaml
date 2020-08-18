@@ -157,7 +157,7 @@
                         <TextBlock Text="Motion Speed"/>
                         <Slider
                             Style="{StaticResource SliderZeroOneHundredSetter}"
-                            Value="{Binding MotionSpeed, Mode=TwoWay}"/>
+                            Value="{Binding MotionSpeed, Mode=TwoWay, Delay=500}"/>
                     </StackPanel>
                 </Border>
                 
