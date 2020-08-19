@@ -9,7 +9,7 @@
 - Pan and tilt the camera*.
 - Set, clear, and go to preset positions*.
 - Pan and zoom the video image digitally.
-- Flip and mirror the camera output*.
+- Flip and mirror the camera output.
 - Change the video brightness, contrast, hue, and saturation*.
 - Establish a banner over the video (top, bottom, or off) that displays camera name, current time, and frame count.
 - Everything saved for next run. Window size, position, slots, which cameras are where, etc.
