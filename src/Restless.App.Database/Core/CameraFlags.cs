@@ -32,5 +32,13 @@ namespace Restless.App.Database.Core
         /// Translate Y movement (up / down)
         /// </summary>
         TranslateY = 32,
+        /// <summary>
+        /// Flip the video image.
+        /// </summary>
+        Flip = 64,
+        /// <summary>
+        /// Mirror the video image.
+        /// </summary>
+        Mirror = 128,
     }
 }

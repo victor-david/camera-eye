@@ -154,49 +154,46 @@
 
     <ControlTemplate TargetType="core:CameraControl" x:Key="CameraControlTemplate">
         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-            
             <!-- Main grid (pieces occupy the same space [overlays] -->
-            <Grid core:Property.ColumnWidths="*">
-                <!-- Feed -->
-                <Grid Grid.Column="1" VerticalAlignment="Center">
+            <Grid>
+                <!-- Feed image -->
+                <Image 
+                    x:Name="PART_Image"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    RenderTransformOrigin="0.5,0.5"
+                    MaxWidth="{TemplateBinding ImageMaxWidth}"
+                    MinWidth="{TemplateBinding ImageMinWidth}"
+                    Source="{TemplateBinding ImageSource}"/>
 
-                    <Image 
-                        x:Name="PART_Image"
-                        HorizontalAlignment="Center"
-                        Cursor="Hand"
-                        RenderTransformOrigin="0.5,0.5"
-                        MaxWidth="{TemplateBinding ImageMaxWidth}"
-                        MinWidth="{TemplateBinding ImageMinWidth}"
-                        Source="{TemplateBinding ImageSource}">
-                    </Image>
+                <!-- Image status banner -->
+                <Border
+                    x:Name="PART_Status"
+                    Style="{StaticResource BorderStreamStatus}"
+                    Width="{TemplateBinding StatusWidth}"
+                    VerticalAlignment="{TemplateBinding StatusAlignment}">
+                        <Grid core:Property.ColumnWidths="Auto,*,*">
 
-                    <!-- Image status banner -->
-                    <Border
-                        x:Name="StatusBanner"
-                        Style="{StaticResource BorderStreamStatus}"
-                        Width="{TemplateBinding StatusWidth}"
-                        VerticalAlignment="{TemplateBinding StatusAlignment}">
-                            <Grid core:Property.ColumnWidths="Auto,*,*">
+                            <TextBlock Text="{TemplateBinding CameraName}"/>
 
-                                <TextBlock Text="{TemplateBinding CameraName}"/>
+                            <TextBlock Grid.Column="1" Margin="6,0" Text="{TemplateBinding StatusTimeText}"/>
 
-                                <TextBlock Grid.Column="1" Margin="6,0" Text="{TemplateBinding StatusTimeText}"/>
-
-                                <TextBlock Grid.Column="2" HorizontalAlignment="Right">
-                            <Run Text="Frames:"/>
-                            <Run Foreground="Red" Text="{Binding FrameCount,RelativeSource={RelativeSource AncestorType=core:CameraControl},Mode=OneWay}"/>
-                                </TextBlock>
-                            </Grid>
+                            <TextBlock Grid.Column="2" HorizontalAlignment="Right">
+                                <Run Text="Frames:"/>
+                                <Run Foreground="Red" Text="{Binding FrameCount,RelativeSource={RelativeSource AncestorType=core:CameraControl},Mode=OneWay}"/>
+                            </TextBlock>
+                        </Grid>
+                </Border>
+                
+                <!-- Error banner -->
+                <Border
+                    x:Name="PART_Error"
+                    Style="{StaticResource BorderStreamError}"
+                    Width="{TemplateBinding ErrorWidth}"
+                    Visibility="Collapsed">
+                        <TextBlock Text="{TemplateBinding ErrorText}"/>
                     </Border>
-                    <!-- Error banner -->
-                    <Border
-                        x:Name="PART_Error"
-                        Style="{StaticResource BorderStreamError}"
-                        Width="{TemplateBinding ErrorWidth}"
-                        Visibility="Collapsed">
-                            <TextBlock Text="{TemplateBinding ErrorText}"/>
-                        </Border>
-                </Grid>
 
                 <!-- Controls (display on mouse over control) -->
                 <Border 
@@ -321,7 +318,7 @@
                 <Setter TargetName="PresetControl" Property="Visibility" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="StatusAlignment" Value="Center">
-                <Setter TargetName="StatusBanner" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="PART_Status" Property="Visibility" Value="Collapsed"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

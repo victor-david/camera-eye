@@ -45,10 +45,6 @@ namespace Restless.App.Camera
                 OnPropertyChanged(nameof(PluginSupportsContrast));
                 OnPropertyChanged(nameof(PluginSupportsHue));
                 OnPropertyChanged(nameof(PluginSupportsSaturation));
-                OnPropertyChanged(nameof(PluginSupportsFlip));
-                OnPropertyChanged(nameof(PluginSupportsMirror));
-                OnPropertyChanged(nameof(PluginSupportsRotation));
-                OnPropertyChanged(nameof(PluginSupportsOrientation));
                 OnPropertyChanged(nameof(PluginIsReboot));
                 OnPropertyChanged(nameof(PluginIsNone));
             }
@@ -103,38 +99,6 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
-        /// Gets a boolean value that indicates if the plugin supports ICameraSettings.Flip
-        /// </summary>
-        public bool PluginSupportsFlip
-        {
-            get => PluginSupportsSettings(CameraSetting.Flip);
-        }
-
-        /// <summary>
-        /// Gets a boolean value that indicates if the plugin supports ICameraSettings.Flip
-        /// </summary>
-        public bool PluginSupportsMirror
-        {
-            get => PluginSupportsSettings(CameraSetting.Mirror);
-        }
-
-        /// <summary>
-        /// Gets a boolean value that indicates if the plugin supports ICameraSettings.Rotation
-        /// </summary>
-        public bool PluginSupportsRotation
-        {
-            get => PluginSupportsSettings(CameraSetting.Rotation);
-        }
-
-        /// <summary>
-        /// Gets a boolean value that indicates if the plugin supports ICameraSettings.Flip, ICameraSettings.Mirror, or ICameraSettings.Rotation.
-        /// </summary>
-        public bool PluginSupportsOrientation
-        {
-            get => PluginSupportsFlip || PluginSupportsMirror || PluginSupportsRotation;
-        }
-
-        /// <summary>
         /// Gets a boolean value that indicates if the plugin supports ICameraReboot.
         /// </summary>
         public bool PluginIsReboot
@@ -181,6 +145,32 @@ namespace Restless.App.Camera
             set
             {
                 Camera.SetTranslateY(value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the video image is flipped.
+        /// </summary>
+        public bool IsFlipped
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.Flip);
+            set
+            {
+                Camera.SetFlip(value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the video image is mirrored.
+        /// </summary>
+        public bool IsMirrored
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.Mirror);
+            set
+            {
+                Camera.SetMirror(value);
                 OnPropertyChanged();
             }
         }
@@ -302,9 +292,6 @@ namespace Restless.App.Camera
             Camera = camera ?? throw new ArgumentNullException(nameof(camera));
             DisplayName = Camera.Name;
             Commands.Add("ChangeStatusBanner", RelayCommand.Create(RunChangeStatusBannerCommand));
-            Commands.Add("FlipVideo", RelayCommand.Create(RunFlipVideoCommand));
-            Commands.Add("MirrorVideo", RelayCommand.Create(RunMirrorVideoCommand));
-            Commands.Add("RotateVideo", RelayCommand.Create(RunRotateVideoCommand));
             Commands.Add("Reboot", RelayCommand.Create(RunRebootCommand));
 
             Brightness = Contrast = Hue = Saturation = 50;
@@ -415,41 +402,6 @@ namespace Restless.App.Camera
             return plugin is ICameraSettings settings && settings.Supported.HasFlag(item);
         }
 
-        private void RunFlipVideoCommand(object parm)
-        {
-            if (PluginSupportsSettings(CameraSetting.Flip) && parm is bool value)
-            {
-                RunPluginMethod((plugin as ICameraSettings).SetIsFlipped, value);
-            }
-        }
-
-        private void RunMirrorVideoCommand(object parm)
-        {
-            if (PluginSupportsSettings(CameraSetting.Mirror) && parm is bool value)
-            {
-                RunPluginMethod((plugin as ICameraSettings).SetIsMirrored, value);
-            }
-        }
-
-        private void RunRotateVideoCommand(object parm)
-        {
-            if (PluginSupportsSettings(CameraSetting.Rotation) && parm is Rotation value)
-            {
-                RunPluginMethod((plugin as ICameraSettings).SetRotation, value);
-            }
-        }
-
-        private void RunPluginMethod<T>(Action<T> method, T value)
-        {
-            try
-            {
-                method(value);
-            }
-            catch (Exception ex)
-            {
-                ErrorText = ex.Message;
-            }
-        }
 
         private void RunRebootCommand(object parm)
         {

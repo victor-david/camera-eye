@@ -212,6 +212,7 @@ namespace Restless.App.Camera
             if (e.PropertyName == CameraTable.Defs.Columns.Flags && sender is CameraRow camera)
             {
                 PushCommand = PushCommand.Create(PushCommandType.UpdateStatusBanner, camera.Id);
+                PushCommand = PushCommand.Create(PushCommandType.UpdateOrientation, camera.Id);
             }
         }
 

@@ -42,12 +42,19 @@
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Password}"/>
                 </Grid>
 
-                <!-- Status banner -->
-                <HeaderedItemsControl Header="Status banner">
-                    <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
-                    <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
-                    <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
-                </HeaderedItemsControl>
+                <Grid core:Property.ColumnWidths="*,*" Margin="0,6">
+                    <!-- Status banner -->
+                    <HeaderedItemsControl Header="Status banner">
+                        <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
+                        <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
+                        <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
+                    </HeaderedItemsControl>
+
+                    <HeaderedItemsControl Grid.Column="1" Header="Orientation">
+                        <CheckBox Content="Flipped" IsChecked="{Binding IsFlipped}"/>
+                        <CheckBox Content="Mirrored" IsChecked="{Binding IsMirrored}"/>
+                    </HeaderedItemsControl>
+                </Grid>
 
                 <Grid core:Property.RowHeights="Auto,*" core:Property.ColumnWidths="*, 80">
 
@@ -87,34 +94,9 @@
                     SelectedValue="{Binding Camera.PluginId,Mode=TwoWay}"/>
 
                 <!-- Plugin settings -->
-                <Border Margin="0,4" core:Property.IsVisible="{Binding PluginIsSettings}">
+                <Border Margin="0,6" core:Property.IsVisible="{Binding PluginIsSettings}">
                     <StackPanel>
 
-                        <!-- Flip / mirror  / rotation-->
-                        <ToolBar Margin="0,4" core:Property.IsVisible="{Binding PluginSupportsOrientation}">
-                        
-                            <HeaderedItemsControl Header="Flip" core:Property.IsVisible="{Binding PluginSupportsFlip}">
-                                <Button Content="Off" Command="{Binding Commands[FlipVideo]}" CommandParameter="{StaticResource BooleanFalse}"/>
-                                <Button Content="On" Command="{Binding Commands[FlipVideo]}" CommandParameter="{StaticResource BooleanTrue}"/>
-                            </HeaderedItemsControl>
-
-                            <Separator core:Property.IsVisible="{Binding PluginSupportsFlip}"/>
-                                                        
-                            <HeaderedItemsControl Header="Mirror" core:Property.IsVisible="{Binding PluginSupportsMirror}">
-                                <Button Content="Off" Command="{Binding Commands[MirrorVideo]}" CommandParameter="{StaticResource BooleanFalse}"/>
-                                <Button Content="On" Command="{Binding Commands[MirrorVideo]}" CommandParameter="{StaticResource BooleanTrue}"/>
-                            </HeaderedItemsControl>
-
-                            <Separator core:Property.IsVisible="{Binding PluginSupportsMirror}"/>
-
-                            <HeaderedItemsControl Header="Rotation" core:Property.IsVisible="{Binding PluginSupportsRotation}">
-                                <Button Content="Off" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource RotateZero}"/>
-                                <Button Content="90" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource Rotate90}"/>
-                                <Button Content="270" Command="{Binding Commands[RotateVideo]}" CommandParameter="{StaticResource Rotate270}"/>
-                            </HeaderedItemsControl>
-
-                        </ToolBar>
-                        
                         <!-- Brightness -->
                         <StackPanel core:Property.IsVisible="{Binding PluginSupportsBrightness}">
                             <TextBlock Text="Brightness"/>

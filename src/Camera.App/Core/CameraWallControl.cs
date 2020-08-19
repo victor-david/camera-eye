@@ -334,6 +334,15 @@ namespace Restless.App.Camera.Core
             return VerticalAlignment.Center;
         }
 
+        private void UpdateOrientation(long id)
+        {
+            if (GetCameraHost(id) is CameraHostBorder host)
+            {
+                host.CameraControl.IsFlipped = host.CameraControl.Camera.Flags.HasFlag(CameraFlags.Flip);
+                host.CameraControl.IsMirrored= host.CameraControl.Camera.Flags.HasFlag(CameraFlags.Mirror);
+            }
+        }
+
         private void ShowCameraLocation(long id)
         {
             foreach (var child in Children.OfType<CameraHostBorder>())
@@ -356,6 +365,9 @@ namespace Restless.App.Camera.Core
                     break;
                 case PushCommandType.UpdateStatusBanner:
                     UpdateStatusBanner(command.Id);
+                    break;
+                case PushCommandType.UpdateOrientation:
+                    UpdateOrientation(command.Id);
                     break;
                 case PushCommandType.ShowCameraLocation:
                     ShowCameraLocation(command.Id);

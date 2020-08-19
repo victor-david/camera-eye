@@ -60,7 +60,7 @@
                             <Border x:Name="InnerBorder" Height="8" Width="8" CornerRadius="1"/>
 
                         </Border>
-                        <ContentPresenter Grid.Column="1" Margin="6,0"/>
+                        <ContentPresenter Grid.Column="1" Margin="6,0" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <ControlTemplate.Triggers>

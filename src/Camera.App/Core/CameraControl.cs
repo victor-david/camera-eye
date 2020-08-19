@@ -20,16 +20,19 @@ namespace Restless.App.Camera.Core
     /// Represents a composite control to view and move (if supported) a camera
     /// </summary>
     [TemplatePart(Name = PartImage, Type = typeof(Controls.Image))]
+    [TemplatePart(Name = PartStatus, Type = typeof(Controls.Border))]
     [TemplatePart(Name = PartError, Type = typeof(Controls.Border))]
     [TemplatePart(Name = PartController, Type = typeof(Controls.Border))]
     public class CameraControl : Controls.Control
     {
         #region Private
         private const string PartImage = "PART_Image";
+        private const string PartStatus = "PART_Status";
         private const string PartError = "PART_Error";
         private const string PartController = "PART_Controller";
 
         private Controls.Image imageControl;
+        private Controls.Border statusControl;
         private Controls.Border errorControl;
         private Controls.Border controllerControl;
 
@@ -416,6 +419,45 @@ namespace Restless.App.Camera.Core
         /// Identifies the <see cref="ImageMinWidth"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ImageMinWidthProperty = ImageMinWidthPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the video image is flipped vertically.
+        /// </summary>
+        public bool IsFlipped
+        {
+            get => (bool)GetValue(IsFlippedProperty);
+            set => SetValue(IsFlippedProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="IsFlipped"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsFlippedProperty = DependencyProperty.Register
+            (
+                nameof(IsFlipped), typeof(bool), typeof(CameraControl), new PropertyMetadata(false, OnIsOrientationChanged)
+            );
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the video image is mirrored horizontally.
+        /// </summary>
+        public bool IsMirrored
+        {
+            get => (bool)GetValue(IsMirroredProperty);
+            set => SetValue(IsMirroredProperty, value);
+        }
+
+        /// <summary>
+        /// Identifies the <see cref="IsMirrored"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsMirroredProperty = DependencyProperty.Register
+            (
+                nameof(IsMirrored), typeof(bool), typeof(CameraControl), new PropertyMetadata(false, OnIsOrientationChanged)
+            );
+
+        private static void OnIsOrientationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as CameraControl)?.SetOrientation();
+        }
         #endregion
 
         /************************************************************************/
@@ -670,8 +712,14 @@ namespace Restless.App.Camera.Core
             }
 
             imageControl = GetTemplateChild(PartImage) as Controls.Image;
+            statusControl = GetTemplateChild(PartStatus) as Controls.Border;
             errorControl = GetTemplateChild(PartError) as Controls.Border;
             controllerControl = GetTemplateChild(PartController) as Controls.Border;
+
+            if (imageControl == null || statusControl == null || errorControl == null || controllerControl == null)
+            {
+                throw new NotImplementedException("CameraControl template not implemented correctly");
+            }
 
             Storyboard.SetTarget(ShowController, controllerControl);
             Storyboard.SetTargetProperty(ShowController, new PropertyPath(HeightProperty));
@@ -682,16 +730,13 @@ namespace Restless.App.Camera.Core
             Storyboard.SetTarget(HideErrorControl, errorControl);
             Storyboard.SetTargetProperty(HideErrorControl, new PropertyPath(OpacityProperty));
 
-            if (imageControl != null)
-            {
-                imageControl.MouseLeftButtonDown += ImageControlMouseLeftButtonDown;
-                imageControl.MouseMove += ImageControlMouseMove;
-                imageControl.MouseLeave += ImageControlMouseLeave;
-                imageControl.MouseUp += ImageControlMouseUp;
-                imageControl.MouseWheel += ImageControlMouseWheel;
-                imageControl.SizeChanged += ImageControlSizeChanged;
-                InitializeImageTransforms();
-            }
+            imageControl.MouseLeftButtonDown += ImageControlMouseLeftButtonDown;
+            imageControl.MouseMove += ImageControlMouseMove;
+            imageControl.MouseLeave += ImageControlMouseLeave;
+            imageControl.MouseUp += ImageControlMouseUp;
+            imageControl.MouseWheel += ImageControlMouseWheel;
+            imageControl.SizeChanged += ImageControlSizeChanged;
+            InitializeImageTransforms();
 
             InitializeIsMouseCameraMotionAvailable();
             /*
@@ -766,6 +811,7 @@ namespace Restless.App.Camera.Core
         {
             base.OnRenderSizeChanged(sizeInfo);
             if (sizeInfo.WidthChanged) SetWidths(sizeInfo.NewSize.Width);
+            //if (sizeInfo.HeightChanged) AdjustStatusBanner();
         }
         #endregion
 
@@ -783,7 +829,7 @@ namespace Restless.App.Camera.Core
             if (!isMouseDown) return;
             if (isLeftControlKeyDown && !IsMouseCameraMotionAvailable) return;
 
-            System.Windows.Point point = e.GetPosition(imageControl);
+            Point point = e.GetPosition(imageControl);
             double deltaX = point.X - mouseDownPoint.X;
             double deltaY = point.Y - mouseDownPoint.Y;
 
@@ -935,11 +981,14 @@ namespace Restless.App.Camera.Core
                     GoPresetCommand = RelayCommand.Create(RunGoPresetCommand);
                     SetPresetCommand = RelayCommand.Create(RunSetPresetCommand);
                     ClearPresetCommand = RelayCommand.Create(RunClearPresetCommand);
-                    ControllerWidth += 256;
+                    ControllerWidth += 258;
                     PresetList = Enumerable.Range(1, Math.Min((int)Camera.MaxPreset, preset.MaxPreset));
                 }
 
                 isControllerEnabled = IsPluginMotion || IsPluginPreset;
+
+                IsFlipped = Camera.Flags.HasFlag(CameraFlags.Flip);
+                IsMirrored = Camera.Flags.HasFlag(CameraFlags.Mirror);
 
                 StatusAlignment = GetStatusAlignment();
 
@@ -1087,6 +1136,66 @@ namespace Restless.App.Camera.Core
             // placeholder
         }
 
+
+        private double GetImageScaledWidth()
+        {
+            if (GetImageScaleTransform() is ScaleTransform scale)
+            {
+                return imageControl.ActualWidth * scale.ScaleX;
+            }
+            return 0.0;
+        }
+
+        private void SetWidths(double proposedWidth)
+        {
+            imageScaledWidth = GetImageScaledWidth();
+            StatusWidth = Math.Min(Math.Min(Math.Max(proposedWidth, imageScaledWidth), imageScaledWidth), ActualWidth);
+            /* ErrorWidth default = double.NaN. Do not set to zero or initial failure to connect won't show */
+            if (StatusWidth > 0) ErrorWidth = StatusWidth;
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private methods (transforms)
+        private void InitializeImageTransforms()
+        {
+            // this method is called from OnApplyTemplate()
+            TransformGroup group = new TransformGroup();
+            group.Children.Add(new TranslateTransform());
+            group.Children.Add(new ScaleTransform(1.0, 1.0));
+            group.Children.Add(new ScaleTransform(1.0, 1.0));
+            imageControl.RenderTransform = group;
+            SetOrientation();
+        }
+
+        private TranslateTransform GetImageTranslateTransform()
+        {
+            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 0)
+            {
+                return group.Children[0] as TranslateTransform;
+            }
+            return null;
+        }
+
+        private ScaleTransform GetImageScaleTransform()
+        {
+            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 1)
+            {
+                return group.Children[1] as ScaleTransform;
+            }
+            return null;
+        }
+
+        private ScaleTransform GetImageFlipMirrorTransform()
+        {
+            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 2)
+            {
+                return group.Children[2] as ScaleTransform;
+            }
+            return null;
+        }
+
         private void ZoomImage(int factor)
         {
             if (GetImageScaleTransform() is ScaleTransform scale)
@@ -1111,48 +1220,13 @@ namespace Restless.App.Camera.Core
             }
         }
 
-        private ScaleTransform GetImageScaleTransform()
+        private void SetOrientation()
         {
-            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 1)
+            if (GetImageFlipMirrorTransform() is ScaleTransform transform)
             {
-                return group.Children[1] as ScaleTransform;
+                transform.ScaleX = IsMirrored ? -1.0 : 1.0;
+                transform.ScaleY = IsFlipped ? -1.0 : 1.0;
             }
-            return null;
-        }
-
-        private TranslateTransform GetImageTranslateTransform()
-        {
-            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 0)
-            {
-                return group.Children[0] as TranslateTransform;
-            }
-            return null;
-        }
-
-        private double GetImageScaledWidth()
-        {
-            if (GetImageScaleTransform() is ScaleTransform scale)
-            {
-                return imageControl.ActualWidth * scale.ScaleX;
-            }
-            return 0.0;
-        }
-
-        private void SetWidths(double proposedWidth)
-        {
-            imageScaledWidth = GetImageScaledWidth();
-            StatusWidth = Math.Min(Math.Min(Math.Max(proposedWidth, imageScaledWidth), imageScaledWidth), ActualWidth);
-            /* ErrorWidth default = double.NaN. Do not set to zero or initial failure to connect won't show */
-            if (StatusWidth > 0) ErrorWidth = StatusWidth;
-        }
-
-        // method called from OnApplyTemplate() only is imageControl != null
-        private void InitializeImageTransforms()
-        {
-            TransformGroup group = new TransformGroup();
-            group.Children.Add(new TranslateTransform());
-            group.Children.Add(new ScaleTransform(1.0, 1.0));
-            imageControl.RenderTransform = group;
         }
 
         private void ResetImageTransforms()
@@ -1170,7 +1244,11 @@ namespace Restless.App.Camera.Core
                 SetWidths(imageControl.ActualWidth);
             }
         }
+        #endregion
 
+        /************************************************************************/
+
+        #region Private methods (storyboards)
         private void InitializeStoryBoards()
         {
             ShowController = new Storyboard() { FillBehavior = FillBehavior.HoldEnd };

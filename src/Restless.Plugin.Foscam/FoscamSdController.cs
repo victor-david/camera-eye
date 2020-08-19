@@ -89,8 +89,6 @@ namespace Restless.Plugin.Foscam
             {
                 { CameraSetting.Brightness, "param=1&value=" },
                 { CameraSetting.Contrast, "param=2&value=" },
-                { CameraSetting.Flip, "param=5&value=" },
-                { CameraSetting.Mirror, "param=5&value=" },
             };
         }
         #endregion
@@ -205,7 +203,7 @@ namespace Restless.Plugin.Foscam
         /// <summary>
         /// Gets a bitwise combination value that describes which setting items are supported.
         /// </summary>
-        public CameraSetting Supported => CameraSetting.Brightness | CameraSetting.Contrast | CameraSetting.Flip | CameraSetting.Mirror;
+        public CameraSetting Supported => CameraSetting.Brightness | CameraSetting.Contrast; 
 
         /// <summary>
         /// Gets or sets the brightness.
@@ -241,37 +239,6 @@ namespace Restless.Plugin.Foscam
         {
             get => throw new NotSupportedException(nameof(Saturation));
             set => throw new NotSupportedException(nameof(Saturation));
-        }
-
-        /// <summary>
-        /// Sets whether or not the video is flipped.
-        /// </summary>
-        /// <param name="value">true to flip video; otherwise, false.</param>
-        public async void SetIsFlipped(bool value)
-        {
-            flipMirrorValue = (value) ? flipMirrorValue | 1 : flipMirrorValue & ~1;
-            string uri = GetConfigurationUri(CameraSetting.Flip, flipMirrorValue);
-            await PerformClientGetAsync(uri);
-        }
-
-        /// <summary>
-        /// Sets whether or not the video is mirrored.
-        /// </summary>
-        /// <param name="value">true to mirror video; otherwise false.</param>
-        public async void SetIsMirrored(bool value)
-        {
-            flipMirrorValue = (value) ? flipMirrorValue | 2 : flipMirrorValue & ~2;
-            string uri = GetConfigurationUri(CameraSetting.Mirror, flipMirrorValue);
-            await PerformClientGetAsync(uri);
-        }
-
-        /// <summary>
-        /// Sets the rotation of the video. Not supported.
-        /// </summary>
-        /// <param name="value">The rotation.</param>
-        public void SetRotation(Rotation value)
-        {
-            throw new NotSupportedException();
         }
         #endregion
 

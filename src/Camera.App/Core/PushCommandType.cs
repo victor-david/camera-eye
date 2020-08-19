@@ -18,6 +18,10 @@
         /// </summary>
         UpdateStatusBanner,
         /// <summary>
+        /// Update the camera's orientation (flip, mirror)
+        /// </summary>
+        UpdateOrientation,
+        /// <summary>
         /// Show the camera's location on the wall.
         /// </summary>
         ShowCameraLocation,

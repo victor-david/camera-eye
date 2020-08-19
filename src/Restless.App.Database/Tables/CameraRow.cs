@@ -1,5 +1,4 @@
 ﻿using Restless.App.Database.Core;
-using Restless.App.Database.Tables;
 using Restless.Tools.Database.SQLite;
 using System;
 using System.Collections;
@@ -248,6 +247,28 @@ namespace Restless.App.Database.Tables
         {
             CameraFlags add = value ? CameraFlags.TranslateY : CameraFlags.None;
             CameraFlags remove = value ? CameraFlags.None : CameraFlags.TranslateY;
+            ChangeFlags(add, remove);
+        }
+
+        /// <summary>
+        /// Sets or clears the corresponding flip flag.
+        /// </summary>
+        /// <param name="value">true to set, false to clear.</param>
+        public void SetFlip(bool value)
+        {
+            CameraFlags add = value ? CameraFlags.Flip : CameraFlags.None;
+            CameraFlags remove = value ? CameraFlags.None : CameraFlags.Flip;
+            ChangeFlags(add, remove);
+        }
+
+        /// <summary>
+        /// Sets or clears the corresponding mirror flag.
+        /// </summary>
+        /// <param name="value">true to set, false to clear.</param>
+        public void SetMirror(bool value)
+        {
+            CameraFlags add = value ? CameraFlags.Mirror : CameraFlags.None;
+            CameraFlags remove = value ? CameraFlags.None : CameraFlags.Mirror;
             ChangeFlags(add, remove);
         }
         #endregion

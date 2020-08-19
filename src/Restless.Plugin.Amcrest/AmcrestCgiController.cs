@@ -90,8 +90,6 @@ namespace Restless.Plugin.Amcrest
                 { CameraSetting.Contrast, "VideoColor[0][0].Contrast=" },
                 { CameraSetting.Hue, "VideoColor[0][0].Hue=" },
                 { CameraSetting.Saturation, "VideoColor[0][0].Saturation=" },
-                { CameraSetting.Flip, "VideoInOptions[0].Flip=" },
-                { CameraSetting.Mirror, "VideoInOptions[0].Mirror=" },
             };
         }
         #endregion
@@ -207,7 +205,7 @@ namespace Restless.Plugin.Amcrest
         /// <summary>
         /// Gets a bitwise combination value that describes which setting items are supported.
         /// </summary>
-        public CameraSetting Supported => CameraSetting.Brightness | CameraSetting.Contrast | CameraSetting.Hue | CameraSetting.Saturation | CameraSetting.Flip | CameraSetting.Mirror;
+        public CameraSetting Supported => CameraSetting.Brightness | CameraSetting.Contrast | CameraSetting.Hue | CameraSetting.Saturation;
 
         /// <summary>
         /// Gets or sets the brightness.
@@ -243,35 +241,6 @@ namespace Restless.Plugin.Amcrest
         {
             get => colorValueMap[CameraSetting.Saturation];
             set => SetColorValue(CameraSetting.Saturation, value);
-        }
-
-        /// <summary>
-        /// Sets whether or not the video is flipped.
-        /// </summary>
-        /// <param name="value">true to flip video; otherwise, false.</param>
-        public async void SetIsFlipped(bool value)
-        {
-            string uri = GetConfigurationUri(CameraSetting.Flip, value.ToString().ToLower());
-            await PerformClientGetAsync(uri);
-        }
-
-        /// <summary>
-        /// Sets whether or not the video is mirrored.
-        /// </summary>
-        /// <param name="value">true to mirror video; otherwise false.</param>
-        public async void SetIsMirrored(bool value)
-        {
-            string uri = GetConfigurationUri(CameraSetting.Mirror, value.ToString().ToLower());
-            await PerformClientGetAsync(uri);
-        }
-
-        /// <summary>
-        /// Sets the rotation of the video.
-        /// </summary>
-        /// <param name="value">The rotation.</param>
-        public void SetRotation(Rotation value)
-        {
-            throw new NotSupportedException();
         }
         #endregion
 
