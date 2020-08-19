@@ -9,7 +9,7 @@
         
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="MainBorder" Property="Background" Value="#FF5DB2E0"/>
+                <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource DefaultMouseOverBrush}"/>
             </Trigger>
             <Trigger Property="IsMouseCaptureWithin" Value="True">
                 <Setter TargetName="MainBorder" Property="Background" Value="#FF4F93BD"/>

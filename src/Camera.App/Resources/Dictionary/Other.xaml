@@ -6,7 +6,7 @@
         <Style.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
-                <Setter Property="Foreground" Value="DarkGray"/>
+                <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
                 <Setter Property="FontSize" Value="12"/>
             </Style>
             <Style TargetType="TextBox">
@@ -21,7 +21,7 @@
             <Style TargetType="GroupBox">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
                 <Setter Property="Margin" Value="0,6"/>
-                <Setter Property="Foreground" Value="DarkGray"/>
+                <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
             </Style>
             <Style TargetType="Grid">
                 <Setter Property="DockPanel.Dock" Value="Top"/>
@@ -31,7 +31,7 @@
             </Style>
             <Style TargetType="ListBox">
                 <Setter Property="Margin" Value="0,2,4,4"/>
-                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>
             </Style>
             <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
                 <Setter Property="Height" Value="32"/>
@@ -48,7 +48,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Separator">
-                    <Border BorderThickness="1" BorderBrush="DarkGray"/>
+                    <Border BorderThickness="1" BorderBrush="{StaticResource DefaultBorderBrush}"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -58,11 +58,11 @@
     <Style TargetType="StatusBar">
         <Setter Property="Height" Value="32"/>
         <Setter Property="Background" Value="#FFEEEEEE"/>
-        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1,1,0,0"/>
         <Style.Resources>
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="DarkGray"/>
+                <Setter Property="Foreground" Value="{StaticResource DefaultForegroundBrush}"/>
                 <Setter Property="Margin" Value="2,0"/>
             </Style>
         </Style.Resources>

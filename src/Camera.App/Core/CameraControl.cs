@@ -1043,8 +1043,23 @@ namespace Restless.App.Camera.Core
         {
             if (parm is CameraMotion motion)
             {
-                (Plugin as ICameraMotion)?.Move(motion);
+                (Plugin as ICameraMotion)?.Move(TranslatedMotion(motion));
             }
+        }
+
+        private CameraMotion TranslatedMotion(CameraMotion motion)
+        {
+            if (motion.IsX() && Camera.Flags.HasFlag(CameraFlags.TranslateX))
+            {
+                return motion.TranslatedX();
+            }
+
+            if (motion.IsY() && Camera.Flags.HasFlag(CameraFlags.TranslateY))
+            {
+                return motion.TranslatedY();
+            }
+
+            return motion;
         }
 
         private void RunGoPresetCommand(object parm)

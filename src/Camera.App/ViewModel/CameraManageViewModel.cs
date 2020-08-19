@@ -160,6 +160,32 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
+        /// Gets or sets a boolean value that determines if camera motion is translated on the X axis.
+        /// </summary>
+        public bool TranslateX
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.TranslateX);
+            set
+            {
+                Camera.SetTranslateX(value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if camera motion is translated on the Y axis.
+        /// </summary>
+        public bool TranslateY
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.TranslateY);
+            set
+            {
+                Camera.SetTranslateY(value);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the brightness.
         /// </summary>
         public int Brightness

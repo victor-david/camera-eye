@@ -62,16 +62,14 @@
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         Text="{Binding Camera.Note}"/>
 
+                    <!-- Max presets to display -->
                     <TextBlock Grid.Column="1" Text="Max Preset"/>
-
                     <ListBox
                         Grid.Row="1"
                         Grid.Column="1"
                         ItemsSource="{Binding PresetList}"
-                        SelectedItem="{Binding SelectedMaxPreset}"
-                        />
-
-
+                        SelectedItem="{Binding SelectedMaxPreset}"/>
+                    
                 </Grid>
 
             </DockPanel>
@@ -151,19 +149,21 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Motion speed -->
+                <!-- Motion speed and translate -->
                 <Border core:Property.IsVisible="{Binding PluginIsMotion}">
                     <StackPanel>
                         <TextBlock Text="Motion Speed"/>
                         <Slider
                             Style="{StaticResource SliderZeroOneHundredSetter}"
                             Value="{Binding MotionSpeed, Mode=TwoWay, Delay=500}"/>
+                        <CheckBox Content="Translate X movement" IsChecked="{Binding TranslateX}"/>
+                        <CheckBox Content="Translate Y movement" IsChecked="{Binding TranslateY}"/>
                     </StackPanel>
                 </Border>
                 
                 <!-- Reboot -->
                 <Border core:Property.IsVisible="{Binding PluginIsReboot}">
-                    <StackPanel>
+                    <StackPanel Margin="0,8">
                         <TextBlock Text="This plugin supports reboot."/>
                         <Button Content="Reboot Now" Command="{Binding Commands[Reboot]}"/>
                     </StackPanel>

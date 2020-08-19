@@ -228,6 +228,28 @@ namespace Restless.App.Database.Tables
         {
             ChangeFlags(CameraFlags.None, CameraFlags.IncludeOnWall);
         }
+
+        /// <summary>
+        /// Sets or clears the corresponding translate flag for X axis.
+        /// </summary>
+        /// <param name="value">true to set, false to clear.</param>
+        public void SetTranslateX(bool value)
+        {
+            CameraFlags add = value ? CameraFlags.TranslateX : CameraFlags.None;
+            CameraFlags remove = value ? CameraFlags.None : CameraFlags.TranslateX;
+            ChangeFlags(add, remove);
+        }
+
+        /// <summary>
+        /// Sets or clears the corresponding translate flag for Y axis.
+        /// </summary>
+        /// <param name="value">true to set, false to clear.</param>
+        public void SetTranslateY(bool value)
+        {
+            CameraFlags add = value ? CameraFlags.TranslateY : CameraFlags.None;
+            CameraFlags remove = value ? CameraFlags.None : CameraFlags.TranslateY;
+            ChangeFlags(add, remove);
+        }
         #endregion
 
         /************************************************************************/

@@ -22,11 +22,14 @@
 
     <!-- Solid Brushes -->
     <SolidColorBrush x:Key="DefaultHeaderBrush" Color="DarkGray"/>
+    <SolidColorBrush x:Key="DefaultBorderBrush" Color="LightGray"/>
+    <SolidColorBrush x:Key="DefaultForegroundBrush" Color="DarkGray"/>
     <SolidColorBrush x:Key="DefaultForegroundDarkBrush" Color="DarkBlue"/>
     <SolidColorBrush x:Key="DefaultForegroundDisabledBrush" Color="LightGray"/>
     <SolidColorBrush x:Key="DefaultForegroundAlertBrush" Color="Red"/>
-    <SolidColorBrush x:Key="AlternationBrushSecondary" Color="#FFDFDFDF" />
-
+    <SolidColorBrush x:Key="AlternationBrushSecondary" Color="#FFDFDFDF"/>
+    <SolidColorBrush x:Key="DefaultMouseOverBrush" Color="#FF5DB2E0"/>
+    
     <!-- Defines the color used to highlight grid rows -->
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF79ABBB"/>
 

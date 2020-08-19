@@ -25,17 +25,12 @@ namespace Restless.App.Database.Core
         /// </summary>
         IncludeOnWall = 8,
         /// <summary>
-        /// Low frame rate
+        /// Translate X movement (left / right)
         /// </summary>
-        FrameRateLow = 128,
+        TranslateX = 16,
         /// <summary>
-        /// Low frame rate
+        /// Translate Y movement (up / down)
         /// </summary>
-        FrameRateMedium = 256,
-        /// <summary>
-        /// High frame rate
-        /// </summary>
-        FrameRateHigh = 512,
-
+        TranslateY = 32,
     }
 }
