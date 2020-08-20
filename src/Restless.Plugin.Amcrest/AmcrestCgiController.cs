@@ -74,6 +74,7 @@ namespace Restless.Plugin.Amcrest
             // Motion supports speed of 1 - 8 
             // Incoming motion speed is treated as a percentage, gets translated.
             MotionSpeed = 50;
+            translatedMotionSpeed = 5;
             VideoStreamIndex = 0;
 
             colorValueMap = new Dictionary<CameraSetting, int>()
