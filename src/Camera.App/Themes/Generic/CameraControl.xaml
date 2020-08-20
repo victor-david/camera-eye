@@ -330,6 +330,7 @@
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Cursor" Value="Arrow"/>
+        <Setter Property="UseLayoutRounding" Value="False"/>
         <Setter Property="Template" Value="{StaticResource CameraControlTemplate}"/>
     </Style>
     
