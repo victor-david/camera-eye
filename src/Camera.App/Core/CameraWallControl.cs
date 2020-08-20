@@ -322,16 +322,8 @@ namespace Restless.App.Camera.Core
         {
             if (GetCameraHost(id) is CameraHostBorder host)
             {
-                host.CameraControl.StatusAlignment = GetStatusAlignment(host.CameraControl.Camera);
+                host.CameraControl.UpdateStatusPlacement();
             }
-        }
-
-        private VerticalAlignment GetStatusAlignment(CameraRow camera)
-        {
-            if (camera.Flags.HasFlag(CameraFlags.StatusTop)) return VerticalAlignment.Top;
-            if (camera.Flags.HasFlag(CameraFlags.StatusBottom)) return VerticalAlignment.Bottom;
-            /* center causes trigger to hide the status banner */
-            return VerticalAlignment.Center;
         }
 
         private void UpdateOrientation(long id)

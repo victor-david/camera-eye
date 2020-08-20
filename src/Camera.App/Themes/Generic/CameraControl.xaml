@@ -11,9 +11,7 @@
     <cont:CameraMotion x:Key="CameraMotionDown">Down</cont:CameraMotion>
     <cont:CameraMotion x:Key="CameraMotionCenter">Center</cont:CameraMotion>
 
-    <VerticalAlignment x:Key="VerticalAlignmentTop">Top</VerticalAlignment>
-    <VerticalAlignment x:Key="VerticalAlignmentBottom">Bottom</VerticalAlignment>
-    <VerticalAlignment x:Key="VerticalAlignmentCenter">Center</VerticalAlignment>
+    <core:StatusPlacement x:Key="StatusPlacementNone">None</core:StatusPlacement>
     
     <Style TargetType="Path" x:Key="PathIcon">
         <Setter Property="Height" Value="15"/>
@@ -118,10 +116,12 @@
     </Style>
 
     <Style TargetType="Border" x:Key="BorderStreamStatus">
-        <Setter Property="Height" Value="22"/>
         <Setter Property="Background" Value="#A0FFFFFF"/>
         <Setter Property="Padding" Value="4,0"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="RenderTransformOrigin" Value="0.0,0.0"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
         <Style.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize" Value="11"/>
@@ -136,10 +136,12 @@
         <Setter Property="Background" Value="#C0FF0000"/>
         <Setter Property="BorderBrush" Value="#C0000000"/>
         <Setter Property="BorderThickness" Value="0,1"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="Padding" Value="6"/>
         <Setter Property="Opacity" Value="0.8"/>
+        <Setter Property="RenderTransformOrigin" Value="0.0,0.0"/>
         <Style.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="Margin" Value="2,0"/>
@@ -163,17 +165,17 @@
                     VerticalAlignment="Center"
                     Cursor="Hand"
                     RenderTransformOrigin="0.5,0.5"
+                    MaxHeight="{TemplateBinding ImageMaxHeight}"
                     MaxWidth="{TemplateBinding ImageMaxWidth}"
-                    MinWidth="{TemplateBinding ImageMinWidth}"
                     Source="{TemplateBinding ImageSource}"/>
 
                 <!-- Image status banner -->
                 <Border
                     x:Name="PART_Status"
                     Style="{StaticResource BorderStreamStatus}"
-                    Width="{TemplateBinding StatusWidth}"
-                    VerticalAlignment="{TemplateBinding StatusAlignment}">
-                        <Grid core:Property.ColumnWidths="Auto,*,*">
+                    Height="{TemplateBinding StatusHeight}"
+                    Width="{TemplateBinding StatusWidth}">
+                        <Grid core:Property.ColumnWidths="Auto,*,Auto">
 
                             <TextBlock Text="{TemplateBinding CameraName}"/>
 
@@ -190,7 +192,6 @@
                 <Border
                     x:Name="PART_Error"
                     Style="{StaticResource BorderStreamError}"
-                    Width="{TemplateBinding ErrorWidth}"
                     Visibility="Collapsed">
                         <TextBlock Text="{TemplateBinding ErrorText}"/>
                     </Border>
@@ -317,7 +318,7 @@
             <Trigger Property="IsPluginPreset" Value="False">
                 <Setter TargetName="PresetControl" Property="Visibility" Value="Collapsed"/>
             </Trigger>
-            <Trigger Property="StatusAlignment" Value="Center">
+            <Trigger Property="StatusPlacement" Value="{StaticResource StatusPlacementNone}">
                 <Setter TargetName="PART_Status" Property="Visibility" Value="Collapsed"/>
             </Trigger>
         </ControlTemplate.Triggers>

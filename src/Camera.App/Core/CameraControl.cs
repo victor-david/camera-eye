@@ -42,6 +42,7 @@ namespace Restless.App.Camera.Core
         private bool isControllerEnabled;
 
         private double imageScaledWidth;
+        private double imageScaledHeight;
         private bool isMouseDown;
         private bool isCameraMotionStarted;
         private Point mouseDownPoint;
@@ -57,6 +58,12 @@ namespace Restless.App.Camera.Core
         private bool isLeftControlKeyDown;
         private readonly VideoDecoderManager videoDecoder;
         private TransformParameters transformParameters;
+        private readonly TransformGroup transformGroup;
+        private TranslateTransform MoveTransform => transformGroup.Children[0] as TranslateTransform;
+        private ScaleTransform ZoomTransform => transformGroup.Children[1] as ScaleTransform;
+        private ScaleTransform FlipTransform => transformGroup.Children[2] as ScaleTransform;
+        private readonly TranslateTransform BannerTranslate;
+        
         #endregion
 
         /************************************************************************/
@@ -81,6 +88,12 @@ namespace Restless.App.Camera.Core
             Unloaded += CameraControlUnloaded;
             InitializeStoryBoards();
             controllerStatus = ControllerStatus.Hidden;
+            transformGroup = new TransformGroup();
+            transformGroup.Children.Add(new TranslateTransform()); 
+            transformGroup.Children.Add(new ScaleTransform(1.0, 1.0));
+            transformGroup.Children.Add(new ScaleTransform(1.0, 1.0));
+
+            BannerTranslate = new TranslateTransform();
         }
 
         static CameraControl()
@@ -402,23 +415,23 @@ namespace Restless.App.Camera.Core
         public static readonly DependencyProperty ImageMaxWidthProperty = ImageMaxWidthPropertyKey.DependencyProperty;
 
         /// <summary>
-        /// Gets the image min width
+        /// Gets the image max height.
         /// </summary>
-        public double ImageMinWidth
+        public double ImageMaxHeight
         {
-            get => (double)GetValue(ImageMinWidthProperty);
-            private set => SetValue(ImageMinWidthPropertyKey, value);
+            get => (double)GetValue(ImageMaxHeightProperty);
+            private set => SetValue(ImageMaxHeightPropertyKey, value);
         }
 
-        private static readonly DependencyPropertyKey ImageMinWidthPropertyKey = DependencyProperty.RegisterReadOnly
+        private static readonly DependencyPropertyKey ImageMaxHeightPropertyKey = DependencyProperty.RegisterReadOnly
             (
-                nameof(ImageMinWidth), typeof(double), typeof(CameraControl), new PropertyMetadata(320.0)
+                nameof(ImageMaxHeight), typeof(double), typeof(CameraControl), new PropertyMetadata(0.0)
             );
 
         /// <summary>
-        /// Identifies the <see cref="ImageMinWidth"/> dependency property.
+        /// Identifies the <see cref="ImageMaxHeight"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty ImageMinWidthProperty = ImageMinWidthPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty ImageMaxHeightProperty = ImageMaxHeightPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets or sets a boolean value that determines if the video image is flipped vertically.
@@ -482,36 +495,46 @@ namespace Restless.App.Camera.Core
         /// </summary>
         public static readonly DependencyProperty StatusWidthProperty = StatusWidthPropertyKey.DependencyProperty;
 
+
         /// <summary>
-        /// Gets or sets the vertical alignment for the status banner.
-        /// Use Top, Bottom, or Center. Center causes the status banner to hide.
+        /// Gets the height of the status banner.
         /// </summary>
-        public VerticalAlignment StatusAlignment
+        public double StatusHeight
         {
-            get => (VerticalAlignment)GetValue(StatusAlignmentProperty);
-            set => SetValue(StatusAlignmentProperty, value);
+            get => (double)GetValue(StatusHeightProperty);
+            private set => SetValue(StatusHeightPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey StatusHeightPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(StatusHeight), typeof(double), typeof(CameraControl), new PropertyMetadata(24.0)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="StatusHeight"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty StatusHeightProperty = StatusHeightPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets or sets the status banner placement.
+        /// </summary>
+        public StatusPlacement StatusPlacement
+        {
+            get => (StatusPlacement)GetValue(StatusPlacementProperty);
+            set => SetValue(StatusPlacementProperty, value);
         }
 
         /// <summary>
-        /// Identifies the <see cref="StatusAlignment"/> dependency property.
+        /// Identifies the <see cref="StatusPlacement"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty StatusAlignmentProperty = DependencyProperty.Register
+        public static readonly DependencyProperty StatusPlacementProperty = DependencyProperty.Register
             (
-                nameof(StatusAlignment), typeof(VerticalAlignment), typeof(CameraControl), new PropertyMetadata()
-                {
-                    DefaultValue = VerticalAlignment.Top,
-                    CoerceValueCallback = OnCoerceStatusAlignment
-                }
+                nameof(StatusPlacement), typeof(StatusPlacement), typeof(CameraControl), new PropertyMetadata(StatusPlacement.None, OnStatusPlacementChanged)
             );
 
-        private static object OnCoerceStatusAlignment(DependencyObject d, object baseValue)
+        private static void OnStatusPlacementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            VerticalAlignment align = (VerticalAlignment)baseValue;
-            if (align == VerticalAlignment.Stretch)
-            {
-                align = VerticalAlignment.Center;
-            }
-            return align;
+            (d as CameraControl)?.SyncStatusBannerToSize();
         }
 
         /// <summary>
@@ -611,25 +634,6 @@ namespace Restless.App.Camera.Core
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the width used for the error banner
-        /// </summary>
-        public double ErrorWidth
-        {
-            get => (double)GetValue(ErrorWidthProperty);
-            private set => SetValue(ErrorWidthPropertyKey, value);
-        }
-
-        private static readonly DependencyPropertyKey ErrorWidthPropertyKey = DependencyProperty.RegisterReadOnly
-            (
-                nameof(ErrorWidth), typeof(double), typeof(CameraControl), new PropertyMetadata(double.NaN)
-            );
-
-        /// <summary>
-        /// Identifies the <see cref="ErrorWidth"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty ErrorWidthProperty = ErrorWidthPropertyKey.DependencyProperty;
         #endregion
 
         /************************************************************************/
@@ -736,7 +740,9 @@ namespace Restless.App.Camera.Core
             imageControl.MouseUp += ImageControlMouseUp;
             imageControl.MouseWheel += ImageControlMouseWheel;
             imageControl.SizeChanged += ImageControlSizeChanged;
-            InitializeImageTransforms();
+            imageControl.RenderTransform = transformGroup;
+
+            statusControl.RenderTransform = BannerTranslate;
 
             InitializeIsMouseCameraMotionAvailable();
             /*
@@ -752,6 +758,27 @@ namespace Restless.App.Camera.Core
                 ErrorText = pendingError;
                 pendingError = null;
             }
+        }       
+        
+        /// <summary>
+        /// Updates <see cref="StatusPlacement"/> according to the current flags of <see cref="Camera"/>.
+        /// </summary>
+        public void UpdateStatusPlacement()
+        {
+            if (Camera != null)
+            {
+                if (Camera.Flags.HasFlag(CameraFlags.StatusTop))
+                {
+                    StatusPlacement = StatusPlacement.Top;
+                    return;
+                }
+                if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))
+                {
+                    StatusPlacement = StatusPlacement.Bottom;
+                    return;
+                }
+            }
+            StatusPlacement = StatusPlacement.None;
         }
         #endregion
 
@@ -810,8 +837,7 @@ namespace Restless.App.Camera.Core
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (sizeInfo.WidthChanged) SetWidths(sizeInfo.NewSize.Width);
-            //if (sizeInfo.HeightChanged) AdjustStatusBanner();
+            SyncStatusBannerToSize();
         }
         #endregion
 
@@ -866,11 +892,9 @@ namespace Restless.App.Camera.Core
 
         private void PanImage(double deltaX, double deltaY)
         {
-            if (GetImageTranslateTransform() is TranslateTransform translate)
-            {
-                translate.X += deltaX;
-                translate.Y += deltaY;
-            }
+            MoveTransform.X += deltaX;
+            MoveTransform.Y += deltaY;
+            SyncStatusBannerToSize();
         }
 
         private void ImageControlMouseLeave(object sender, MouseEventArgs e)
@@ -902,7 +926,7 @@ namespace Restless.App.Camera.Core
 
         private void ImageControlSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.WidthChanged) SetWidths(e.NewSize.Width);
+            SyncStatusBannerToSize();
         }
         #endregion
 
@@ -990,7 +1014,7 @@ namespace Restless.App.Camera.Core
                 IsFlipped = Camera.Flags.HasFlag(CameraFlags.Flip);
                 IsMirrored = Camera.Flags.HasFlag(CameraFlags.Mirror);
 
-                StatusAlignment = GetStatusAlignment();
+                UpdateStatusPlacement();
 
                 FullScreenCommand = RelayCommand.Create(RunFullScreenCommand);
 
@@ -1003,14 +1027,6 @@ namespace Restless.App.Camera.Core
             {
                 ErrorText = ex.Message;
             }
-        }
-
-        private VerticalAlignment GetStatusAlignment()
-        {
-            if (Camera.Flags.HasFlag(CameraFlags.StatusTop)) return VerticalAlignment.Top;
-            if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))  return VerticalAlignment.Bottom;
-            /* center causes trigger to hide the status banner */
-            return VerticalAlignment.Center;
         }
 
         private void InitializeIsMouseCameraMotionAvailable()
@@ -1046,13 +1062,15 @@ namespace Restless.App.Camera.Core
             IDecodedVideoFrame decodedFrame = videoDecoder.Decode(frame);
             if (decodedFrame == null) return;
             FrameCount++;
+            StatusTimeText = DateTime.Now.ToString(StatusTimeFormat);
 
             if (writeable == null)
             {
                 InitializeWritableBitmap(decodedFrame.FrameParms);
                 dirtyRect = new Int32Rect(0, 0, decodedFrame.FrameParms.Width, decodedFrame.FrameParms.Height);
                 ImageMaxWidth = imageScaledWidth = decodedFrame.FrameParms.Width;
-                SetWidths(ImageMaxWidth);
+                ImageMaxHeight = imageScaledHeight = decodedFrame.FrameParms.Height;
+                SyncStatusBannerToSize();
             }
 
             writeable.Lock();
@@ -1135,114 +1153,65 @@ namespace Restless.App.Camera.Core
         {
             // placeholder
         }
-
-
-        private double GetImageScaledWidth()
-        {
-            if (GetImageScaleTransform() is ScaleTransform scale)
-            {
-                return imageControl.ActualWidth * scale.ScaleX;
-            }
-            return 0.0;
-        }
-
-        private void SetWidths(double proposedWidth)
-        {
-            imageScaledWidth = GetImageScaledWidth();
-            StatusWidth = Math.Min(Math.Min(Math.Max(proposedWidth, imageScaledWidth), imageScaledWidth), ActualWidth);
-            /* ErrorWidth default = double.NaN. Do not set to zero or initial failure to connect won't show */
-            if (StatusWidth > 0) ErrorWidth = StatusWidth;
-        }
         #endregion
 
         /************************************************************************/
 
         #region Private methods (transforms)
-        private void InitializeImageTransforms()
-        {
-            // this method is called from OnApplyTemplate()
-            TransformGroup group = new TransformGroup();
-            group.Children.Add(new TranslateTransform());
-            group.Children.Add(new ScaleTransform(1.0, 1.0));
-            group.Children.Add(new ScaleTransform(1.0, 1.0));
-            imageControl.RenderTransform = group;
-            SetOrientation();
-        }
-
-        private TranslateTransform GetImageTranslateTransform()
-        {
-            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 0)
-            {
-                return group.Children[0] as TranslateTransform;
-            }
-            return null;
-        }
-
-        private ScaleTransform GetImageScaleTransform()
-        {
-            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 1)
-            {
-                return group.Children[1] as ScaleTransform;
-            }
-            return null;
-        }
-
-        private ScaleTransform GetImageFlipMirrorTransform()
-        {
-            if (imageControl?.RenderTransform is TransformGroup group && group.Children.Count > 2)
-            {
-                return group.Children[2] as ScaleTransform;
-            }
-            return null;
-        }
-
         private void ZoomImage(int factor)
         {
-            if (GetImageScaleTransform() is ScaleTransform scale)
+            double value = ZoomTransform.ScaleX;
+            if (factor > 0)
             {
-                double value = scale.ScaleX;
-                if (factor > 0)
-                {
-                    value = Math.Round(Math.Min(value + 0.1, 5.0), 1);
-                }
-                else if (factor < 0)
-                {
-                    value = Math.Round(Math.Max(value - 0.1, 0.4), 1);
-                }
-                else
-                {
-                    value = 1.0;
-                }
-
-                scale.ScaleX = scale.ScaleY = value;
-                imageScaledWidth = imageControl.ActualWidth * value;
-                SetWidths(imageControl.ActualWidth * value);
+                value = Math.Round(Math.Min(value + 0.1, 5.0), 1);
             }
+            else if (factor < 0)
+            {
+                value = Math.Round(Math.Max(value - 0.1, 0.5), 1);
+            }
+            else
+            {
+                value = 1.0;
+            }
+
+            ZoomTransform.ScaleX = ZoomTransform.ScaleY = value;
+
+            SyncStatusBannerToSize();
         }
 
         private void SetOrientation()
         {
-            if (GetImageFlipMirrorTransform() is ScaleTransform transform)
-            {
-                transform.ScaleX = IsMirrored ? -1.0 : 1.0;
-                transform.ScaleY = IsFlipped ? -1.0 : 1.0;
-            }
+            FlipTransform.ScaleX = IsMirrored ? -1.0 : 1.0;
+            FlipTransform.ScaleY = IsFlipped ? -1.0 : 1.0;
         }
 
         private void ResetImageTransforms()
         {
-            if (GetImageTranslateTransform() is TranslateTransform translate)
-            {
-                translate.X = translate.Y = 0;
-            }
-            if (GetImageScaleTransform() is ScaleTransform scale)
-            {
-                scale.ScaleX = scale.ScaleY = 1.0;
-            }
-            if (imageControl != null)
-            {
-                SetWidths(imageControl.ActualWidth);
-            }
+            MoveTransform.X = MoveTransform.Y = 0;
+            ZoomTransform.ScaleX = ZoomTransform.ScaleY = 1.0;
+            BannerTranslate.X = BannerTranslate.Y = 0;
+            SyncStatusBannerToSize();
+        }
+
+        private void SyncStatusBannerToSize()
+        {
+            if (imageControl == null || StatusPlacement == StatusPlacement.None) return;
+
+            imageScaledWidth = imageControl.ActualWidth * ZoomTransform.ScaleX;
+            imageScaledHeight = imageControl.ActualHeight * ZoomTransform.ScaleY;
+
+            double xAdjust = ((ActualWidth - imageScaledWidth) / 2.0) + (MoveTransform.X * ZoomTransform.ScaleX);
+            double yAdjust = ((ActualHeight - imageScaledHeight) / 2.0) + (MoveTransform.Y * ZoomTransform.ScaleY);
+
+            if (StatusPlacement == StatusPlacement.Bottom) yAdjust += imageScaledHeight - StatusHeight;
+
+            BannerTranslate.X = Math.Max(xAdjust, 0);
+            BannerTranslate.Y = Math.Min(Math.Max(yAdjust, 0), ActualHeight - StatusHeight);
+
+            double statusWidth = imageScaledWidth + (xAdjust < 0 ? xAdjust : 0.0);
+            /* below a certain width, make it disappear */
+            if (statusWidth < 150.0) statusWidth = 0.0;
+            StatusWidth = statusWidth;
         }
         #endregion
 
