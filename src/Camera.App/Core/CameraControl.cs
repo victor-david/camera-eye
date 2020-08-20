@@ -867,6 +867,7 @@ namespace Restless.App.Camera.Core
             {
                 MoveCamera(deltaX, deltaY);
             }
+            e.Handled = true;
         }
 
         private void MoveCamera(double deltaX, double deltaY)
