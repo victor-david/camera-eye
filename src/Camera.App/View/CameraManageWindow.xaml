@@ -41,21 +41,30 @@
                     <TextBox Grid.Row="1" Text="{Binding Camera.UserId}"/>
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Password}"/>
                 </Grid>
+                
+                <!-- Status / orientation-->
+                <Grid core:Property.ColumnWidths="*,*,*" Margin="6">
+                    <StackPanel>
+                        <TextBlock Text="Status Placement"/>
+                        <CheckBox Content="Top" IsChecked="{Binding IsStatusTop}"/>
+                        <CheckBox Content="Bottom" IsChecked="{Binding IsStatusBottom}"/>
+                        <CheckBox Content="Off" IsChecked="{Binding IsStatusNone}"/>
+                    </StackPanel>
 
-                <Grid core:Property.ColumnWidths="*,*" Margin="0,6">
-                    <!-- Status banner -->
-                    <HeaderedItemsControl Header="Status banner">
-                        <Button Content="Top" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusTop}"/>
-                        <Button Content="Bottom" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagStatusBottom}"/>
-                        <Button Content="Off" Command="{Binding Commands[ChangeStatusBanner]}" CommandParameter="{StaticResource CameraFlagNone}"/>
-                    </HeaderedItemsControl>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Include"/>
+                        <CheckBox Content="Camera name" IsChecked="{Binding IsStatusCameraName}"/>
+                        <CheckBox Content="Date / time" IsChecked="{Binding IsStatusDateTime}"/>
+                        <CheckBox Content="Frame count" IsChecked="{Binding IsStatusFrameCount}"/>
+                    </StackPanel>
 
-                    <HeaderedItemsControl Grid.Column="1" Header="Orientation">
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Orientation"/>
                         <CheckBox Content="Flipped" IsChecked="{Binding IsFlipped}"/>
                         <CheckBox Content="Mirrored" IsChecked="{Binding IsMirrored}"/>
-                    </HeaderedItemsControl>
+                    </StackPanel>
                 </Grid>
-
+                
                 <Grid core:Property.RowHeights="Auto,*" core:Property.ColumnWidths="*, 80">
 
                     <!-- Notes -->

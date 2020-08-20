@@ -149,8 +149,8 @@ namespace Restless.App.Database.Tables
                 row[Defs.Columns.IpAddress] = "127.0.0.1";
                 row[Defs.Columns.Name] = $"Camera {cameraNum}";
                 row[Defs.Columns.Port] = 80;
-                row[Defs.Columns.PluginId] = 0;
-                row[Defs.Columns.Flags] = (long)CameraFlags.StatusTop;
+                row[Defs.Columns.PluginId] = PluginTable.Defs.Values.NullPluginId;
+                row[Defs.Columns.Flags] = (long)(CameraFlags.StatusTop | CameraFlags.StatusCameraName | CameraFlags.StatusDateTime);
                 row[Defs.Columns.WallRow] = 0;
                 row[Defs.Columns.WallColumn] = 0;
                 row[Defs.Columns.MotionSpeed] = 50;

@@ -129,11 +129,7 @@ namespace Restless.App.Camera
         public bool TranslateX
         {
             get => Camera.Flags.HasFlag(CameraFlags.TranslateX);
-            set
-            {
-                Camera.SetTranslateX(value);
-                OnPropertyChanged();
-            }
+            set => Camera.ToggleFlag(CameraFlags.TranslateX, value);
         }
 
         /// <summary>
@@ -142,11 +138,76 @@ namespace Restless.App.Camera
         public bool TranslateY
         {
             get => Camera.Flags.HasFlag(CameraFlags.TranslateY);
+            set => Camera.ToggleFlag(CameraFlags.TranslateY, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the camers status banner is on the top.
+        /// </summary>
+        public bool IsStatusTop
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.StatusTop);
             set
             {
-                Camera.SetTranslateY(value);
-                OnPropertyChanged();
+                Camera.ChangeFlags(CameraFlags.StatusTop, CameraFlags.StatusBottom);
+                OnPropertyChanged(nameof(IsStatusBottom));
+                OnPropertyChanged(nameof(IsStatusNone));
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the camers status banner is on the bottom.
+        /// </summary>
+        public bool IsStatusBottom
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.StatusBottom);
+            set
+            {
+                Camera.ChangeFlags(CameraFlags.StatusBottom, CameraFlags.StatusTop);
+                OnPropertyChanged(nameof(IsStatusTop));
+                OnPropertyChanged(nameof(IsStatusNone));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the camers status banner is turned off.
+        /// </summary>
+        public bool IsStatusNone
+        {
+            get => !Camera.Flags.HasFlag(CameraFlags.StatusTop) && !Camera.Flags.HasFlag(CameraFlags.StatusBottom);
+            set
+            {
+                Camera.ChangeFlags(CameraFlags.None, CameraFlags.StatusTop | CameraFlags.StatusBottom);
+                OnPropertyChanged(nameof(IsStatusTop));
+                OnPropertyChanged(nameof(IsStatusBottom));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the camera name displays in the status banner.
+        /// </summary>
+        public bool IsStatusCameraName
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.StatusCameraName);
+            set => Camera.ToggleFlag(CameraFlags.StatusCameraName, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the current date/time displays in the status banner.
+        /// </summary>
+        public bool IsStatusDateTime
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.StatusDateTime);
+            set => Camera.ToggleFlag(CameraFlags.StatusDateTime, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a boolean value that determines if the frame count displays in the status banner.
+        /// </summary>
+        public bool IsStatusFrameCount
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.StatusFrameCount);
+            set => Camera.ToggleFlag(CameraFlags.StatusFrameCount, value);
         }
 
         /// <summary>
@@ -155,11 +216,7 @@ namespace Restless.App.Camera
         public bool IsFlipped
         {
             get => Camera.Flags.HasFlag(CameraFlags.Flip);
-            set
-            {
-                Camera.SetFlip(value);
-                OnPropertyChanged();
-            }
+            set => Camera.ToggleFlag(CameraFlags.Flip, value);
         }
 
         /// <summary>
@@ -168,11 +225,7 @@ namespace Restless.App.Camera
         public bool IsMirrored
         {
             get => Camera.Flags.HasFlag(CameraFlags.Mirror);
-            set
-            {
-                Camera.SetMirror(value);
-                OnPropertyChanged();
-            }
+            set => Camera.ToggleFlag(CameraFlags.Mirror, value);
         }
 
         /// <summary>

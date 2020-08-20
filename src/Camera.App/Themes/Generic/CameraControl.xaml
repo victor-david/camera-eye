@@ -175,17 +175,22 @@
                     Style="{StaticResource BorderStreamStatus}"
                     Height="{TemplateBinding StatusHeight}"
                     Width="{TemplateBinding StatusWidth}">
-                        <Grid core:Property.ColumnWidths="Auto,*,Auto">
+                    <Grid core:Property.ColumnWidths="Auto,*,Auto">
 
-                            <TextBlock Text="{TemplateBinding CameraName}"/>
+                        <TextBlock x:Name="TextName" Text="{TemplateBinding CameraName}"/>
 
-                            <TextBlock Grid.Column="1" Margin="6,0" Text="{TemplateBinding StatusTimeText}"/>
+                        <TextBlock
+                            x:Name="TextDateTime"
+                            Grid.Column="1"
+                            Margin="3,0"
+                            HorizontalAlignment="Center"
+                            Text="{TemplateBinding StatusTimeText}"/>
 
-                            <TextBlock Grid.Column="2" HorizontalAlignment="Right">
-                                <Run Text="Frames:"/>
-                                <Run Foreground="Red" Text="{Binding FrameCount,RelativeSource={RelativeSource AncestorType=core:CameraControl},Mode=OneWay}"/>
-                            </TextBlock>
-                        </Grid>
+                        <TextBlock x:Name="TextFrameCount" Grid.Column="2" HorizontalAlignment="Right">
+                            <Run Text="Frames:"/>
+                            <Run Foreground="Red" Text="{Binding FrameCount,RelativeSource={RelativeSource AncestorType=core:CameraControl},Mode=OneWay}"/>
+                        </TextBlock>
+                    </Grid>
                 </Border>
                 
                 <!-- Error banner -->
@@ -320,6 +325,17 @@
             </Trigger>
             <Trigger Property="StatusPlacement" Value="{StaticResource StatusPlacementNone}">
                 <Setter TargetName="PART_Status" Property="Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="IsStatusCameraName" Value="False">
+                <Setter TargetName="TextName" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="TextDateTime" Property="HorizontalAlignment" Value="Left"/>
+            </Trigger>
+            <Trigger Property="IsStatusDateTime" Value="False">
+                <Setter TargetName="TextDateTime" Property="VirtualizingPanel.Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="IsStatusFrameCount" Value="False">
+                <Setter TargetName="TextFrameCount" Property="Visibility" Value="Collapsed"/>
+                <Setter TargetName="TextDateTime" Property="HorizontalAlignment" Value="Right"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>

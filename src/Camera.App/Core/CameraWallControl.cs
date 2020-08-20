@@ -322,7 +322,7 @@ namespace Restless.App.Camera.Core
         {
             if (GetCameraHost(id) is CameraHostBorder host)
             {
-                host.CameraControl.UpdateStatusPlacement();
+                host.CameraControl.UpdateStatusControl();
             }
         }
 

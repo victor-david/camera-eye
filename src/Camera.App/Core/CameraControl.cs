@@ -495,7 +495,6 @@ namespace Restless.App.Camera.Core
         /// </summary>
         public static readonly DependencyProperty StatusWidthProperty = StatusWidthPropertyKey.DependencyProperty;
 
-
         /// <summary>
         /// Gets the height of the status banner.
         /// </summary>
@@ -536,6 +535,63 @@ namespace Restless.App.Camera.Core
         {
             (d as CameraControl)?.SyncStatusBannerToSize();
         }
+
+        /// <summary>
+        /// Gets a boolean value that determines if the camera name displays in the status banner.
+        /// </summary>
+        public bool IsStatusCameraName
+        {
+            get => (bool)GetValue(IsStatusCameraNameProperty);
+            private set => SetValue(IsStatusCameraNamePropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey IsStatusCameraNamePropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(IsStatusCameraName), typeof(bool), typeof(CameraControl), new PropertyMetadata(true)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="IsStatusCameraName"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsStatusCameraNameProperty = IsStatusCameraNamePropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets a boolean value that determines if the current date/time displays in the status banner.
+        /// </summary>
+        public bool IsStatusDateTime
+        {
+            get => (bool)GetValue(IsStatusDateTimeProperty);
+            private set => SetValue(IsStatusDateTimePropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey IsStatusDateTimePropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(IsStatusDateTime), typeof(bool), typeof(CameraControl), new PropertyMetadata(true)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="IsStatusDateTime"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsStatusDateTimeProperty = IsStatusDateTimePropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Gets a boolean value that determines if the frame count displays in the status banner.
+        /// </summary>
+        public bool IsStatusFrameCount
+        {
+            get => (bool)GetValue(IsStatusFrameCountProperty);
+            private set => SetValue(IsStatusFrameCountPropertyKey, value);
+        }
+
+        private static readonly DependencyPropertyKey IsStatusFrameCountPropertyKey = DependencyProperty.RegisterReadOnly
+            (
+                nameof(IsStatusFrameCount), typeof(bool), typeof(CameraControl), new PropertyMetadata(true)
+            );
+
+        /// <summary>
+        /// Identifies the <see cref="IsStatusFrameCount"/> dependency property.
+        /// </summary>
+        public static readonly DependencyProperty IsStatusFrameCountProperty = IsStatusFrameCountPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets or sets the date/time format to use on the status banner. Default is "yyyy-MMM-dd hh:mm:ss tt".
@@ -761,24 +817,35 @@ namespace Restless.App.Camera.Core
         }       
         
         /// <summary>
-        /// Updates <see cref="StatusPlacement"/> according to the current flags of <see cref="Camera"/>.
+        /// Updates the status control according to the current flags of <see cref="Camera"/>.
         /// </summary>
-        public void UpdateStatusPlacement()
+        public void UpdateStatusControl()
         {
             if (Camera != null)
             {
                 if (Camera.Flags.HasFlag(CameraFlags.StatusTop))
                 {
                     StatusPlacement = StatusPlacement.Top;
-                    return;
                 }
-                if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))
+                else if (Camera.Flags.HasFlag(CameraFlags.StatusBottom))
                 {
                     StatusPlacement = StatusPlacement.Bottom;
-                    return;
+                }
+                else
+                {
+                    StatusPlacement = StatusPlacement.None;
+                }
+
+                IsStatusCameraName = Camera.Flags.HasFlag(CameraFlags.StatusCameraName);
+                IsStatusDateTime = Camera.Flags.HasFlag(CameraFlags.StatusDateTime);
+                IsStatusFrameCount = Camera.Flags.HasFlag(CameraFlags.StatusFrameCount);
+
+                /* if none of the flags are present, turn off the banner */
+                if (!IsStatusCameraName && !IsStatusDateTime && !IsStatusFrameCount)
+                {
+                    StatusPlacement = StatusPlacement.None;
                 }
             }
-            StatusPlacement = StatusPlacement.None;
         }
         #endregion
 
@@ -1015,7 +1082,7 @@ namespace Restless.App.Camera.Core
                 IsFlipped = Camera.Flags.HasFlag(CameraFlags.Flip);
                 IsMirrored = Camera.Flags.HasFlag(CameraFlags.Mirror);
 
-                UpdateStatusPlacement();
+                UpdateStatusControl();
 
                 FullScreenCommand = RelayCommand.Create(RunFullScreenCommand);
 

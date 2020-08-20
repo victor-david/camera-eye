@@ -209,6 +209,18 @@ namespace Restless.App.Database.Tables
         }
 
         /// <summary>
+        /// Toggles the specified flag according to the specified boolean.
+        /// </summary>
+        /// <param name="flag">The flag to set or clear.</param>
+        /// <param name="value">true to set the flag; false to clear the flag.</param>
+        public void ToggleFlag(CameraFlags flag, bool value)
+        {
+            CameraFlags add = value ? flag : CameraFlags.None;
+            CameraFlags remove = value ? CameraFlags.None : flag;
+            ChangeFlags(add, remove);
+        }
+
+        /// <summary>
         /// Sets wall properties. Adds <see cref="CameraFlags.IncludeOnWall"/>, sets <see cref="WallRow"/> and <see cref="WallColumn"/>.
         /// </summary>
         /// <param name="row">The row</param>
@@ -226,50 +238,6 @@ namespace Restless.App.Database.Tables
         public void RemoveWallProperties()
         {
             ChangeFlags(CameraFlags.None, CameraFlags.IncludeOnWall);
-        }
-
-        /// <summary>
-        /// Sets or clears the corresponding translate flag for X axis.
-        /// </summary>
-        /// <param name="value">true to set, false to clear.</param>
-        public void SetTranslateX(bool value)
-        {
-            CameraFlags add = value ? CameraFlags.TranslateX : CameraFlags.None;
-            CameraFlags remove = value ? CameraFlags.None : CameraFlags.TranslateX;
-            ChangeFlags(add, remove);
-        }
-
-        /// <summary>
-        /// Sets or clears the corresponding translate flag for Y axis.
-        /// </summary>
-        /// <param name="value">true to set, false to clear.</param>
-        public void SetTranslateY(bool value)
-        {
-            CameraFlags add = value ? CameraFlags.TranslateY : CameraFlags.None;
-            CameraFlags remove = value ? CameraFlags.None : CameraFlags.TranslateY;
-            ChangeFlags(add, remove);
-        }
-
-        /// <summary>
-        /// Sets or clears the corresponding flip flag.
-        /// </summary>
-        /// <param name="value">true to set, false to clear.</param>
-        public void SetFlip(bool value)
-        {
-            CameraFlags add = value ? CameraFlags.Flip : CameraFlags.None;
-            CameraFlags remove = value ? CameraFlags.None : CameraFlags.Flip;
-            ChangeFlags(add, remove);
-        }
-
-        /// <summary>
-        /// Sets or clears the corresponding mirror flag.
-        /// </summary>
-        /// <param name="value">true to set, false to clear.</param>
-        public void SetMirror(bool value)
-        {
-            CameraFlags add = value ? CameraFlags.Mirror : CameraFlags.None;
-            CameraFlags remove = value ? CameraFlags.None : CameraFlags.Mirror;
-            ChangeFlags(add, remove);
         }
         #endregion
 
