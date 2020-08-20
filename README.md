@@ -11,7 +11,7 @@
 - Pan and zoom the video image digitally.
 - Flip and mirror the camera output.
 - Change the video brightness, contrast, hue, and saturation*.
-- Establish a banner over the video (top, bottom, or off) that displays camera name, current time, and frame count.
+- For each camera, optionally display a banner over the video at the top or the bottom. A banner shows camera name and/or current time and/or frame count.
 - Everything saved for next run. Window size, position, slots, which cameras are where, etc.
 
 For features marked with an asterick to be enabled, both the camera and its associated plugin need to support them.
