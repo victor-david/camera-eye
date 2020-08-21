@@ -42,8 +42,8 @@
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Camera.Password}"/>
                 </Grid>
                 
-                <!-- Status / orientation-->
-                <Grid core:Property.ColumnWidths="*,*,*" Margin="6">
+                <!-- Status / orientation / max preset -->
+                <Grid core:Property.ColumnWidths="*,*,*,*" Margin="4,6">
                     <StackPanel>
                         <TextBlock Text="Status Placement"/>
                         <CheckBox Content="Top" IsChecked="{Binding IsStatusTop}"/>
@@ -63,30 +63,26 @@
                         <CheckBox Content="Flipped" IsChecked="{Binding IsFlipped}"/>
                         <CheckBox Content="Mirrored" IsChecked="{Binding IsMirrored}"/>
                     </StackPanel>
-                </Grid>
-                
-                <Grid core:Property.RowHeights="Auto,*" core:Property.ColumnWidths="*, 80">
 
-                    <!-- Notes -->
-                    <TextBlock Text="Notes"/>
-                    <TextBox
-                        Grid.Row="1"
-                        Height="Auto"
-                        VerticalContentAlignment="Top"
-                        AcceptsReturn="True"
-                        TextWrapping="Wrap"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        Text="{Binding Camera.Note}"/>
+                    <StackPanel Grid.Column="3">
+                        <TextBlock Text="Max Preset"/>
+                        <ListBox
+                            MaxHeight="68"
+                            ItemsSource="{Binding PresetList}"
+                            SelectedItem="{Binding SelectedMaxPreset}"/>
+                    </StackPanel>
 
-                    <!-- Max presets to display -->
-                    <TextBlock Grid.Column="1" Text="Max Preset"/>
-                    <ListBox
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        ItemsSource="{Binding PresetList}"
-                        SelectedItem="{Binding SelectedMaxPreset}"/>
-                    
                 </Grid>
+
+                <!-- Notes -->
+                <TextBlock Text="Notes"/>
+                <TextBox
+                    Height="Auto"
+                    VerticalContentAlignment="Top"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Text="{Binding Camera.Note}"/>
 
             </DockPanel>
         </HeaderedContentControl>

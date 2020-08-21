@@ -54,22 +54,22 @@ namespace Restless.App.Camera.Core
                 /// <summary>
                 /// Gets the default width for the camera manage window.
                 /// </summary>
-                public const int Width = 916;
+                public const int Width = 920;
 
                 /// <summary>
                 /// Gets the default height for the camera manage window.
                 /// </summary>
-                public const int Height = 498;
+                public const int Height = 580;
 
                 /// <summary>
                 /// Gets the minimum width for the camera manage window.
                 /// </summary>
-                public const int MinWidth = 720;
+                public const int MinWidth = 920;
 
                 /// <summary>
                 /// Gets the minimum height for the camera manage window.
                 /// </summary>
-                public const int MinHeight = 498;
+                public const int MinHeight = 580;
             }
         }
         #endregion
