@@ -1162,16 +1162,31 @@ namespace Restless.App.Camera.Core
             PixelFormat pixelFormat = PixelFormats.Pbgra32;
             transformParameters = new TransformParameters(new System.Drawing.Size(parms.Width, parms.Height), pixelFormat);
 
-            // TODO ScreenInfo.DpiX, ScreenInfo.DpiY
+            Tuple<double, double> dpi = GetDpi();
             writeable = new WriteableBitmap
                 (
-                    parms.Width, parms.Height, 96.0, 96.0, pixelFormat, null
+                    parms.Width, parms.Height, dpi.Item1, dpi.Item2, pixelFormat, null
                 );
 
             RenderOptions.SetBitmapScalingMode(writeable, BitmapScalingMode.NearestNeighbor);
             RenderOptions.SetEdgeMode(writeable, EdgeMode.Aliased);
 
             ImageSource = writeable;
+        }
+
+        /// <summary>
+        /// Gets the DPI.
+        /// </summary>
+        /// <returns>A Tuple. Item1 is X Dpi, Item2 is Y Dpi</returns>
+        private Tuple<double, double> GetDpi()
+        {
+            var source = PresentationSource.FromVisual(this);
+            if (source != null)
+            {
+                Matrix matrix = source.CompositionTarget.TransformToDevice;
+                return new Tuple<double, double>(matrix.M11 * 96.0, matrix.M22 * 96.0);
+            }
+            return new Tuple<double, double>(96.0, 96.0);
         }
 
         private void RunMotionCommand(object parm)
