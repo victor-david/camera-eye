@@ -121,9 +121,9 @@
                     <core:CameraListControl.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Manage camera" Command="{Binding Commands[ManageCamera]}"/>
-                            <MenuItem Header="Remove from wall" Command="{Binding Commands[RemoveCamera]}"/>
+                            <MenuItem Header="Remove from wall" Icon="{StaticResource PathGrayX}" Command="{Binding Commands[RemoveCamera]}"/>
                             <Separator/>
-                            <MenuItem Icon="{StaticResource PathRedX}" Header="Delete camera" Command="{Binding Commands[DeleteCamera]}"/>
+                            <MenuItem Header="Delete camera" Icon="{StaticResource PathRedX}" Command="{Binding Commands[DeleteCamera]}"/>
                         </ContextMenu>
                     </core:CameraListControl.ContextMenu>
                 </core:CameraListControl>

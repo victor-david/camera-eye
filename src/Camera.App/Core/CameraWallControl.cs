@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Restless.App.Camera.Core
@@ -16,16 +17,21 @@ namespace Restless.App.Camera.Core
         #region Private
         private int rows;
         private int columns;
+        private long contextCameraId;
         #endregion
 
         /************************************************************************/
 
         #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CameraWallControl"/> class.
+        /// </summary>
         public CameraWallControl()
         {
             Background = Brushes.Transparent;
             rows = columns = 1;
             Loaded += CameraWallControlLoaded;
+            InitializeContextMenu();
         }
         #endregion
 
@@ -130,6 +136,21 @@ namespace Restless.App.Camera.Core
             {
                 AddCameraToWall(camera, e.GetPosition(this));
             }
+        }
+
+        /// <summary>
+        /// Called when the context menu is opening.
+        /// </summary>
+        /// <param name="e">The event args</param>
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
+            base.OnContextMenuOpening(e);
+            /* can't use e.CursorLeft / e.CursorTop; they are relative the grid cell, not the whole grid */
+            Point point = Mouse.GetPosition(this);
+            Tuple<int,int> cell = GetGridCellByPoint(point);
+            CameraHostBorder host = GetCameraHost(cell.Item1, cell.Item2);
+            contextCameraId = host?.CameraControl?.Camera.Id ?? -1;
+            e.Handled = contextCameraId == -1;
         }
         #endregion
 
@@ -365,6 +386,26 @@ namespace Restless.App.Camera.Core
                     ShowCameraLocation(command.Id);
                     break;
             }
+        }
+
+        private void InitializeContextMenu()
+        {
+            ContextMenu = new ContextMenu();
+
+            MenuItem item = new MenuItem()
+            {
+                Header = "Remove from wall",
+                Icon = Application.Current.TryFindResource("PathGrayX")
+            };
+
+            item.Click += MenuItemRemoveFromWallClick;
+
+            ContextMenu.Items.Add(item);
+        }
+
+        private void MenuItemRemoveFromWallClick(object sender, RoutedEventArgs e)
+        {
+            RemoveCameraFromWall(contextCameraId);
         }
         #endregion
     }
