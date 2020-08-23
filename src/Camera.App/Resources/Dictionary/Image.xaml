@@ -4,13 +4,6 @@
 
     <BitmapImage x:Key="ImageApp" UriSource="/Resources/Image/Lens.36.png"/>
     <BitmapImage x:Key="ImageAdd" UriSource="/Resources/Image/Add.48.png"/>
-    <BitmapImage x:Key="ImageArrow" UriSource="/Resources/Image/Arrow.64.png"/>
-    <BitmapImage x:Key="ImageCamera" UriSource="/Resources/Image/Camera.64.png"/>
-    <BitmapImage x:Key="ImageChevronDown" UriSource="/Resources/Image/Chevron.Down.64.png"/>
-    <BitmapImage x:Key="ImageChevronUp" UriSource="/Resources/Image/Chevron.Up.64.png"/>
-    <BitmapImage x:Key="ImageDatabase" UriSource="/Resources/Image/Database.64.png"/>
-    <BitmapImage x:Key="ImageDropArrow" UriSource="/Resources/Image/DropArrow.24.png"/>
-    <BitmapImage x:Key="ImageRedX" UriSource="/Resources/Image/X.Red.32.png"/>
     
     <Style TargetType="Image" x:Key="MenuItemImage">
         <Setter Property="Height" Value="18" />
@@ -18,69 +11,8 @@
     </Style>
 
     <Image x:Key="ImageAddMenu" Source="{StaticResource ImageAdd}" Style="{StaticResource MenuItemImage}"/>
-    <Image x:Key="ImageCameraMenu" Source="{StaticResource ImageCamera}" Style="{StaticResource MenuItemImage}"/>
-    <Image x:Key="ImageChevronDownMenu" Source="{StaticResource ImageChevronDown}" Style="{StaticResource MenuItemImage}"/>
-    <Image x:Key="ImageChevronUpMenu" Source="{StaticResource ImageChevronUp}" Style="{StaticResource MenuItemImage}"/>
-    <Image x:Key="ImageDropArrowMenu" Source="{StaticResource ImageDropArrow}" Style="{StaticResource MenuItemImage}"/>
-    <Image x:Key="ImageRedXMenu" Source="{StaticResource ImageRedX}" Style="{StaticResource MenuItemImage}"/>
-    
-    <!-- Image styles (Navigation) -->
-    <Style TargetType="Image" x:Key="ImageNavUp">
-        <Setter Property="Source" Value="{StaticResource ImageArrow}"/>
-        <Setter Property="Width" Value="32"/>
-    </Style>
 
-    <Style TargetType="Image" x:Key="ImageNavLeft" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="-90" CenterX="16" CenterY="16"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Path x:Key="PathRedX" Stroke="Red" StrokeThickness="2" Height="14" Width="14" Data="M 0,0 14,14 M 14,0 0,14"/>
+    <Path x:Key="PathGrayX" Stroke="Gray" StrokeThickness="2" Height="14" Width="14" Data="M 0,0 14,14 M 14,0 0,14"/>
 
-    <Style TargetType="Image" x:Key="ImageNavRight" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="90" CenterX="16" CenterY="16"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="Image" x:Key="ImageNavDown" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="180" CenterX="16" CenterY="16"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="Image" x:Key="ImageNavLeftSmall" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="Width" Value="16"/>
-        <Setter Property="Opacity" Value="0.65"/>
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="-90" CenterX="8" CenterY="8"/>
-            </Setter.Value>
-        </Setter>
-        
-    </Style>
-
-    <Style TargetType="Image" x:Key="ImageNavRightSmall" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="Width" Value="16"/>
-        <Setter Property="Opacity" Value="0.65"/>
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="90" CenterX="8" CenterY="8"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
-        
-    <Style TargetType="Image" x:Key="ImageNavTopLeft" BasedOn="{StaticResource ImageNavUp}">
-        <Setter Property="Opacity" Value="0.5"/>
-        <Setter Property="RenderTransform">
-            <Setter.Value>
-                <RotateTransform Angle="-45" CenterX="16" CenterY="16"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>

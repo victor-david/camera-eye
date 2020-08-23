@@ -28,7 +28,7 @@
             <MenuItem Header="File">
                 <MenuItem
                     Header="Exit application"
-                    Icon="{StaticResource ImageRedXMenu}"
+                    Icon="{StaticResource PathRedX}"
                     Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType=core:AppWindow}}"/>
             </MenuItem>
             <MenuItem Header="View">
@@ -123,7 +123,7 @@
                             <MenuItem Header="Manage camera" Command="{Binding Commands[ManageCamera]}"/>
                             <MenuItem Header="Remove from wall" Command="{Binding Commands[RemoveCamera]}"/>
                             <Separator/>
-                            <MenuItem Icon="{StaticResource ImageRedXMenu}" Header="Delete camera" Command="{Binding Commands[DeleteCamera]}"/>
+                            <MenuItem Icon="{StaticResource PathRedX}" Header="Delete camera" Command="{Binding Commands[DeleteCamera]}"/>
                         </ContextMenu>
                     </core:CameraListControl.ContextMenu>
                 </core:CameraListControl>
