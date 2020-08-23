@@ -39,6 +39,7 @@ namespace Restless.App.Camera.Core
         /* height in xaml is zero, gets animated up when mouse within activation zone */
         private const double ControllerHeight = 75.0;
         private const double ControllerActivationY = ControllerHeight + 10.0;
+        private double controllerActivationX;
         private bool isControllerEnabled;
 
         private double imageScaledWidth;
@@ -742,13 +743,21 @@ namespace Restless.App.Camera.Core
 
         private static readonly DependencyPropertyKey ControllerWidthPropertyKey = DependencyProperty.RegisterReadOnly
             (
-                nameof(ControllerWidth), typeof(double), typeof(CameraControl), new PropertyMetadata(0.0)
+                nameof(ControllerWidth), typeof(double), typeof(CameraControl), new PropertyMetadata(0.0, OnControllerWidthChanged)
             );
 
         /// <summary>
         /// Identifies the <see cref="ControllerWidth"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty ControllerWidthProperty = ControllerWidthPropertyKey.DependencyProperty;
+
+        private static void OnControllerWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CameraControl control)
+            {
+                control.controllerActivationX = (double)e.NewValue + 10.0;
+            }
+        }
         #endregion
 
         /************************************************************************/
@@ -862,14 +871,14 @@ namespace Restless.App.Camera.Core
 
             Point point = e.GetPosition(this);
 
-            if (controllerStatus == ControllerStatus.Hidden && point.Y > ActualHeight - ControllerActivationY &&  point.X < ControllerWidth + 10.0)
+            if (controllerStatus == ControllerStatus.Hidden && point.Y > ActualHeight - ControllerActivationY &&  point.X < controllerActivationX)
             {
                 controllerStatus = ControllerStatus.Showing;
                 ShowController.Begin();
                 return;
             }
 
-            if (controllerStatus == ControllerStatus.Shown && (point.Y < ActualHeight - ControllerActivationY ||  point.X > ControllerWidth + 10.0))
+            if (controllerStatus == ControllerStatus.Shown && (point.Y < ActualHeight - ControllerActivationY ||  point.X > controllerActivationX))
             {
                 controllerStatus = ControllerStatus.Hiding;
                 HideController.Begin();
