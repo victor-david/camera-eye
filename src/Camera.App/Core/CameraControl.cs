@@ -1275,6 +1275,7 @@ namespace Restless.App.Camera.Core
         {
             FlipTransform.ScaleX = IsMirrored ? -1.0 : 1.0;
             FlipTransform.ScaleY = IsFlipped ? -1.0 : 1.0;
+            SyncStatusBannerToSize();
         }
 
         private void ResetImageTransforms()
@@ -1292,8 +1293,8 @@ namespace Restless.App.Camera.Core
             imageScaledWidth = imageControl.ActualWidth * ZoomTransform.ScaleX;
             imageScaledHeight = imageControl.ActualHeight * ZoomTransform.ScaleY;
 
-            double xAdjust = ((ActualWidth - imageScaledWidth) / 2.0) + (MoveTransform.X * ZoomTransform.ScaleX);
-            double yAdjust = ((ActualHeight - imageScaledHeight) / 2.0) + (MoveTransform.Y * ZoomTransform.ScaleY);
+            double xAdjust = (((ActualWidth - imageScaledWidth) / 2.0) + (MoveTransform.X * ZoomTransform.ScaleX * FlipTransform.ScaleX));
+            double yAdjust = ((ActualHeight - imageScaledHeight) / 2.0) + (MoveTransform.Y * ZoomTransform.ScaleY * FlipTransform.ScaleY);
 
             if (StatusPlacement == StatusPlacement.Bottom) yAdjust += imageScaledHeight - StatusHeight;
 
