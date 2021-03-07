@@ -52,5 +52,9 @@ namespace Restless.App.Database.Core
         /// Mirror the video image.
         /// </summary>
         Mirror = 512,
+        /// <summary>
+        /// Pan and tilt the camera by using the mouse.
+        /// </summary>
+        MouseMotion = 1024,
     }
 }

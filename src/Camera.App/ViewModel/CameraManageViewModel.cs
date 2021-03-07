@@ -142,6 +142,19 @@ namespace Restless.App.Camera
         }
 
         /// <summary>
+        /// Gets or sets a boolean value that determines if the camera can be moved using the mouse.
+        /// When this property is true (and the camera supports motion), the user can pan and tilt
+        /// the camera by holding down the Control key and dragging the mouse over the camera image.
+        /// If false, the user pans and tilts the camera using the arrow controls that appear at the
+        /// bottom of the camera image.
+        /// </summary>
+        public bool MouseMotion
+        {
+            get => Camera.Flags.HasFlag(CameraFlags.MouseMotion);
+            set => Camera.ToggleFlag(CameraFlags.MouseMotion, value);
+        }
+
+        /// <summary>
         /// Gets or sets a boolean value that determines if the camers status banner is on the top.
         /// </summary>
         public bool IsStatusTop

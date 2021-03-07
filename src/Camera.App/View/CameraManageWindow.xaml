@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
+    xmlns:camera="clr-namespace:Restless.App.Camera" d:DataContext="{d:DesignInstance Type=camera:CameraManageViewModel}"
     mc:Ignorable="d"
     Icon="{StaticResource ImageApp}"
     Title="{Binding DisplayName}" Height="450" Width="800">
@@ -145,6 +146,7 @@
                             Value="{Binding MotionSpeed, Mode=TwoWay, Delay=500}"/>
                         <CheckBox Content="Translate X movement" IsChecked="{Binding TranslateX}"/>
                         <CheckBox Content="Translate Y movement" IsChecked="{Binding TranslateY}"/>
+                        <CheckBox Content="Move camera with mouse" IsChecked="{Binding MouseMotion}"/>
                     </StackPanel>
                 </Border>
                 

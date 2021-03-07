@@ -155,7 +155,13 @@ namespace Restless.App.Camera.Core
 
         #region Plugin (general / motion)
         private ICameraPlugin Plugin { get; set; }
-        private bool IsMouseCameraMotionAvailable;
+        /// <summary>
+        /// Holds a boolean that determines if moving the camera using the mouse is activated.
+        /// When this property is true (and camera supports motion), the user can pan and tilt the camera
+        /// by holding down the Control key and dragging the mouse over the camera image.
+        /// This property is initialized in the <see cref="InitializeIsMouseCameraMotion"/> method.
+        /// </summary>
+        private bool IsMouseCameraMotion;
 
         /// <summary>
         /// Gets a boolean value that indicates if we have a plugin
@@ -213,23 +219,6 @@ namespace Restless.App.Camera.Core
         /// Identifies the <see cref="MotionCommand"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty MotionCommandProperty = MotionCommandPropertyKey.DependencyProperty;
-
-        /// <summary>
-        /// Gets or sets a boolean that determines if moving the camera using the mouse is activated
-        /// </summary>
-        public bool IsMouseCameraMotion
-        {
-            get => (bool)GetValue(IsMouseCameraMotionProperty);
-            set => SetValue(IsMouseCameraMotionProperty, value);
-        }
-
-        /// <summary>
-        /// Identifies the <see cref="IsMouseCameraMotion"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty IsMouseCameraMotionProperty = DependencyProperty.Register
-            (
-                nameof(IsMouseCameraMotion), typeof(bool), typeof(CameraControl), new PropertyMetadata(false)
-            );
 
         /// <summary>
         /// Gets or sets the command to stop video
@@ -809,7 +798,7 @@ namespace Restless.App.Camera.Core
 
             statusControl.RenderTransform = BannerTranslate;
 
-            InitializeIsMouseCameraMotionAvailable();
+            InitializeIsMouseCameraMotion();
             /*
              * A camera can attempt to initialize before OnAppyTemplate(), which gets
              * the error control from the template. If an error occurs during camera
@@ -929,7 +918,7 @@ namespace Restless.App.Camera.Core
         private void ImageControlMouseMove(object sender, MouseEventArgs e)
         {
             if (!isMouseDown) return;
-            if (isLeftControlKeyDown && !IsMouseCameraMotionAvailable) return;
+            if (isLeftControlKeyDown && !IsMouseCameraMotion) return;
 
             Point point = e.GetPosition(imageControl);
             double deltaX = point.X - mouseDownPoint.X;
@@ -939,7 +928,7 @@ namespace Restless.App.Camera.Core
             {
                 PanImage(deltaX, deltaY);
             }
-            else if (IsMouseCameraMotionAvailable && !isCameraMotionStarted)
+            else if (IsMouseCameraMotion && !isCameraMotionStarted)
             {
                 MoveCamera(deltaX, deltaY);
             }
@@ -1031,7 +1020,11 @@ namespace Restless.App.Camera.Core
 
         private void CameraControlKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.LeftCtrl) isLeftControlKeyDown = true;
+            if (e.Key == Key.LeftCtrl)
+            {
+                isLeftControlKeyDown = true;
+                SetImageControlCursor(IsMouseCameraMotion ? Cursors.SizeAll : Cursors.No);
+            }
             if (e.Key == Key.Escape)
             {
                 ResetImageTransforms();
@@ -1041,7 +1034,19 @@ namespace Restless.App.Camera.Core
 
         private void CameraControlKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.LeftCtrl) isLeftControlKeyDown = false;
+            if (e.Key == Key.LeftCtrl)
+            {
+                isLeftControlKeyDown = false;
+                SetImageControlCursor(Cursors.Hand);
+            }
+        }
+
+        private void SetImageControlCursor(Cursor cursor)
+        {
+            if (imageControl != null)
+            {
+                imageControl.Cursor = cursor;
+            }
         }
         #endregion
 
@@ -1097,7 +1102,7 @@ namespace Restless.App.Camera.Core
 
                 Plugin.VideoFrameReceived += PluginVideoFrameReceived;
                 Plugin.PluginException += PluginPluginException;
-                InitializeIsMouseCameraMotionAvailable();
+                InitializeIsMouseCameraMotion();
                 HavePlugin = true;
             }
             catch (Exception ex)
@@ -1106,10 +1111,13 @@ namespace Restless.App.Camera.Core
             }
         }
 
-        private void InitializeIsMouseCameraMotionAvailable()
+        private void InitializeIsMouseCameraMotion()
         {
-            IsMouseCameraMotionAvailable =
-                IsMouseCameraMotion && IsPluginMotion && imageControl != null;
+            IsMouseCameraMotion =
+                IsPluginMotion &&
+                imageControl != null &&
+                Camera != null && 
+                Camera.Flags.HasFlag(CameraFlags.MouseMotion);
         }
 
         private void StartStopVideo()
