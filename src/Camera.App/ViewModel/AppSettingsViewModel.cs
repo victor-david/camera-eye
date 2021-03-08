@@ -19,6 +19,14 @@ namespace Restless.App.Camera
         /************************************************************************/
 
         #region Properties
+        /// <summary>
+        /// Gets a boolean value that determines if proxy detection is disabled.
+        /// </summary>
+        public bool IsProxyDisabled
+        {
+            get => Config.IsProxyDetectionDisabled;
+            set => Config.IsProxyDetectionDisabled = value;
+        }
         #endregion
 
         /************************************************************************/

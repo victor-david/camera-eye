@@ -11,5 +11,8 @@
     Title="{Binding DisplayName}" Height="450" Width="800">
 
     <Grid core:Property.ColumnWidths="*,*">
+        <StackPanel Margin="10">
+            <CheckBox Content="Proxy detection disabled" IsChecked="{Binding IsProxyDisabled}"/>
+        </StackPanel>
     </Grid>
 </core:AppWindow>

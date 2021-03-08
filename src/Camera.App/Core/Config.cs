@@ -138,6 +138,7 @@ namespace Restless.App.Camera.Core
             get => GetItem(true);
             set => SetItem(value);
         }
+
         /// <summary>
         /// Gets or sets the camera wall grid layout.
         /// </summary>
@@ -145,6 +146,19 @@ namespace Restless.App.Camera.Core
         {
             get => (WallGridLayout)GetItem((int)WallGridLayout.TwoByTwo);
             set => SetItem((int)value);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Other
+        /// <summary>
+        /// Gets or sets whether proxy detection is disabled.
+        /// </summary>
+        public bool IsProxyDetectionDisabled
+        {
+            get => GetItem(false);
+            set => SetItem(value);
         }
         #endregion
 
