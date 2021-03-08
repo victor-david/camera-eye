@@ -118,6 +118,16 @@ namespace Restless.Camera.Contracts
         }
 
         /// <summary>
+        /// Gets or sets a value that determines whether proxy detection is enabled.
+        /// The default is true.
+        /// </summary>
+        public bool ProxyDetectionEnabled
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets a boolean value that indicates if a user id is present.
         /// </summary>
         public bool HasUserId => !string.IsNullOrEmpty(UserId);
@@ -147,6 +157,7 @@ namespace Restless.Camera.Contracts
             Timeout = DefaultTimeout;
             ConnectionAttempts = DefaultConnectionAttempts;
             RetryWaitTime = DefaultRetryWaitTime;
+            ProxyDetectionEnabled = true;
         }
 
         /// <summary>

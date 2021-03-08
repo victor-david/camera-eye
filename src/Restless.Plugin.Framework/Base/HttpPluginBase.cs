@@ -35,7 +35,10 @@ namespace Restless.Plugin.Framework
         /// <param name="parms">The connection parameters</param>
         protected HttpPluginBase(ConnectionParameters parms) : base(parms)
         {
-            var clientHandler = new HttpClientHandler();
+            var clientHandler = new HttpClientHandler()
+            {
+                UseProxy = parms.ProxyDetectionEnabled
+            };
 
             Client = new HttpClient(new HttpTimeoutHandler()
             {
