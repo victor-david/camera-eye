@@ -1,5 +1,6 @@
 ﻿using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Restless.App.Camera.Core
@@ -10,67 +11,29 @@ namespace Restless.App.Camera.Core
     public class Config : Tools.Database.SQLite.KeyValueTableBase
     {
         #region Private
+        private readonly Dictionary<WindowKey, WindowConfig> windowConfig;
         #endregion
 
         /************************************************************************/
 
-        #region Public fields
+        #region WindowKey (public)
         /// <summary>
-        /// Provides static default values for properties
+        /// Identifies the window to be saved and restored.
         /// </summary>
-        public static class Default
+        public enum WindowKey
         {
             /// <summary>
-            /// Provides static default values for the main window.
+            /// The main application window.
             /// </summary>
-            public static class MainWindow
-            {
-                /// <summary>
-                /// Gets the default width for the main window.
-                /// </summary>
-                public const int Width = 1260;
-
-                /// <summary>
-                /// Gets the default height for the main window.
-                /// </summary>
-                public const int Height = 680;
-
-                /// <summary>
-                /// Gets the minimum width for the main window.
-                /// </summary>
-                public const int MinWidth = 343;
-
-                /// <summary>
-                /// Gets the minimum height for the main window.
-                /// </summary>
-                public const int MinHeight = 418;
-            }
-
+            Main,
             /// <summary>
-            /// Provides static default values for the camera edit window.
+            /// The window that manages a camera.
             /// </summary>
-            public static class CameraManageWindow
-            {
-                /// <summary>
-                /// Gets the default width for the camera manage window.
-                /// </summary>
-                public const int Width = 920;
-
-                /// <summary>
-                /// Gets the default height for the camera manage window.
-                /// </summary>
-                public const int Height = 580;
-
-                /// <summary>
-                /// Gets the minimum width for the camera manage window.
-                /// </summary>
-                public const int MinWidth = 920;
-
-                /// <summary>
-                /// Gets the minimum height for the camera manage window.
-                /// </summary>
-                public const int MinHeight = 580;
-            }
+            CameraManage,
+            /// <summary>
+            /// The application settings window
+            /// </summary>
+            AppSettings
         }
         #endregion
 
@@ -84,6 +47,12 @@ namespace Restless.App.Camera.Core
 
         private Config() : base(DatabaseController.Instance.GetTable<ConfigTable>())
         {
+            windowConfig = new Dictionary<WindowKey, WindowConfig>()
+            { 
+                { WindowKey.Main, new WindowConfig(propertyPreface: "Main", defaultWidth: 1260, defaultHeight: 680, minWidth: 343, minHeight: 418) },
+                { WindowKey.CameraManage, new WindowConfig(propertyPreface: "Manage", defaultWidth: 920, defaultHeight: 580, minWidth: 920, minHeight: 580) },
+                { WindowKey.AppSettings, new WindowConfig(propertyPreface: "AppSettings", defaultWidth: 536, defaultHeight: 370, minWidth: 536, minHeight: 370) }
+            };
         }
 
         /// <summary>
@@ -96,50 +65,56 @@ namespace Restless.App.Camera.Core
 
         /************************************************************************/
 
-        #region Window settings (Main)
+        #region Window settings
         /// <summary>
-        /// Gets or sets the width of the main window
+        /// Saves the state of the specified window.
         /// </summary>
-        public int MainWindowWidth
+        /// <param name="key">The window key that identifies the configuration settings.</param>
+        /// <param name="window">The window instance being saved.</param>
+        public void SaveWindow(WindowKey key, Window window)
         {
-            get => GetItem(Default.MainWindow.Width);
-            set => SetItem(value);
+            if (window != null && windowConfig.TryGetValue(key, out WindowConfig config))
+            {
+                if (window.WindowState != WindowState.Maximized)
+                {
+                    SetItem((int)window.Width, config.GetPropertyId(WindowConfig.Property.Width));
+                    SetItem((int)window.Height, config.GetPropertyId(WindowConfig.Property.Height));
+                }
+
+                /* don't save state as minimized. if closed as minmized, will restore as normal */
+                int state = (int)(window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState);
+                SetItem(state, config.GetPropertyId(WindowConfig.Property.State));
+                SetItem((int)window.Left, config.GetPropertyId(WindowConfig.Property.Left));
+                SetItem((int)window.Top, config.GetPropertyId(WindowConfig.Property.Top));
+            }
         }
 
         /// <summary>
-        /// Gets or sets the height of the main window
+        /// Restores the state of the specified window.
         /// </summary>
-        public int MainWindowHeight
+        /// <param name="key">The window key that identifies the configuration settings</param>
+        /// <param name="window">The window instance being restored.</param>
+        public void RestoreWindow(WindowKey key, Window window)
         {
-            get => GetItem(Default.MainWindow.Height);
-            set => SetItem(value);
-        }
+            if (window != null && windowConfig.TryGetValue(key, out WindowConfig config))
+            {
+                window.MinWidth = windowConfig[key].MinWidth;
+                window.MinHeight = windowConfig[key].MinHeight;
+                window.WindowState = (WindowState)GetItem((int)WindowState.Normal, config.GetPropertyId(WindowConfig.Property.State));
+                window.Width = GetItem(windowConfig[key].DefaultWidth, config.GetPropertyId(WindowConfig.Property.Width));
+                window.Height = GetItem(windowConfig[key].DefaultHeight, config.GetPropertyId(WindowConfig.Property.Height));
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-        /// <summary>
-        /// Gets or sets the state of the main window
-        /// </summary>
-        public WindowState MainWindowState
-        {
-            get => (WindowState)GetItem((int)WindowState.Normal);
-            set => SetItem((int)value);
-        }
-
-        /// <summary>
-        /// Gets or sets the left cooridinate of the main window.
-        /// </summary>
-        public int MainWindowLeft
-        {
-            get => GetItem(int.MaxValue);
-            set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Gets or sets the top cooridinate of the main window.
-        /// </summary>
-        public int MainWindowTop
-        {
-            get => GetItem(int.MaxValue);
-            set => SetItem(value);
+                /* default values are int.MaxValue which will only be present on first run. */
+                int left = GetItem(int.MaxValue, config.GetPropertyId(WindowConfig.Property.Left));
+                int top = GetItem(int.MaxValue, config.GetPropertyId(WindowConfig.Property.Top));
+                if (left != int.MaxValue && top != int.MaxValue)
+                {
+                    window.Left = left;
+                    window.Top = top;
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                }
+            }
         }
 
         /// <summary>
@@ -149,147 +124,6 @@ namespace Restless.App.Camera.Core
         {
             get => GetItem(false);
             set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Saves the main window for later restoral.
-        /// </summary>
-        /// <param name="window">The window.</param>
-        public void SaveMainWindow(Window window)
-        {
-            if (window != null)
-            {
-                if (window.WindowState != WindowState.Maximized)
-                {
-                    MainWindowWidth = (int)window.Width;
-                    MainWindowHeight = (int)window.Height;
-                }
-
-                /* don't save state as minimized. if closed as minmized, will restore as normal */
-                MainWindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
-                MainWindowLeft = (int)window.Left;
-                MainWindowTop = (int)window.Top;
-            }
-        }
-
-        /// <summary>
-        /// Restores the main window to its saved size and position.
-        /// </summary>
-        /// <param name="window">The window.</param>
-        public void RestoreMainWindow(Window window)
-        {
-            if (window != null)
-            {
-                window.MinWidth = Default.MainWindow.MinWidth;
-                window.MinHeight = Default.MainWindow.MinHeight;
-                window.WindowState = MainWindowState;
-                window.Width = MainWindowWidth;
-                window.Height = MainWindowHeight;
-                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                /* default values are int.MaxValue which will only be present on first run. */
-                if (MainWindowLeft != int.MaxValue && MainWindowTop != int.MaxValue)
-                {
-                    window.Left = MainWindowLeft;
-                    window.Top = MainWindowTop;
-                    window.WindowStartupLocation = WindowStartupLocation.Manual;
-                }
-            }
-        }
-        #endregion
-
-        /************************************************************************/
-
-        #region Window settings (Manage)
-        /// <summary>
-        /// Gets or sets the width of the camera manage window
-        /// </summary>
-        public int ManageWindowWidth
-        {
-            get => GetItem(Default.CameraManageWindow.Width);
-            set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Gets or sets the height of the camera manage window
-        /// </summary>
-        public int ManageWindowHeight
-        {
-            get => GetItem(Default.CameraManageWindow.Height);
-            set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Gets or sets the state of the camera manage window
-        /// </summary>
-        public WindowState ManageWindowState
-        {
-            get => (WindowState)GetItem((int)WindowState.Normal);
-            set => SetItem((int)value);
-        }
-
-        /// <summary>
-        /// Gets or sets the left cooridinate of the camera manage window.
-        /// </summary>
-        public int ManageWindowLeft
-        {
-            get => GetItem(int.MaxValue);
-            set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Gets or sets the top cooridinate of the camera manage window.
-        /// </summary>
-        public int ManageWindowTop
-        {
-            get => GetItem(int.MaxValue);
-            set => SetItem(value);
-        }
-
-        /// <summary>
-        /// Saves the camera manage window for later restoral.
-        /// </summary>
-        /// <param name="window">The window.</param>
-        public void SaveManageWindow(Window window)
-        {
-            if (window != null)
-            {
-                if (window.WindowState != WindowState.Maximized)
-                {
-                    ManageWindowWidth = (int)window.Width;
-                    ManageWindowHeight = (int)window.Height;
-                }
-
-                /* don't save state as minimized. if closed as minmized, will restore as normal */
-                ManageWindowState = window.WindowState == WindowState.Minimized ? WindowState.Normal : window.WindowState;
-                ManageWindowLeft = (int)window.Left;
-                ManageWindowTop = (int)window.Top;
-            }
-        }
-
-        /// <summary>
-        /// Restores the camera manage window to its saved size and position.
-        /// </summary>
-        /// <param name="window">The window.</param>
-        public void RestoreManageWindow(Window window)
-        {
-            if (window != null)
-            {
-                window.MinWidth = Default.CameraManageWindow.MinWidth;
-                window.MinHeight = Default.CameraManageWindow.MinHeight;
-                window.WindowState = ManageWindowState;
-                window.Width = ManageWindowWidth;
-                window.Height = ManageWindowHeight;
-                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-                /* default values are int.MaxValue which will only be present on first run. */
-                if (ManageWindowLeft != int.MaxValue && ManageWindowTop != int.MaxValue)
-                {
-                    window.Left = ManageWindowLeft;
-                    window.Top = ManageWindowTop;
-                    window.WindowStartupLocation = WindowStartupLocation.Manual;
-                }
-            }
         }
         #endregion
 
@@ -311,6 +145,53 @@ namespace Restless.App.Camera.Core
         {
             get => (WallGridLayout)GetItem((int)WallGridLayout.TwoByTwo);
             set => SetItem((int)value);
+        }
+        #endregion
+
+        /************************************************************************/
+
+        #region Private helper class
+        /// <summary>
+        /// Represents configuration values for a single window
+        /// </summary>
+        private class WindowConfig
+        {
+            private readonly string preface;
+            public int DefaultWidth { get; }
+            public int DefaultHeight { get; }
+            public int MinWidth { get; }
+            public int MinHeight { get; }
+
+            /// <summary>
+            /// Specifies parameters for <see cref="GetPropertyId(Property)"/>
+            /// </summary>
+            public enum Property
+            {
+                State,
+                Width,
+                Height,
+                Left,
+                Top,
+            }
+
+            public WindowConfig(string propertyPreface, int defaultWidth, int defaultHeight, int minWidth, int minHeight)
+            {
+                preface = propertyPreface;
+                DefaultWidth = defaultWidth;
+                DefaultHeight = defaultHeight;
+                MinWidth = minWidth;
+                MinHeight = minHeight;
+            }
+
+            /// <summary>
+            /// Provides a consistent means of getting configuration property ids
+            /// </summary>
+            /// <param name="prop">The property</param>
+            /// <returns>An id based on the preface and the specified property</returns>
+            public string GetPropertyId(Property prop)
+            {
+                return $"{preface}Window{prop}";
+            }
         }
         #endregion
     }

@@ -384,7 +384,7 @@ namespace Restless.App.Camera
         {
             base.OnClosing();
             Camera.PropertyChanged -= CameraPropertyChanged;
-            Config.SaveManageWindow(WindowOwner);
+            Config.SaveWindow(Config.WindowKey.CameraManage, WindowOwner);
         }
         #endregion
 

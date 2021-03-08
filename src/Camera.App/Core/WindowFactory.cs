@@ -26,7 +26,7 @@ namespace Restless.App.Camera.Core
                     DataContext = viewModel ?? new MainWindowViewModel()
                 };
 
-                Config.Instance.RestoreMainWindow(window);
+                Config.Instance.RestoreWindow(Config.WindowKey.Main, window);
 
                 (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
                 TextOptions.SetTextFormattingMode(window);
@@ -55,10 +55,33 @@ namespace Restless.App.Camera.Core
                     DataContext = new CameraManageViewModel(camera),
                 };
 
-                Config.Instance.RestoreManageWindow(window);
+                Config.Instance.RestoreWindow(Config.WindowKey.CameraManage, window);
 
                 (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
+                TextOptions.SetTextFormattingMode(window);
+                return window;
+            }
+        }
+        #endregion
 
+        /************************************************************************/
+
+        #region AppSettings
+        /// <summary>
+        /// Provides static methods for creating an application settings window.
+        /// </summary>
+        public static class AppSettings
+        {
+            public static AppSettingsWindow Create()
+            {
+                var window = new AppSettingsWindow()
+                {
+                    DataContext = new AppSettingsViewModel()
+                };
+
+                Config.Instance.RestoreWindow(Config.WindowKey.AppSettings, window);
+
+                (window.DataContext as WindowViewModel)?.SetWindowOwner(window);
                 TextOptions.SetTextFormattingMode(window);
                 return window;
             }

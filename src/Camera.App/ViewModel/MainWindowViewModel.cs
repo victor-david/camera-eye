@@ -159,7 +159,7 @@ namespace Restless.App.Camera
                 if (window != WindowOwner) window.Close();
             }
 
-            Config.SaveMainWindow(WindowOwner);
+            Config.SaveWindow(Config.WindowKey.Main, WindowOwner);
         }
         #endregion
 
@@ -239,6 +239,10 @@ namespace Restless.App.Camera
 
         private void RunOpenAppSettingsCommand(object parm)
         {
+            bool isTop = IsTopmost;
+            IsTopmost = false;
+            WindowFactory.AppSettings.Create().ShowDialog();
+            IsTopmost = isTop;
         }
         #endregion
     }
