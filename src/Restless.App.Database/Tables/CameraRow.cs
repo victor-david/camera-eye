@@ -126,7 +126,7 @@ namespace Restless.App.Database.Tables
         }
 
         /// <summary>
-        /// Gets or sets the user id.
+        /// Gets or sets a user note associated with the camera.
         /// </summary>
         public string Note
         {
