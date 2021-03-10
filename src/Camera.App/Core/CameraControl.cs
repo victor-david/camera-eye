@@ -2,7 +2,7 @@
 using Restless.App.Database.Tables;
 using Restless.Camera.Contracts;
 using Restless.Camera.Contracts.RawFrames.Video;
-using Restless.Tools.Mvvm;
+using Restless.Toolkit.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;

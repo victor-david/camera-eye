@@ -1,13 +1,5 @@
 ﻿using Restless.App.Camera.Core;
-using Restless.App.Database.Core;
-using Restless.App.Database.Tables;
-using Restless.Camera.Contracts;
-using Restless.Tools.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
+using Restless.Toolkit.Mvvm;
 
 namespace Restless.App.Camera
 {

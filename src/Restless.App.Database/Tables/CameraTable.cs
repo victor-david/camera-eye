@@ -1,5 +1,5 @@
 ﻿using Restless.App.Database.Core;
-using Restless.Tools.Database.SQLite;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -123,7 +123,7 @@ namespace Restless.App.Database.Tables
         /// <summary>
         /// Initializes a new instance of the <see cref="CameraTable"/> class.
         /// </summary>
-        public CameraTable() : base(Defs.TableName)
+        public CameraTable() : base(DatabaseController.Instance, DatabaseController.CameraSchemaName, Defs.TableName)
         {
         }
         #endregion

@@ -1,5 +1,5 @@
 ﻿using Restless.App.Database.Core;
-using Restless.Tools.Database.SQLite;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -83,7 +83,7 @@ namespace Restless.App.Database.Tables
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginTable"/> class.
         /// </summary>
-        public PluginTable() : base(Defs.TableName)
+        public PluginTable() : base(DatabaseController.Instance, DatabaseController.CameraSchemaName, Defs.TableName)
         {
         }
         #endregion

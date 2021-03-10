@@ -8,7 +8,7 @@ namespace Restless.App.Camera.Core
     /// <summary>
     /// Provides application configuration services
     /// </summary>
-    public class Config : Tools.Database.SQLite.KeyValueTableBase
+    public class Config : Toolkit.Core.Database.SQLite.KeyValueTableBase
     {
         #region Private
         private readonly Dictionary<WindowKey, WindowConfig> windowConfig;

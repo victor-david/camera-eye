@@ -1,7 +1,7 @@
 ﻿using Restless.App.Camera.Core;
 using Restless.App.Database.Core;
 using Restless.App.Database.Tables;
-using Restless.Tools.Mvvm;
+using Restless.Toolkit.Mvvm;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

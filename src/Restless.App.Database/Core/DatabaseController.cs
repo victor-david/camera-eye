@@ -1,5 +1,5 @@
 ﻿using Restless.App.Database.Tables;
-using Restless.Tools.Database.SQLite;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.IO;
 
@@ -11,7 +11,6 @@ namespace Restless.App.Database.Core
     public class DatabaseController : DatabaseControllerBase
     {
         #region Private
-        private string rootFolder;
 #if DEBUG
         private const string DefaultDbFileName = "CameraData(Debug)." + Extension;
 #else
@@ -72,7 +71,7 @@ namespace Restless.App.Database.Core
         /// <param name="rootFolder">The installation folder for the application.</param>
         public void Init(string rootFolder)
         {
-            this.rootFolder = rootFolder ?? throw new ArgumentNullException(nameof(rootFolder));
+            if (string.IsNullOrEmpty(rootFolder)) throw new ArgumentNullException(nameof(rootFolder));
             string fileName = Path.Combine(rootFolder, DefaultDbDirectory, DefaultDbFileName);
             CreateAndOpen(MemoryDatabase);
             AttachCameraDatabase(fileName);

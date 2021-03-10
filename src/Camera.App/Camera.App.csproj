@@ -11,8 +11,8 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
     <Platforms>AnyCPU;x86;x64</Platforms>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
-    <Copyright>Copyright © 2020</Copyright>
-    <Version>1.0.0</Version>
+    <Copyright>Copyright © 2021</Copyright>
+    <Version>1.1.0</Version>
     <AssemblyName>CameraEye</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -22,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Restless.Tools.Controls" Version="2.0.0" />
-    <PackageReference Include="Restless.Tools.Mvvm" Version="2.0.0" />
+    <PackageReference Include="Restless.Toolkit" Version="2.5.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup> 
 

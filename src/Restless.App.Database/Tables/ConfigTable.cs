@@ -1,5 +1,5 @@
 ﻿using Restless.App.Database.Core;
-using Restless.Tools.Database.SQLite;
+using Restless.Toolkit.Core.Database.SQLite;
 using System;
 using System.Data;
 
@@ -57,7 +57,7 @@ namespace Restless.App.Database.Tables
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigTable"/> class.
         /// </summary>
-        public ConfigTable() : base(Defs.TableName)
+        public ConfigTable() : base(DatabaseController.Instance, DatabaseController.CameraSchemaName, Defs.TableName)
         {
             IsDeleteRestricted = true;
         }
