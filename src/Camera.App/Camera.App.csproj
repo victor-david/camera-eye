@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Restless.Tools.Controls" Version="2.0.0" />
     <PackageReference Include="Restless.Tools.Mvvm" Version="2.0.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup> 
 
   <ItemGroup>
@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Image\Add.48.png"/>
-    <Resource Include="Resources\Image\Lens.36.png"/>
+    <Resource Include="Resources\Image\Add.48.png" />
+    <Resource Include="Resources\Image\Lens.36.png" />
   </ItemGroup>
 
   <ItemGroup>
