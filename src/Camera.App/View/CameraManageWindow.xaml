@@ -1,9 +1,10 @@
-﻿<core:AppWindow 
+﻿<rtk:AppWindow 
     x:Class="Restless.App.Camera.CameraManageWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:rtk="clr-namespace:Restless.Toolkit.Controls;assembly=Restless.Toolkit"
     xmlns:core="clr-namespace:Restless.App.Camera.Core"
     xmlns:camera="clr-namespace:Restless.App.Camera" d:DataContext="{d:DesignInstance Type=camera:CameraManageViewModel}"
     mc:Ignorable="d"
@@ -173,4 +174,4 @@
             </StackPanel>
         </HeaderedContentControl>
     </Grid>
-</core:AppWindow>
+</rtk:AppWindow>

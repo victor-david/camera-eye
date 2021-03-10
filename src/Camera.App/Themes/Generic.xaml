@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Themes/Generic/AppWindow.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Themes/Generic/CameraControl.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
