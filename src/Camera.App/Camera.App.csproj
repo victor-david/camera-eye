@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Restless.Toolkit" Version="2.5.1" />
+    <PackageReference Include="Restless.Toolkit" Version="2.5.3" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup> 
 
