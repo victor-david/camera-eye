@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>Restless.App.Camera</RootNamespace>
     <Authors>Restless Animal Development</Authors>
-    <Product>Foscam Vision</Product>
+    <Product>Camera Eye</Product>
     <Description>A Wpf app for viewing and controlling IP cameras</Description>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <Platforms>AnyCPU;x86;x64</Platforms>
